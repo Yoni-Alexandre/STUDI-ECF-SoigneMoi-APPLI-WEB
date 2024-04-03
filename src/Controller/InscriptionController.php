@@ -20,6 +20,7 @@ class InscriptionController extends AbstractController
         // Création du formulaire et liaison avec l'objet utilisateur
         $form = $this->createForm(InscriptionUtilisateurType::class, $utilisateur);
 
+        // Récupération des données du formulaire grâce à la requête HTTP
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()){
@@ -27,6 +28,8 @@ class InscriptionController extends AbstractController
             $entityManager->persist($utilisateur);
             // exécuter la requête vers la base de donneés
             $entityManager->flush();
+
+            return $this->redirectToRoute('app_accueil');
         }
 
         return $this->render('inscription/index.html.twig', [

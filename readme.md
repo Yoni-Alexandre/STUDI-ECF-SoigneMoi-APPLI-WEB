@@ -222,7 +222,7 @@ Choose a name for your controller class (e.g. OrangeChefController):
 
   Success! 
 ```
-## Création du formulaires des utilisateurs (patients)
+## Création du formulaire des utilisateurs (patients)
 #### Formulaire de création de comptes pour les utilisateurs
 ```bash
 symfony console make:form
@@ -245,7 +245,7 @@ $form = $this->createForm(InscriptionUtilisateurType::class, $utilisateur);
   
 return $this->render('inscription/index.html.twig', [  
     'titre_inscription' => 'Inscription',  
-    'form' => $form->createView(),
+    'formulaireUtilisateurs' => $form->createView(),
 ```
 Pour utiliser **Bootstrap** pour l'affichage graphique des formulaires, modifier le fichier ```config/packages/twig.yaml```
 et ajouter :
@@ -296,14 +296,14 @@ public function buildForm(FormBuilderInterface $builder, array $options): void
 ```
 Dans le fichier de la vue associée au formulaire
 ```bash
-{{ form_start(form) }}  
-{{ form_row(form.nom) }}  
-{{ form_row(form.prenom) }}  
-{{ form_row(form.adresse_postale) }}  
-{{ form_row(form.email) }}  
-{{ form_row(form.password) }}  
-{{ form_row(form.submit) }}  
-{{ form_end(form) }}
+{{ form_start(formulaireUtilisateurs) }}  
+{{ form_row(formulaireUtilisateurs.nom) }}  
+{{ form_row(formulaireUtilisateurs.prenom) }}  
+{{ form_row(formulaireUtilisateurs.adresse_postale) }}  
+{{ form_row(formulaireUtilisateurs.email) }}  
+{{ form_row(formulaireUtilisateurs.password) }}  
+{{ form_row(formulaireUtilisateurs.submit) }}  
+{{ form_end(formulaireUtilisateurs) }}
 ```
 ## Enregistrement du formulaire des utilisateurs (patients) en base de données
 Depuis le contrôleur InscriptionController.php,  ne pas oublier les injections de dépendances dans la fonction
@@ -326,14 +326,17 @@ public function index(Request $request, EntityManagerInterface $entityManager): 
   $utilisateur = new Utilisateur();  
     // Création du formulaire et liaison avec l'objet utilisateur  
   $form = $this->createForm(InscriptionUtilisateurType::class, $utilisateur);  
-  
-    $form->handleRequest($request);  
+      
+    // Récupération des données du formulaire grâce à la requête HTTP  
+  $form->handleRequest($request);  
   
     if ($form->isSubmitted() && $form->isValid()){  
         // persister les données dans la table utilisateur  
   $entityManager->persist($utilisateur);  
-        // exécuter la requête  
+        // exécuter la requête vers la base de donneés  
   $entityManager->flush();  
+  
+        return $this->redirectToRoute('app_accueil');  
     }  
   
     return $this->render('inscription/index.html.twig', [  
@@ -342,5 +345,7 @@ public function index(Request $request, EntityManagerInterface $entityManager): 
     ]);  
 }
 ```
+## Encodage des mots de passe du formulaire des utilisateurs (patients) en base de données
+```bash
 
-
+```
