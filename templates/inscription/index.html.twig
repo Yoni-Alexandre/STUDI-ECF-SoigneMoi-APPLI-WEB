@@ -8,14 +8,14 @@
             <div class="col-md-12">
                 <h1>{{ titre_inscription }}</h1>
 
-                {{ form_start(form) }}
-                {{ form_row(form.nom) }}
-                {{ form_row(form.prenom) }}
-                {{ form_row(form.adresse_postale) }}
-                {{ form_row(form.email) }}
-                {{ form_row(form.password) }}
-                {{ form_row(form.submit) }}
-                {{ form_end(form) }}
+                {{ form_start(formulaireUtilisateurs) }}
+                {{ form_row(formulaireUtilisateurs.nom) }}
+                {{ form_row(formulaireUtilisateurs.prenom) }}
+                {{ form_row(formulaireUtilisateurs.adresse_postale) }}
+                {{ form_row(formulaireUtilisateurs.email) }}
+                {{ form_row(formulaireUtilisateurs.password) }}
+                {{ form_row(formulaireUtilisateurs.submit) }}
+                {{ form_end(formulaireUtilisateurs) }}
 
             </div>
         </div>
