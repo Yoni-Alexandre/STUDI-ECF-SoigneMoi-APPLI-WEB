@@ -1,4 +1,4 @@
-### Présentation du Projet SoigneMoi
+# Présentation du Projet SoigneMoi
 
 SoigneMoi, est un hôpital de la région lilloise (dans le nord de la France), cet hôpital n’a pas beaucoup de clients par manque d’efficacité. Ils sont assez lents dans l’accueil des patients, mais également dans la prise en charge. Les praticiens, qui doivent effectuer des opérations, n’ont pas d’agenda informatisé, de ce fait, toute la gestion des plannings est faite à la main.
 L’hôpital ne pouvant plus continuer en ce sens, ils ont décidé d’investir afin de proposer des outils permettant de corriger toutes les faiblesses actuelles. Pour répondre à ce besoin, ils ont mandaté une entreprise, Develop-Solution, dont vous faites partie pour développer les applications nécessaires.
@@ -20,8 +20,7 @@ Après consultation avec les équipes de SoigneMoi, il a été défini les besoi
 - Une / Un secrétaire a accès à toutes les admissions à l’hôpital du jour.
 - Gestion des entrées et sortie de l’hôpital
 
-
-### Création du Projet SoigneMoi avec Symfony 7
+## Création du Projet SoigneMoi avec Symfony 7
 
 1. Création du Projet :
    ```bash
@@ -34,15 +33,15 @@ Après consultation avec les équipes de SoigneMoi, il a été défini les besoi
    composer install
    ```
 
-### Modification du ficher .env pour connecter la base de données
+##  Modification du ficher .env pour connecter la base de données
 ```bash
 DATABASE_URL="mysql://root@127.0.0.1:3306/soignemoi?serverVersion=8.0.32&charset=utf8mb4"
 ```
-### Création de la base de données
+##  Création de la base de données
 ```bash
 symfony console doctrine:database:create
 ```
-### Création des Entités
+## Création des Entités
 
 #### Entité Utilisateur (sécurisé)
 
@@ -110,7 +109,7 @@ symfony console make:entity
     - Champ : ```date```, type : ```datetime```, null en BDD : ```non```
     - Champ : ```nombre_patients_max```, type : ```integer```, longueur : ```255```, null en BDD : ```non```
 
-### Définition des Relations
+## Définition des Relations
 
 #### Création des relations entre les Entités
 ```bash 
@@ -203,10 +202,107 @@ What type of relationship is this?
     - Nom de l'entité : PlanningMedecin
         - Champs de l'entité : `medecin`, type : `relation (ManyToOne)`, classe cible : `Medecin`
 #
-### Création de la migration
+#### Création de la migration
 ```bash
 symfony console make:migration
 ```
-### Exécution de la migration
+#### Exécution de la migration
 ```bash
 symfony console doctrine:migrations:migrate
+```
+## Création du contrôleur d'inscription des utilisateurs (patients)
+```bash
+symfony console make:controller
+
+Choose a name for your controller class (e.g. OrangeChefController):
+ > InscriptionController
+
+ created: src/Controller/InscriptionController.php
+ created: templates/inscription/index.html.twig
+
+  Success! 
+```
+## Création du formulaires des utilisateurs (patients)
+#### Formulaire de création de comptes pour les utilisateurs
+```bash
+symfony console make:form
+
+The name of the form class (e.g. GentlePuppyType):
+ > InscriptionUtilisateurType
+
+ The name of Entity or fully qualified model class name that the new form will be bound to (empty for none):
+ > Utilisateur
+Utilisateur
+
+ created: src/Form/InscriptionUtilisateurType.php
+           
+  Success! 
+```
+#### Lier le contrôleur `InscriptionController`au  formulaire `InscriptionUtilisateurType`
+```bash
+$utilisateur = new Utilisateur();  
+$form = $this->createForm(InscriptionUtilisateurType::class, $utilisateur);  
+  
+return $this->render('inscription/index.html.twig', [  
+    'titre_inscription' => 'Inscription',  
+    'form' => $form->createView(),
+```
+Pour utiliser **Bootstrap** pour l'affichage graphique des formulaires, modifier le fichier ```config/packages/twig.yaml```
+et ajouter :
+```bash
+twig:   
+  form_themes: ['bootstrap_5_layout.html.twig']
+```
+#### Création du formulaire (Exemple du formulaire d'inscription)
+```bash
+public function buildForm(FormBuilderInterface $builder, array $options): void  
+{  
+    $builder  
+  ->add('email', EmailType::class, [  
+            'label' => 'Adresse email',  
+            'attr' => [  
+                'placeholder' => 'Entrez votre adresse email'  
+  ]  
+        ])  
+        ->add('password', PasswordType::class,[  
+            'label' => 'Mot de passe',  
+            'attr' => [  
+                'placeholder' => 'Entrez votre mot de passe'  
+  ]  
+         ])  
+        ->add('nom', TextType::class, [  
+            'label' => 'Nom',  
+            'attr' => [  
+                'placeholder' => 'Entrez votre nom'  
+  ]  
+        ])  
+        ->add('prenom', TextType::class, [  
+            'label' => 'Prénom',  
+            'attr' => [  
+                'placeholder' => 'Entrez votre prénom'  
+  ]  
+        ])  
+        ->add('adresse_postale', TextareaType::class, [  
+            'label' => 'Adresse postale',  
+            'attr' => [  
+                'placeholder' => 'Entrez votre adresse postale'  
+  ]  
+        ])  
+        ->add('submit', SubmitType::class, [  
+            'label' => 'S\'inscrire',  
+        ])  
+    ;  
+}
+```
+Dans le fichier de la vue associée au formulaire
+```bash
+{{ form_start(form) }}  
+{{ form_row(form.nom) }}  
+{{ form_row(form.prenom) }}  
+{{ form_row(form.adresse_postale) }}  
+{{ form_row(form.email) }}  
+{{ form_row(form.password) }}  
+{{ form_row(form.submit) }}  
+{{ form_end(form) }}
+```
+
