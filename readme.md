@@ -305,4 +305,42 @@ Dans le fichier de la vue associée au formulaire
 {{ form_row(form.submit) }}  
 {{ form_end(form) }}
 ```
+## Enregistrement du formulaire des utilisateurs (patients) en base de données
+Depuis le contrôleur InscriptionController.php,  ne pas oublier les injections de dépendances dans la fonction
+`Request $request, EntityManagerInterface $entityManager`
+
+- Soumission, Enregistrement et Envoi des données du formulaire en base de données
+```bash
+if ($form->isSubmitted() && $form->isValid()){  
+    // persister les données dans la table utilisateur  
+  $entityManager->persist($utilisateur);  
+    // exécuter la requête  
+  $entityManager->flush();  
+}
+```
+Exemple complet:
+```bash
+public function index(Request $request, EntityManagerInterface $entityManager): Response  
+{  
+    // Création d'un nouvel utilisateur  
+  $utilisateur = new Utilisateur();  
+    // Création du formulaire et liaison avec l'objet utilisateur  
+  $form = $this->createForm(InscriptionUtilisateurType::class, $utilisateur);  
+  
+    $form->handleRequest($request);  
+  
+    if ($form->isSubmitted() && $form->isValid()){  
+        // persister les données dans la table utilisateur  
+  $entityManager->persist($utilisateur);  
+        // exécuter la requête  
+  $entityManager->flush();  
+    }  
+  
+    return $this->render('inscription/index.html.twig', [  
+        'titre_inscription' => 'Inscription',  
+        'formulaireUtilisateurs' => $form->createView(),  
+    ]);  
+}
+```
+
 
