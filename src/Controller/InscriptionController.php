@@ -25,7 +25,7 @@ class InscriptionController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()){
             // persister les données dans la table utilisateur
             $entityManager->persist($utilisateur);
-            // exécuter la requête
+            // exécuter la requête vers la base de donneés
             $entityManager->flush();
         }
 
