@@ -29,7 +29,7 @@ class InscriptionController extends AbstractController
             // exécuter la requête vers la base de donneés
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_accueil');
+            return $this->redirectToRoute('app_connexion');
         }
 
         return $this->render('inscription/index.html.twig', [

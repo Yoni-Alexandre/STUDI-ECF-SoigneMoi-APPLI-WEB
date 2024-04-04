@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SoigneMoi - Bienvenue sur la page {{ titre_compte }}{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>{{ titre_compte }}</h1>
+            {% if app.user is not null %}
+                <p>Vous êtes connecté en tant que {{ app.user.prenom ~ ' ' ~ app.user.nom }}</p>
+            {% else %}
+                <p>Vous n'êtes pas connecté.</p>
+            {% endif %}
+            <p>Vous pouvez vous déconnecter en cliquant sur le bouton ci-dessous</p>
+            <a href="{{ path('app_deconnexion') }}" class="btn btn-primary">Me déconnecter</a>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

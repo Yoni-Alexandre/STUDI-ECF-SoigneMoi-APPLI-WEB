@@ -14,6 +14,14 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
+            form_login:
+                # app_connexion est le nom de la route de mon contrôleur 'ConnexionController'.
+                # Si je modifie la route dans mon contrôleur, je dois aussi la modifier ici.
+                login_path: app_connexion
+                check_path: app_connexion
+            # Chemin de déconnexion de l'utilisateur (app_deconnexion définit dans ConnexionController.php
+            logout:
+                path: app_deconnexion
             lazy: true
             provider: app_user_provider
 
@@ -26,6 +34,7 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
+        - { path: ^/compte, roles: ROLE_USER }
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
 
