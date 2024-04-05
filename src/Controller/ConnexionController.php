@@ -18,8 +18,6 @@ class ConnexionController extends AbstractController
         // Récupération du dernier nom d'utilisateur (email) saisi (s'il y en a) et permet de l'afficher à nouveau dans le formulaire si l'utilisateur s'est trompé de mot de passe
         $lastUsername = $authenticationUtils->getLastUsername();
 
-
-
         return $this->render('connexion/index.html.twig', [
             'titre_connexion' => 'Connexion',
             'last_username' => $lastUsername,

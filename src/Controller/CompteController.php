@@ -36,7 +36,12 @@ public function motDePasse(Request $request, EntityManagerInterface $entityManag
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()){
+        # persister les données dans la table utilisateur
         $entityManager->flush();
+        # notification Flash Messages
+        $this->addFlash(
+            'success',
+            'Votre mot de passe a bien été modifié');
     }
 
     return $this->render('compte/motDePasse.html.twig',[
