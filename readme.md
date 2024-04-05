@@ -36,11 +36,13 @@ Ce site web a été développé en utilisant les technologies suivantes :
 ## Création du Projet SoigneMoi avec Symfony 7
 
 1. Création du Projet :
-   ```bash  
-symfony new SoigneMoi --version="7.0.*" --webapp ```
+```bash  
+  symfony new SoigneMoi --version="7.0.*" --webapp 
+```  
 2. Installation des Dépendances avec **Composer** :
-   ```bash  
-cd SoigneMoi  composer install ```
+```bash  
+  cd SoigneMoi  composer install 
+```  
 ## Modification du ficher .env pour connecter la base de données
 ```bash  
 DATABASE_URL="mysql://root@127.0.0.1:3306/soignemoi?serverVersion=8.0.32&charset=utf8mb4"  
