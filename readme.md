@@ -801,4 +801,30 @@ Création de la vue `motDePasse.html.twig`
     </div>
 {% endblock %}
 ```
+#### Notification du changement de mot de passe avec les `Flash Messages`
+*https://symfony.com/doc/current/session.html#flash-messages*
 
+Dans la condition de la validation du formulaire du contrôleur, ajouter les `Flash Messages`
+```bash
+   if ($form->isSubmitted() && $form->isValid()){
+        # persister les données dans la table utilisateur
+        $entityManager->flush();
+        # notification Flash Messages
+        $this->addFlash(
+            'success',
+            'Votre mot de passe a bien été modifié');
+    }
+```
+Pour que le message s'affiche partout, modifier le `base.html.twig`
+```bash
+<!-- MESSAGE FLASH -->
+        <div class="container">
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert mt-4 alert-{{ label }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+```
