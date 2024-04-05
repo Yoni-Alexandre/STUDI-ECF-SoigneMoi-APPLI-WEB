@@ -10,6 +10,8 @@
             <div class="col-md-12">
                 <h1>{{ titre_inscription }}</h1>
 
+                <p><i>Vous avez déjà un compte ? <a href="{{ path('app_connexion') }}">Connectez-vous</a></i></p>
+
                 {{ form_start(formulaireUtilisateurs) }}
                 {{ form_row(formulaireUtilisateurs.nom) }}
                 {{ form_row(formulaireUtilisateurs.prenom) }}

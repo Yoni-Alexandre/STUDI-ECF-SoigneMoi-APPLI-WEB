@@ -61,59 +61,60 @@ Do you want to store user data in the database (via Doctrine)? (yes/no) [yes]
 Enter a property name that will be the unique "display" name for the user (e.g. email, username, uuid) [email]:  
  > email  
 Does this app need to hash/check user passwords? (yes/no) [yes]:  
- > yes```  
-- Champs de l'entité :  
-  - Les champs **email** et **password** sont créés lors de la création du **make:user**  
- - nom : `nom`, type : `string`, longueur : `255`  
- - prenom : `prenom`, type : `string`, longueur : `255`  
- - adresse_postale : `adresse_postale`, type : `text`  
-  
-#### Commande de création des entités  
-```bash symfony console make:entity```  
-  
-#### Entité Sejour  
-- Nom de l'entité : Sejour  
-- Champs de l'entité :  
-  - Champ : ```date_debut```, type : ```datetime```, null en BDD : ```non```  
- - Champ : ```date_fin```, type : ```datetime```, null en BDD : ```non```  
- - Champ : ```motif```, type : ```string```, longueur : ```255```, null en BDD : ```non```  
-  
-#### Entité Medecin  
-- Nom de l'entité : Medecin  
-- Champs de l'entité :  
-  - Champ : ```nom```, type : ```string```, longueur : ```255```, null en BDD : ```non```  
- - Champ : ```prenom```, type : ```string```, longueur : ```255```, null en BDD : ```non```  
- - Champ : ```specialite```, type : ```string```, longueur : ```255```, null en BDD : ```non```  
- - Champ : ```matricule```, type : ```string```, longueur : ```255```, null en BDD : ```non```  
-  
-#### Entité Prescription  
-- Nom de l'entité : Prescription  
-- Champs de l'entité :  
-  - Champ : ```libelle```, type : ```string```, longueur : ```255```, null en BDD : ```non```  
- - Champ : ```date```, type : ```datetime```, null en BDD : ```non```  
- - Champ : ```description```, type : ```text```, null en BDD : ```non```  
- - Champ : ```nom_prenom_medecin```, type : ```string```, longueur : ```255```, null en BDD : ```non```  
-  
-  
-#### Entité Medicament  
-- Nom de l'entité : Medicament  
-- Champs de l'entité :  
-  - Champ : ```nom```, type : ```string```, longueur : ```255```, null en BDD : ```non```  
- - Champ : ```posologie```, type : ```string```, longueur : ```255```, null en BDD : ```non```  
- - Champ : ```date_debut_traitement```, type : ```datetime```, null en BDD : ```non```  
- - Champ : ```date_fin_traitement```, type : ```datetime```, null en BDD : ```non```  
-  
-#### PlanningMedecin  
-- Nom de l'entité : PlanningMedecin  
-- Champs de l'entité :  
-  - Champ : ```date```, type : ```datetime```, null en BDD : ```non```  
- - Champ : ```nombre_patients_max```, type : ```integer```, longueur : ```255```, null en BDD : ```non```  
-  
-## Définition des Relations  
-  
-#### Création des relations entre les Entités  
-```bash symfony console make:entity```  
-#### Exemple  pour Sejour et Utilisateur:  
+ > yes
+ ```  
+- Champs de l'entité :
+   - Les champs **email** et **password** sont créés lors de la création du **make:user**
+- nom : `nom`, type : `string`, longueur : `255`
+- prenom : `prenom`, type : `string`, longueur : `255`
+- adresse_postale : `adresse_postale`, type : `text`
+
+#### Commande de création des entités
+```bash symfony console make:entity```
+
+#### Entité Sejour
+- Nom de l'entité : Sejour
+- Champs de l'entité :
+   - Champ : ```date_debut```, type : ```datetime```, null en BDD : ```non```
+- Champ : ```date_fin```, type : ```datetime```, null en BDD : ```non```
+- Champ : ```motif```, type : ```string```, longueur : ```255```, null en BDD : ```non```
+
+#### Entité Medecin
+- Nom de l'entité : Medecin
+- Champs de l'entité :
+   - Champ : ```nom```, type : ```string```, longueur : ```255```, null en BDD : ```non```
+- Champ : ```prenom```, type : ```string```, longueur : ```255```, null en BDD : ```non```
+- Champ : ```specialite```, type : ```string```, longueur : ```255```, null en BDD : ```non```
+- Champ : ```matricule```, type : ```string```, longueur : ```255```, null en BDD : ```non```
+
+#### Entité Prescription
+- Nom de l'entité : Prescription
+- Champs de l'entité :
+   - Champ : ```libelle```, type : ```string```, longueur : ```255```, null en BDD : ```non```
+- Champ : ```date```, type : ```datetime```, null en BDD : ```non```
+- Champ : ```description```, type : ```text```, null en BDD : ```non```
+- Champ : ```nom_prenom_medecin```, type : ```string```, longueur : ```255```, null en BDD : ```non```
+
+
+#### Entité Medicament
+- Nom de l'entité : Medicament
+- Champs de l'entité :
+   - Champ : ```nom```, type : ```string```, longueur : ```255```, null en BDD : ```non```
+- Champ : ```posologie```, type : ```string```, longueur : ```255```, null en BDD : ```non```
+- Champ : ```date_debut_traitement```, type : ```datetime```, null en BDD : ```non```
+- Champ : ```date_fin_traitement```, type : ```datetime```, null en BDD : ```non```
+
+#### PlanningMedecin
+- Nom de l'entité : PlanningMedecin
+- Champs de l'entité :
+   - Champ : ```date```, type : ```datetime```, null en BDD : ```non```
+- Champ : ```nombre_patients_max```, type : ```integer```, longueur : ```255```, null en BDD : ```non```
+
+## Définition des Relations
+
+#### Création des relations entre les Entités
+```bash symfony console make:entity```
+#### Exemple  pour Sejour et Utilisateur:
 ```bash Class name of the entity to create or update (e.g. BraveKangaroo):  
  > Sejour  
  Your entity already exists! So let's add some new fields!  
@@ -130,45 +131,46 @@ What type of relationship is this?
  Do you want to add a new property to Utilisateur so that you can access/update Sejour objects from it - e.g. $utilisateur->getSejours()? (yes/no) [yes]: >yes  
  A new property will also be added to the Utilisateur class so that you can access the related Sejour objects from it.  
  New field name inside Utilisateur [sejours]: >sejours  
- updated: src/Entity/Sejour.php updated: src/Entity/Utilisateur.php```  
+ updated: src/Entity/Sejour.php updated: src/Entity/Utilisateur.php
+```  
 #  
-- Relation entre `Sejour` et `Utilisateur` : **ManyToOne**  
-- Chaque `Sejour` est lié à (possède) un `Utilisateur`.  
-- Chaque `Utilisateur` peut être lié à (peut avoir) plusieurs objets `Sejour`.  
-  - Nom de l'entité : Sejour  
-      - Champs de l'entité : `utilisateur`, type : `relation (ManyToOne)`, classe cible : `Utilisateur`  
+- Relation entre `Sejour` et `Utilisateur` : **ManyToOne**
+- Chaque `Sejour` est lié à (possède) un `Utilisateur`.
+- Chaque `Utilisateur` peut être lié à (peut avoir) plusieurs objets `Sejour`.
+   - Nom de l'entité : Sejour
+      - Champs de l'entité : `utilisateur`, type : `relation (ManyToOne)`, classe cible : `Utilisateur`
 #  
-- Relation entre `Sejour` et `Medecin` : **ManyToOne**  
-- Chaque `Sejour` est lié à (possède) un `Medecin`.  
-- Chaque `Medecin` peut être lié à (peut avoir) plusieurs objets `Sejour`.  
-  - Nom de l'entité : Sejour  
-      - Champs de l'entité : `medecin`, type : `relation (ManyToOne)`, classe cible : `Medecin`  
+- Relation entre `Sejour` et `Medecin` : **ManyToOne**
+- Chaque `Sejour` est lié à (possède) un `Medecin`.
+- Chaque `Medecin` peut être lié à (peut avoir) plusieurs objets `Sejour`.
+   - Nom de l'entité : Sejour
+      - Champs de l'entité : `medecin`, type : `relation (ManyToOne)`, classe cible : `Medecin`
 #  
-- Relation entre `Medecin` et `Utilisateur` : **ManyToOne**  
-- Chaque `Medecin` est lié à (possède) un `Utilisateur`.  
-- Chaque `Utilisateur` peut être lié à (peut avoir) plusieurs objets `Medecin`.  
-  - Nom de l'entité : Medecin  
-      - Champs de l'entité : `utilisateur`, type : `relation (ManyToOne)`, classe cible : `Utilisateur`  
+- Relation entre `Medecin` et `Utilisateur` : **ManyToOne**
+- Chaque `Medecin` est lié à (possède) un `Utilisateur`.
+- Chaque `Utilisateur` peut être lié à (peut avoir) plusieurs objets `Medecin`.
+   - Nom de l'entité : Medecin
+      - Champs de l'entité : `utilisateur`, type : `relation (ManyToOne)`, classe cible : `Utilisateur`
 #  
-- Relation entre `Prescription` et `Medecin` : **ManyToOne**  
-- Chaque `Prescription` est lié à (possède) un `Medecin`.  
-- Chaque `Medecin` peut être lié à (peut avoir) plusieurs objets `Prescription`.  
-  - Nom de l'entité : Prescription  
-      - Champs de l'entité : `medecin`, type : `relation (ManyToOne)`, classe cible : `Medecin`  
+- Relation entre `Prescription` et `Medecin` : **ManyToOne**
+- Chaque `Prescription` est lié à (possède) un `Medecin`.
+- Chaque `Medecin` peut être lié à (peut avoir) plusieurs objets `Prescription`.
+   - Nom de l'entité : Prescription
+      - Champs de l'entité : `medecin`, type : `relation (ManyToOne)`, classe cible : `Medecin`
 #  
-- Relation entre `Medicament` et `Prescription` : **ManyToOne**  
-- Chaque `Medicament` est lié à (possède) un `Prescription`.  
-- Chaque `Prescription` peut être lié à (peut avoir) plusieurs objets `Medicament`.  
-  - Nom de l'entité : Medicament  
-      - Champs de l'entité : `prescription`, type : `relation (ManyToOne)`, classe cible : `Prescription`  
+- Relation entre `Medicament` et `Prescription` : **ManyToOne**
+- Chaque `Medicament` est lié à (possède) un `Prescription`.
+- Chaque `Prescription` peut être lié à (peut avoir) plusieurs objets `Medicament`.
+   - Nom de l'entité : Medicament
+      - Champs de l'entité : `prescription`, type : `relation (ManyToOne)`, classe cible : `Prescription`
 #  
-- Relation entre `PlanningMedecin` et `Medecin` : **ManyToOne**  
-- Chaque `PlanningMedecin` est lié à (possède) un `Medecin`.  
-- Chaque `Medecin` peut être lié à (peut avoir) plusieurs objets `PlanningMedecin`.  
-  - Nom de l'entité : PlanningMedecin  
-      - Champs de l'entité : `medecin`, type : `relation (ManyToOne)`, classe cible : `Medecin`  
+- Relation entre `PlanningMedecin` et `Medecin` : **ManyToOne**
+- Chaque `PlanningMedecin` est lié à (possède) un `Medecin`.
+- Chaque `Medecin` peut être lié à (peut avoir) plusieurs objets `PlanningMedecin`.
+   - Nom de l'entité : PlanningMedecin
+      - Champs de l'entité : `medecin`, type : `relation (ManyToOne)`, classe cible : `Medecin`
 #  
-#### Création de la migration  
+#### Création de la migration
 ```bash  
 symfony console make:migration```  
 #### Exécution de la migration  
@@ -539,6 +541,42 @@ Modification du `config/packages/security.yaml` pour empêcher l'accès à la ro
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
 ```
+
+Modification dans le `base.html.twig`avec condition si l'utilisateur est connecté ou non
+```bash
+                                <!-- VUE MOBILE DANS LE MENU BURGER -->
+                                <!-- BOUTONS DE INTERFACE QUAND L'UTILISATEUR EST CONNECTE-->
+                                {% if app.user %}
+                                <li class="nav-item d-lg-none">
+                                    <a href="{{ path('app_compte') }}"><button class="btn btn-primary mt-3" type="submit">Mon compte</button></a>
+                                </li>
+                                <li class="nav-item d-lg-none">
+                                    <a href="{{ path('app_deconnexion') }}"><button class="btn btn-primary mt-3" type="submit">Se déconnecter</button></a>
+                                </li>
+                                <!-- BOUTONS DE INTERFACE QUAND L'UTILISATEUR N'EST PAS CONNECTE-->
+                                {% else %}
+                                <li class="nav-item d-lg-none">
+                                    <a href="{{ path('app_connexion') }}"><button class="btn btn-primary mt-3" type="submit">Se connecter</button></a>
+                                </li>
+                                <li class="nav-item d-lg-none">
+                                    <a href="{{ path('app_inscription') }}"><button class="btn btn-primary mt-3" type="submit">S'inscrire</button></a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                        <!-- VUE DESKTOP EN DEHORS DU MENU BURGER -->
+                        <div class="d-none d-lg-block">
+                            <!-- BOUTONS DE INTERFACE QUAND L'UTILISATEUR EST CONNECTE-->
+                            {% if app.user %}
+                                <a href="{{ path('app_compte') }}"><button class="btn btn-primary" type="submit">Mon compte</button></a>
+                                <a href="{{ path('app_deconnexion') }}"><button class="btn btn-primary" type="submit">Se déconnecter</button></a>
+                            <!-- BOUTONS DE INTERFACE QUAND L'UTILISATEUR N'EST PAS CONNECTE-->
+                            {% else %}
+                                <a href="{{ path('app_connexion') }}"><button class="btn btn-primary" type="submit">Se connecter</button></a>
+                                <a href="{{ path('app_inscription') }}"><button class="btn btn-primary" type="submit">S'inscrire</button></a>
+                            {% endif %}
+```
+
 ## Vérification des routes créées
 
 Avec la commande `symfony console debug:router` cela me permet de savoir ou j'en suis des routes créées
@@ -568,4 +606,199 @@ Avec la commande `symfony console debug:router` cela me permet de savoir ou j'en
   app_inscription            ANY      ANY      ANY    /inscription                       
  -------------------------- -------- -------- ------ -----------------------------------
  ```
+## Modification du mot de passe par l'utilisateur
+
+Au lieu de créer un nouveau contrôleur pour gérer la modification du mot de passe, j'utiliserai le contrôleur déjà existant des comptes `CompteController.php` pour créer une nouvelle route `/compte/modifier-mot-de-passe` dans le contrôleur
+
+Modification du contrôleur `CompteController.php`
+```bash
+    #[Route('/compte', name: 'app_compte')]
+    public function index(): Response
+    {
+        return $this->render('compte/index.html.twig',[
+            'titre_compte' => 'Mon compte'
+        ]);
+    }
+
+    #[Route('/compte/modification-mot-de-passe', name: 'app_compte_modif-mdp')]
+    public function motDePasse(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
+    {
+        # Récupération de l'utilisateur connecté
+        $utilisateur = $this->getUser();
+        # transmission de l'utilisateur connecté au formulaire
+        $form = $this->createForm(ModificationMotdePasseUtilisateurType::class, $utilisateur, [
+            # Ne pas oublier l'injection de dépendances pour le UserPasswordHasherInterface
+            # On transmet le UserPasswordHasherInterface au formulaire
+            'password_hashers' => $passwordHasher
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()){
+            dd($form->getData());
+            return $this->redirectToRoute('app_compte');
+        }
+
+        return $this->render('compte/motDePasse.html.twig',[
+            'formulaireMotDePasse' => $form->createView()
+        ]);
+    }
+ ```
+Création du formulaire `ModificationMotdePasseUtilisateurType` pour le changement de mot de passe
+```bash
+symfony console make:form
+
+ The name of the form class (e.g. DeliciousGnomeType):
+ > ModificationMotdePasseUtilisateurType   
+
+ The name of Entity or fully qualified model class name that the new form will be bound to (empty for none):
+ > Utilisateur
+Utilisateur
+
+ created: src/Form/ModificationMotdePasseUtilisateurType.php
+           
+  Success! 
+```
+Ajout des options du formulaire `ModificationMotDePasseUtilisateurType.php` de changement de mot de passe
+```bash
+$builder
+            ->add('ancien_mot_de_passe', PasswordType::class, [
+                'label' => 'Ancien mot de passe',
+                'attr' => [
+                    'placeholder' => 'Entrez votre ancien mot de passe'
+                ]
+            ])
+
+            ->add('motDePasse', RepeatedType::class, [
+                'type' => PasswordType::class,
+                'constraints' => [
+                    new Length([
+                        'min' => 8,
+                        'minMessage' => 'Votre mot de passe doit contenir au moins 8 caractères'
+                    ])
+                ],
+                'first_options'  => [
+                    'attr' => [
+                        'placeholder' => 'Entrez votre nouveau mot de passe'
+                    ],
+                    'label' => 'Nouveau mot de passe',
+                    // permet de transiter le mot de passe saisi dans le formulaire jusqu'au contrôleur de manière crypté
+                    // Se réfère au security.yaml -> password_hashers
+                    // 'password' se réfère au nom du propriété dans l'entité 'Utilisateur' qui se nomme 'password"
+                    'hash_property_path' => 'password'
+                ],
+                'second_options' => [
+                    'label' => 'Confirmez votre mot de passe',
+                    'attr' => [
+                        'placeholder' => 'Confirmez votre nouveau mot de passe'
+                    ]
+                ],
+                // pour dire à Symfony de ne pas aller chercher un champ (ici que je nomme 'motDePasse') dans l'entité Utilisateur pour le mot de passe répété (qui n'existe pas)
+                'mapped' => false,
+            ])
+            ->add('submit', SubmitType::class, [
+                'label' => 'Modifier mon mot de passe',
+                'attr' => [
+                    'class' => 'btn btn-primary mt-2 mb-5'
+                ]
+            ])
+```
+Toujours dans le formulaire `ModificationMotDePasseUtilisateurType.php` (après les options), écoute de la soumission et comparaison des mots de passe et récupération du contrôleur` CompteController.php` du `UserPasswordHasherInterface`
+
+Injection de dépendances du `UserPasswordHasherInterface` puis transfère dans le formulaire via le tableau d'options de la méthode `buildForm()`
+
+*https://symfony.com/doc/current/forms.html#passing-options-to-forms*
+
+*Extrait `CompteController.php`*
+```bash
+#[Route('/compte/modification-mot-de-passe', name: 'app_compte_modif-mdp')]
+    public function motDePasse(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
+    {
+        # Récupération de l'utilisateur connecté
+        $utilisateur = $this->getUser();
+        # transmission de l'utilisateur connecté au formulaire
+        $form = $this->createForm(ModificationMotdePasseUtilisateurType::class, $utilisateur, [
+            # Ne pas oublier l'injection de dépendances pour le UserPasswordHasherInterface
+            # On transmet le UserPasswordHasherInterface au formulaire
+            'password_hashers' => $passwordHasher
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()){
+           $entityManager->flush();
+        }
+
+        return $this->render('compte/motDePasse.html.twig',[
+            'formulaireMotDePasse' => $form->createView()
+        ]);
+    }
+```
+*Extrait `ModificationMotDePasseUtilisateurType.php`*
+```bash
+->add('submit', SubmitType::class, [
+                'label' => 'Modifier ...
+
+... FIN DES OPTIONS ...
+
+            # Au moment ou le formulaire est soumis, je veux écouter l'événement et comparer les deux mots de passe
+            # Au moment ou le formulaire est soumis, je veux écouter l'événement et comparer les deux mots de passe
+            # Récupération du mot de passe saisi par l'utilisateur connecté
+            # Récupération du mot de passe actuel en BDD
+            # Si les mots de passe ne correspondent pas, envoyer une erreur
+            ->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
+
+                # Récupération du formulaire
+                $form = $event->getForm();
+
+                # Récupération de l'utilisateur connecté
+                $utilisateur =$form->getConfig()->getOptions()['data'];
+
+                # Récupération du 'UserPasswordHasherInterface' du contrôleur 'CompteController'
+                $passwordHasher = $form->getConfig()->getOptions()['password_hashers'];
+
+                # Récupérer le mot de passe saisi par l'utilisateur (nommé 'ancien_mot_de_passe') et vérification que le mot de passe en clair correspond au mot de passe en BDD
+                $isValid = $passwordHasher->isPasswordValid(
+                    $utilisateur,
+                    $form->get('ancien_mot_de_passe')->getData());
+
+                # Gestion des erreurs
+                if (!$isValid){
+                    $form->get('ancien_mot_de_passe')->addError(new FormError('Le mot de passe saisi est incorrect'));
+                }
+            })
+        ;
+    }
+```
+Déclaration dans le formulaire `ModificationMotDePasseUtilisateurType.php` de l'option:
+
+`password_hashers' => $passwordHasher` déclarée dans le contrôleur `CompteController.php`
+
+*Extrait `ModificationMotDePasseUtilisateurType.php`*
+```bash
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class' => Utilisateur::class,
+            # Par défault le 'password_hashers' est à null
+            'password_hashers' => null
+        ]);
+    }
+```
+Création de la vue `motDePasse.html.twig`
+```bash
+{% block body %}
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Modifier votre mot de passe</h1>
+                {{ form_start(formulaireMotDePasse) }}
+                    {{ form_row(formulaireMotDePasse.ancien_mot_de_passe) }}
+                    {{ form_row(formulaireMotDePasse.motDePasse) }}
+                {{ form_end(formulaireMotDePasse) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+```
 

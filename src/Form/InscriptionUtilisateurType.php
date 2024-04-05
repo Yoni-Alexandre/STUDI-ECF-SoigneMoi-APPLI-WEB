@@ -41,6 +41,7 @@ class InscriptionUtilisateurType extends AbstractType
                     'label' => 'Mot de passe',
                     // permet de transiter le mot de passe saisi dans le formulaire jusqu'au contrôleur de manière crypté
                     // Se réfère au security.yaml -> password_hashers
+                    // 'password' se réfère au nom du propriété dans l'entité 'Utilisateur' qui se nomme 'password"
                     'hash_property_path' => 'password'
                 ],
                 'second_options' => [

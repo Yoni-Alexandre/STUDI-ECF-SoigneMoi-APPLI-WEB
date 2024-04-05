@@ -13,11 +13,10 @@
             {% else %}
                 <p>Vous n'êtes pas connecté.</p>
             {% endif %}
+            <p>Pour modifier votre mot de passe, <a href="{{ path('app_compte_modif-mdp') }}">Cliquez ici </a></p>
             <p>Vous pouvez vous déconnecter en cliquant sur le bouton ci-dessous</p>
             <a href="{{ path('app_deconnexion') }}" class="btn btn-primary">Me déconnecter</a>
         </div>
     </div>
 </div>
-
-
 {% endblock %}

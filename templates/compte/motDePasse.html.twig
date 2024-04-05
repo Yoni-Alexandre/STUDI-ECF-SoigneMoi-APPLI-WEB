@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SoigneMoi - Bienvenue sur la page {% endblock %}
+
+{% block body %}
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Modifier votre mot de passe</h1>
+
+                {{ form_start(formulaireMotDePasse) }}
+                    {{ form_row(formulaireMotDePasse.ancien_mot_de_passe) }}
+                    {{ form_row(formulaireMotDePasse.motDePasse) }}
+                {{ form_end(formulaireMotDePasse) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
