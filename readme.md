@@ -539,4 +539,33 @@ Modification du `config/packages/security.yaml` pour empêcher l'accès à la ro
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
 ```
+## Vérification des routes créées
+
+Avec la commande `symfony console debug:router` cela me permet de savoir ou j'en suis des routes créées
+
+```bash
+ -------------------------- -------- -------- ------ ----------------------------------- 
+  Name                       Method   Scheme   Host   Path                               
+ -------------------------- -------- -------- ------ ----------------------------------- 
+  _preview_error             ANY      ANY      ANY    /_error/{code}.{_format}           
+  _wdt                       ANY      ANY      ANY    /_wdt/{token}                      
+  _profiler_home             ANY      ANY      ANY    /_profiler/                        
+  _profiler_search           ANY      ANY      ANY    /_profiler/search                  
+  _profiler_search_bar       ANY      ANY      ANY    /_profiler/search_bar              
+  _profiler_phpinfo          ANY      ANY      ANY    /_profiler/phpinfo                 
+  _profiler_xdebug           ANY      ANY      ANY    /_profiler/xdebug                  
+  _profiler_font             ANY      ANY      ANY    /_profiler/font/{fontName}.woff2   
+  _profiler_search_results   ANY      ANY      ANY    /_profiler/{token}/search/results  
+  _profiler_open_file        ANY      ANY      ANY    /_profiler/open                    
+  _profiler                  ANY      ANY      ANY    /_profiler/{token}                 
+  _profiler_router           ANY      ANY      ANY    /_profiler/{token}/router          
+  _profiler_exception        ANY      ANY      ANY    /_profiler/{token}/exception       
+  _profiler_exception_css    ANY      ANY      ANY    /_profiler/{token}/exception.css   
+  app_accueil                ANY      ANY      ANY    /                                  
+  app_compte                 ANY      ANY      ANY    /compte                            
+  app_connexion              ANY      ANY      ANY    /connexion                         
+  app_deconnexion            GET      ANY      ANY    /deconnexion                       
+  app_inscription            ANY      ANY      ANY    /inscription                       
+ -------------------------- -------- -------- ------ -----------------------------------
+ ```
 

@@ -44,18 +44,37 @@
                                 </li>
 
                                 <!-- VUE MOBILE DANS LE MENU BURGER -->
+                                <!-- BOUTONS DE INTERFACE QUAND L'UTILISATEUR EST CONNECTE-->
+                                {% if app.user %}
                                 <li class="nav-item d-lg-none">
-                                    <a href="{{ path('app_inscription') }}"><button class="btn btn-primary my-3" type="submit">S'inscrire</button></a>
+                                    <a href="{{ path('app_compte') }}"><button class="btn btn-primary mt-3" type="submit">Mon compte</button></a>
                                 </li>
                                 <li class="nav-item d-lg-none">
-                                    <a href="{{ path('app_connexion') }}"><button class="btn btn-primary my-2" type="submit">Se connecter</button></a>
+                                    <a href="{{ path('app_deconnexion') }}"><button class="btn btn-primary mt-3" type="submit">Se déconnecter</button></a>
                                 </li>
+                                <!-- BOUTONS DE INTERFACE QUAND L'UTILISATEUR N'EST PAS CONNECTE-->
+                                {% else %}
+                                <li class="nav-item d-lg-none">
+                                    <a href="{{ path('app_connexion') }}"><button class="btn btn-primary mt-3" type="submit">Se connecter</button></a>
+                                </li>
+                                <li class="nav-item d-lg-none">
+                                    <a href="{{ path('app_inscription') }}"><button class="btn btn-primary mt-3" type="submit">S'inscrire</button></a>
+                                </li>
+                                {% endif %}
                             </ul>
                         </div>
                         <!-- VUE DESKTOP EN DEHORS DU MENU BURGER -->
                         <div class="d-none d-lg-block">
-                            <a href="{{ path('app_inscription') }}"><button class="btn btn-primary" type="submit">S'inscrire</button></a>
-                            <a href="{{ path('app_connexion') }}"><button class="btn btn-primary" type="submit">Se connecter</button></a>
+                            <!-- BOUTONS DE INTERFACE QUAND L'UTILISATEUR EST CONNECTE-->
+                            {% if app.user %}
+                                <a href="{{ path('app_compte') }}"><button class="btn btn-primary" type="submit">Mon compte</button></a>
+                                <a href="{{ path('app_deconnexion') }}"><button class="btn btn-primary" type="submit">Se déconnecter</button></a>
+                            <!-- BOUTONS DE INTERFACE QUAND L'UTILISATEUR N'EST PAS CONNECTE-->
+                            {% else %}
+                                <a href="{{ path('app_connexion') }}"><button class="btn btn-primary" type="submit">Se connecter</button></a>
+                                <a href="{{ path('app_inscription') }}"><button class="btn btn-primary" type="submit">S'inscrire</button></a>
+                            {% endif %}
+
                         </div>
                     </div>
                 </nav>

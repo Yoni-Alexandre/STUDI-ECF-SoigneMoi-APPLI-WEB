@@ -8,7 +8,8 @@
         <div class="col-md-12">
             <h1>{{ titre_compte }}</h1>
             {% if app.user is not null %}
-                <p>Vous êtes connecté en tant que {{ app.user.prenom ~ ' ' ~ app.user.nom }}</p>
+                <p>Vous êtes connecté en tant que <b>{{ app.user.prenom ~ ' ' ~ app.user.nom }}</b></p>
+                <p><i>Ce n'est pas vous ? <a href="{{ path('app_deconnexion') }}">Cliquez ici</a></i></p>
             {% else %}
                 <p>Vous n'êtes pas connecté.</p>
             {% endif %}
