@@ -49,7 +49,8 @@ DATABASE_URL="mysql://root@127.0.0.1:3306/soignemoi?serverVersion=8.0.32&charset
 ```  
 ## Création de la base de données
 ```bash  
-symfony console doctrine:database:create```  
+symfony console doctrine:database:create
+```  
 ## Création des Entités  
   
 #### Entité Utilisateur (sécurisé)  
@@ -72,7 +73,9 @@ Does this app need to hash/check user passwords? (yes/no) [yes]:
 - adresse_postale : `adresse_postale`, type : `text`
 
 #### Commande de création des entités
-```bash symfony console make:entity```
+```bash 
+symfony console make:entity
+```
 
 #### Entité Sejour
 - Nom de l'entité : Sejour
@@ -117,7 +120,8 @@ Does this app need to hash/check user passwords? (yes/no) [yes]:
 #### Création des relations entre les Entités
 ```bash symfony console make:entity```
 #### Exemple  pour Sejour et Utilisateur:
-```bash Class name of the entity to create or update (e.g. BraveKangaroo):  
+```bash 
+Class name of the entity to create or update (e.g. BraveKangaroo):  
  > Sejour  
  Your entity already exists! So let's add some new fields!  
  New property name (press <return> to stop adding fields): > utilisateur  
@@ -174,17 +178,20 @@ What type of relationship is this?
 #  
 #### Création de la migration
 ```bash  
-symfony console make:migration```  
+symfony console make:migration
+```  
 #### Exécution de la migration  
 ```bash  
-symfony console doctrine:migrations:migrate```  
+symfony console doctrine:migrations:migrate
+```  
 ## Création du contrôleur d'inscription des utilisateurs (patients)  
 ```bash  
 symfony console make:controller  
 Choose a name for your controller class (e.g. OrangeChefController):  
  > InscriptionController  
  created: src/Controller/InscriptionController.php  created: templates/inscription/index.html.twig  
-  Success! ```  
+  Success! 
+```
 ## Création du formulaire des utilisateurs (patients)  
 #### Formulaire de création de comptes pour les utilisateurs  
 ```bash  
@@ -194,7 +201,8 @@ The name of the form class (e.g. GentlePuppyType):
  The name of Entity or fully qualified model class name that the new form will be bound to (empty for none):  
  > UtilisateurUtilisateur  
   
- created: src/Form/InscriptionUtilisateurType.php  Success! ```  
+ created: src/Form/InscriptionUtilisateurType.php  Success! 
+ ```  
 #### Lier le contrôleur `InscriptionController`au  formulaire `InscriptionUtilisateurType`  
 ```bash  
 $utilisateur = new Utilisateur(); $form = $this->createForm(InscriptionUtilisateurType::class, $utilisateur);    
@@ -206,7 +214,8 @@ Pour utiliser **Bootstrap** pour l'affichage graphique des formulaires, modifier
 et ajouter :
 ```bash  
 twig:     
-  form_themes: ['bootstrap_5_layout.html.twig']```  
+  form_themes: ['bootstrap_5_layout.html.twig']
+```  
 #### Création du formulaire (Exemple du formulaire d'inscription)  
 ```bash  
 public function buildForm(FormBuilderInterface $builder, array $options): void {    
@@ -337,7 +346,7 @@ Pour le mot de passe :
             'placeholder' => 'Entrez votre mot de passe'  
   ],
    ...
-   ```
+```
 Pour le nom :
 ```bash 
 ->add('nom', TextType::class, [  
@@ -363,7 +372,7 @@ Pour le prénom :
         ])  
     ],
     ...
-  ```
+```
 #### UniqueEntity
 *https://symfony.com/doc/current/reference/constraints/UniqueEntity.html*
 
@@ -383,7 +392,7 @@ public function configureOptions(OptionsResolver $resolver): void
         'data_class' => Utilisateur::class,  
     ]);  
 }
-  ```
+```
 ## Création du formulaire de connexion et l'espace utilisateur
 
 *https://symfony.com/doc/current/security.html#form-login*
@@ -645,7 +654,7 @@ Modification du contrôleur `CompteController.php`
             'formulaireMotDePasse' => $form->createView()
         ]);
     }
- ```
+```
 Création du formulaire `ModificationMotdePasseUtilisateurType` pour le changement de mot de passe
 ```bash
 symfony console make:form
@@ -830,3 +839,7 @@ Pour que le message s'affiche partout, modifier le `base.html.twig`
             {% endfor %}
         </div>
 ```
+#### Ajout de l' `include` en PHP
+Ajout de l' `include` en PHP dans la partie vu de l'espace personnel pour éviter de répéter du code
+`{% include 'compte/_menu.html.twig' %}`
+

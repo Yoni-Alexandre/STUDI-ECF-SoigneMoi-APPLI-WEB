@@ -4,13 +4,17 @@
 
 {% block body %}
     <div class="container my-5">
-        <div class="row">
-            <div class="col-md-12">
-                <h1>Modifier votre mot de passe</h1>
+        <h1>Bienvenue sur votre espace personnel</h1>
 
+        <div class="row">
+            <div class="col-md-3">
+                {% include 'compte/_menu.html.twig' %}
+            </div>
+            <div class="col-md-9">
+                <h5>Modifier votre mot de passe</h5>
                 {{ form_start(formulaireMotDePasse) }}
-                    {{ form_row(formulaireMotDePasse.ancien_mot_de_passe) }}
-                    {{ form_row(formulaireMotDePasse.motDePasse) }}
+                {{ form_row(formulaireMotDePasse.ancien_mot_de_passe) }}
+                {{ form_row(formulaireMotDePasse.motDePasse) }}
                 {{ form_end(formulaireMotDePasse) }}
             </div>
         </div>
