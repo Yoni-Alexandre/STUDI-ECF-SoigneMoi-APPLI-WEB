@@ -30,7 +30,7 @@ Ce site web a été développé en utilisant les technologies suivantes :
 
 ## Projet crée par
 
-- Yoni-Alexandre Brault : Développeur / Designer
+- Yoni-Alexandre Brault : Concepteur Développeur / Designer
 
 
 ## Création du Projet SoigneMoi avec Symfony 7
