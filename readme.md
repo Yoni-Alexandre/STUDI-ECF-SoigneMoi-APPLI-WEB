@@ -843,3 +843,10 @@ Pour que le message s'affiche partout, modifier le `base.html.twig`
 Ajout de l' `include` en PHP avec TWIG dans la partie vue de l'espace personnel pour éviter de répéter du code
 `{% include 'compte/_menu.html.twig' %}`
 
+## Tests unitaires `Unit Tests` et fonctionnels `Application Tests`
+
+*https://symfony.com/doc/current/testing.html*
+
+>" Test unitaire : Un test unitaire est une procédure automatisée visant à vérifier le bon fonctionnement individuel d'une petite unité de code, comme une fonction ou une méthode, en isolant son comportement du reste du système. " 
+
+>" Test fonctionnel : Un test fonctionnel est une procédure automatisée visant à vérifier le bon fonctionnement d'une fonctionnalité ou d'un ensemble de fonctionnalités d'un logiciel du point de vue de l'utilisateur, en simulant des scénarios d'utilisation réels. "
