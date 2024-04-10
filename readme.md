@@ -840,6 +840,6 @@ Pour que le message s'affiche partout, modifier le `base.html.twig`
         </div>
 ```
 #### Ajout de l' `include` en PHP
-Ajout de l' `include` en PHP dans la partie vue de l'espace personnel pour éviter de répéter du code
+Ajout de l' `include` en PHP avec TWIG dans la partie vue de l'espace personnel pour éviter de répéter du code
 `{% include 'compte/_menu.html.twig' %}`
 
