@@ -41,7 +41,7 @@ Ce site web a été développé en utilisant les technologies suivantes :
 ```  
 2. Installation des Dépendances avec **Composer** :
 ```bash  
-  cd SoigneMoi  composer install 
+  cd SoigneMoi composer install 
 ```  
 ## Modification du ficher .env pour connecter la base de données
 ```bash  
