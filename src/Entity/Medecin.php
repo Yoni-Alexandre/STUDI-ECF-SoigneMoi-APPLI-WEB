@@ -22,9 +22,6 @@ class Medecin
     private ?string $prenom = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $specialite = null;
-
-    #[ORM\Column(length: 255)]
     private ?string $matricule = null;
 
     #[ORM\ManyToOne(inversedBy: 'medecins')]
@@ -39,11 +36,20 @@ class Medecin
     #[ORM\OneToMany(targetEntity: Sejour::class, mappedBy: 'medecin')]
     private Collection $sejours;
 
+    #[ORM\ManyToOne(inversedBy: 'medecins')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?SpecialiteMedecin $specialite = null;
+
     public function __construct()
     {
         $this->prescriptions = new ArrayCollection();
         $this->planningMedecins = new ArrayCollection();
         $this->sejours = new ArrayCollection();
+    }
+
+    public function __toString(): string
+    {
+        return 'Dr ' . $this->nom;
     }
 
     public function getId(): ?int
@@ -71,18 +77,6 @@ class Medecin
     public function setPrenom(string $prenom): static
     {
         $this->prenom = $prenom;
-
-        return $this;
-    }
-
-    public function getSpecialite(): ?string
-    {
-        return $this->specialite;
-    }
-
-    public function setSpecialite(string $specialite): static
-    {
-        $this->specialite = $specialite;
 
         return $this;
     }
@@ -197,6 +191,18 @@ class Medecin
                 $sejour->setMedecin(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSpecialite(): ?SpecialiteMedecin
+    {
+        return $this->specialite;
+    }
+
+    public function setSpecialite(?SpecialiteMedecin $specialite): static
+    {
+        $this->specialite = $specialite;
 
         return $this;
     }

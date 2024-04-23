@@ -79,22 +79,32 @@ symfony console make:entity
 
 #### Entité Sejour
 - Nom de l'entité : Sejour
-- Champs de l'entité :
+
+Champs de l'entité :
    - Champ : ```date_debut```, type : ```datetime```, null en BDD : ```non```
 - Champ : ```date_fin```, type : ```datetime```, null en BDD : ```non```
 - Champ : ```motif```, type : ```string```, longueur : ```255```, null en BDD : ```non```
 
 #### Entité Medecin
 - Nom de l'entité : Medecin
-- Champs de l'entité :
-   - Champ : ```nom```, type : ```string```, longueur : ```255```, null en BDD : ```non```
+
+Champs de l'entité :
+- Champ : ```nom```, type : ```string```, longueur : ```255```, null en BDD : ```non```
 - Champ : ```prenom```, type : ```string```, longueur : ```255```, null en BDD : ```non```
 - Champ : ```specialite```, type : ```string```, longueur : ```255```, null en BDD : ```non```
 - Champ : ```matricule```, type : ```string```, longueur : ```255```, null en BDD : ```non```
 
+#### Entité SpecialiteMedecin
+- Nom de l'entité : SpecialiteMedecin
+
+Champs de l'entité :
+- Champ : ```specialite```, type : ```string```, longueur : ```255```, null en BDD : ```non```
+- Champ : ```slug```, type : ```string```, longueur : ```255```, null en BDD : ```non```
+
 #### Entité Prescription
 - Nom de l'entité : Prescription
-- Champs de l'entité :
+
+Champs de l'entité :
    - Champ : ```libelle```, type : ```string```, longueur : ```255```, null en BDD : ```non```
 - Champ : ```date```, type : ```datetime```, null en BDD : ```non```
 - Champ : ```description```, type : ```text```, null en BDD : ```non```
@@ -103,7 +113,8 @@ symfony console make:entity
 
 #### Entité Medicament
 - Nom de l'entité : Medicament
-- Champs de l'entité :
+
+Champs de l'entité :
    - Champ : ```nom```, type : ```string```, longueur : ```255```, null en BDD : ```non```
 - Champ : ```posologie```, type : ```string```, longueur : ```255```, null en BDD : ```non```
 - Champ : ```date_debut_traitement```, type : ```datetime```, null en BDD : ```non```
@@ -111,7 +122,8 @@ symfony console make:entity
 
 #### PlanningMedecin
 - Nom de l'entité : PlanningMedecin
-- Champs de l'entité :
+
+Champs de l'entité :
    - Champ : ```date```, type : ```datetime```, null en BDD : ```non```
 - Champ : ```nombre_patients_max```, type : ```integer```, longueur : ```255```, null en BDD : ```non```
 
@@ -151,6 +163,12 @@ What type of relationship is this?
 - Chaque `Medecin` peut être lié à (peut avoir) plusieurs objets `Sejour`.
    - Nom de l'entité : Sejour
       - Champs de l'entité : `medecin`, type : `relation (ManyToOne)`, classe cible : `Medecin`
+
+- Relation entre `Medecin` et `Specialite` : **ManyToOne**
+- Chaque `Medecin` est lié à (possède) une `Specialite`.
+- Chaque `Specialite` peut être lié à (peut avoir) plusieurs objets `Medecin`.
+    - Nom de l'entité : Medecin
+        - Champs de l'entité : `specialite`, type : `relation (ManyToOne)`, classe cible : `SpecialiteMedecin`
 #  
 - Relation entre `Medecin` et `Utilisateur` : **ManyToOne**
 - Chaque `Medecin` est lié à (possède) un `Utilisateur`.
@@ -1127,4 +1145,62 @@ public function configureFields(string $pageName): iterable
         ];
     }
 ```
+Ajout du CRUD Controller pour les Médecins
+`symfony console make:admin:crud`
+
+```bash
+Which Doctrine entity are you going to manage with this CRUD controller?:
+  [0] App\Entity\Medecin
+  [1] App\Entity\Medicament
+  [2] App\Entity\PlanningMedecin
+  [3] App\Entity\Prescription
+  [4] App\Entity\Sejour
+  [5] App\Entity\Utilisateur
+ > 0
+0
+
+ Which directory do you want to generate the CRUD controller in? [src/Controller/Admin/]:
+ > 
+
+ Namespace of the generated CRUD controller [App\Controller\Admin]:
+ >
+
+                                                                                                                        
+ [OK] Your CRUD controller class has been successfully generated.   
+```
+Modification de la classe `DashboardController.php` pour créer un lien avec l'entité `Medecin` dans le tableau de bord `DashboardController.php`:
+```bash
+yield MenuItem::linkToCrud('Médecins', 'fas fa-stethoscope', Medecin::class);
+```
+Configuration du Crud Controller de l'entité `Medecin` dans le tableau de bord `MedecinCrudController.php`:
+```bash
+public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            // Nom d'affichage de l'entité au singulier et au pluriel
+            ->setEntityLabelInSingular('Médecin')
+            ->setEntityLabelInPlural('Médecins')
+            ;
+    }
+
+
+    public function configureFields(string $pageName): iterable
+    {
+        return [
+            TextField::new('nom', 'Nom'),
+            TextField::new('prenom', 'Prénom'),
+            AssociationField::new('specialite', 'Spécialité'),
+            TextField::new('matricule', 'Matricule'),
+        ];
+    }
+```
+Ajout de la méthode toString() dans l'entité `Medecin.php` pour afficher pouvoir afficher la spécialité du médecin dans le tableau de bord `MedecinCrudController.php`:
+```bash
+public function __toString(): string
+    {
+        return $this->specialite;
+    }
+```
+
+
 
