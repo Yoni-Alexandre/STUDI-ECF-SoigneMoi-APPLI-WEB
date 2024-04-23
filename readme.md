@@ -33,13 +33,13 @@ Ce site web a été développé en utilisant les technologies suivantes :
 - Yoni-Alexandre Brault : Concepteur Développeur / Designer
 
 
-## Création du Projet SoigneMoi avec Symfony 7
+## Création du Projet SoigneMoi avec Symfony 7 (PHP 8.3)
 
-1. Création du Projet :
+Création du Projet :
 ```bash  
   symfony new SoigneMoi --version="7.0.*" --webapp 
 ```  
-2. Installation des Dépendances avec **Composer** :
+Installation des Dépendances avec **Composer** :
 ```bash  
   cd SoigneMoi composer install 
 ```  
@@ -850,3 +850,281 @@ Ajout de l' `include` en PHP avec TWIG dans la partie vue de l'espace personnel 
 >" Test unitaire : Un test unitaire est une procédure automatisée visant à vérifier le bon fonctionnement individuel d'une petite unité de code, comme une fonction ou une méthode, en isolant son comportement du reste du système. " 
 
 >" Test fonctionnel : Un test fonctionnel est une procédure automatisée visant à vérifier le bon fonctionnement d'une fonctionnalité ou d'un ensemble de fonctionnalités d'un logiciel du point de vue de l'utilisateur, en simulant des scénarios d'utilisation réels. "
+
+Installation via composer de la dépendance (*en mode développement*) `test-pack/phpunit`:  
+``  
+composer require --dev symfony/test-pack  
+``  
+puis test de la bonne installation via la commande ``php bin/phpunit``
+
+#### Création d'un test unitaire pour tester la fonctionnalité `test-pack/phpunit`:
+```bash  
+symfony console make:test
+```
+```bash  
+Which test type would you like?:
+  [TestCase       ] basic PHPUnit tests
+  [KernelTestCase ] basic tests that have access to Symfony services
+  [WebTestCase    ] to run browser-like scenarios, but that don't execute JavaScript code
+  [ApiTestCase    ] to run API-oriented scenarios
+  [PantherTestCase] to run e2e scenarios, using a real-browser or HTTP client and a real web server
+ > TestCase
+TestCase
+
+Choose a class name for your test, like:
+ * UtilTest (to create tests/UtilTest.php)
+ * Service\UtilTest (to create tests/Service/UtilTest.php)
+ * \App\Tests\Service\UtilTest (to create tests/Service/UtilTest.php)
+
+ The name of the test class (e.g. BlogPostTest):
+ > TestDeFonctionnement 
+
+ created: tests/TestDeFonctionnementTest.php
+    
+  Success! 
+```
+Création du fichier d'exemple de de test dans `tests/TestDeFonctionnementTest.php`
+```bash
+<?php  
+  
+namespace App\Tests;  
+  
+use PHPUnit\Framework\TestCase;  
+  
+class TestDeFonctionnementTest extends TestCase  
+{  
+    public function testSomething(): void  
+  {  
+        $this->assertTrue(true);  
+    }  
+}
+```
+puis exécution de la commande `php bin/phpunit` le résultat sera `SUCCESS` car dans mon exemple la condition est à `true` dans la fonction `assertTrue()`
+```bash
+PHPUnit 9.6.18 by Sebastian Bergmann and contributors.
+
+Testing
+.                                                                   1 / 1 (100%)
+
+Time: 00:00.023, Memory: 6.00 MB
+
+OK (1 test, 1 assertion)
+```
+#### Création d'un test fonctionnel pour le formulaire d'inscription:
+Exécution de la commande pour lancer l’assistant de création de test:
+```bash  
+symfony console make:test
+```
+Dans la liste je choisis ``WebTestCase`` qui correspond à un comportement qu'un navigateur web peut avoir (*sauf qu'il n’exécute pas je JavaScript*) puis via l'assistant je crée la classe `FormulaireInscriptionUtilisateurTest.php` dans `tests`:
+```bash  
+ Which test type would you like?:
+  [TestCase       ] basic PHPUnit tests
+  [KernelTestCase ] basic tests that have access to Symfony services
+  [WebTestCase    ] to run browser-like scenarios, but that don't execute JavaScript code
+  [ApiTestCase    ] to run API-oriented scenarios
+  [PantherTestCase] to run e2e scenarios, using a real-browser or HTTP client and a real web server
+ > WebTestCase      
+WebTestCase
+
+Choose a class name for your test, like:
+ * UtilTest (to create tests/UtilTest.php)
+ * Service\UtilTest (to create tests/Service/UtilTest.php)
+ * \App\Tests\Service\UtilTest (to create tests/Service/UtilTest.php)
+
+ The name of the test class (e.g. BlogPostTest):
+ > FormulaireInscriptionUtilisateurTest
+
+ created: tests/FormulaireInscriptionUtilisateurTest.php
+           
+  Success!
+```
+Les étapes suivantes seront : 
+1. Création d'une base de données fictives de test (soignemoi_test)
+2. Création d'un client pour simuler une requête HTTP
+3. Remplir les champs du formulaire
+4. Test et suivi de la redirection
+5. Vérifier si dans la page de redirection (message flash), le message:  
+>" Votre compte est bien créé. Vous pouvez vous connecter."
+
+est bien présent.
+
+Création de la base de données fictives de test avec le flag `--env=test` ce qui donnéra `soignemoi_test`:
+
+```bash 
+symfony console doctrine:database:create --env=test
+
+Created database `soignemoi_test` for connection named default
+```
+
+Ajout des tables qui se trouvent dans la base de données de production avec les flags `-n` (non interactif) et `--env=test`: 
+```bash
+symfony console doctrine:migrations:migrate -n --env=test
+```
+
+Exemple de test unitaire pour le formulaire d'inscription `FormulaireInscriptionUtilisateurTest.php`:
+```bash
+class FormulaireInscriptionUtilisateurTest extends WebTestCase
+{
+    public function testSomething(): void
+    {
+        /* 1. Création d'un faux client pour simuler une requête HTTP */
+        $client = static::createClient();
+        $client->request('GET', '/inscription');
+
+        /* 2. Remplir les champs du formulaire d'inscription utilisateur */
+        $client->submitForm("Inscription", [
+            'inscription_utilisateur[nom]' => 'Brault',
+            'inscription_utilisateur[prenom]' => 'Yoni-Alexandre',
+            'inscription_utilisateur[adresse_postale]' => '1 rue STUDI',
+            'inscription_utilisateur[email]' => 'studi@test.com',
+            'inscription_utilisateur[motDePasse][first]' => '123456789',
+            'inscription_utilisateur[motDePasse][second]' => '123456789',
+        ]);
+        /* 3. Test de la redirection*/
+        $this->assertResponseRedirects('/connexion');
+        /* Suivre la redirection */
+        $client->followRedirect();
+
+        /* 4. Vérifier que la page de redirection (message flash) est bien : "Votre compte est bien créé. Vous pouvez vous connecter." */
+        /* Rechercher un élément (div) qui contient le message */
+        $this->assertSelectorExists('div:contains("Votre compte est bien créé. Vous pouvez vous connecter.")');
+    }
+}
+```
+Execution du test unitaire avec la commande `php bin/phpunit`:
+```bash
+php bin/phpunit
+PHPUnit 9.6.18 by Sebastian Bergmann and contributors.
+
+Testing 
+.                                                                   1 / 1 (100%)
+
+Time: 00:00.840, Memory: 42.00 MB
+
+OK (1 test, 3 assertions)
+```
+## Interface d'administration avec EasyAdmin
+*https://symfony.com/bundles/EasyAdminBundle/current/index.html*
+
+Installation du bundle `EasyAdmin` via composer:
+```bash
+composer require easycorp/easyadmin-bundle
+```
+Création du premier tableau de bord avec la commande :
+`symfony console make:admin:dashboard`
+
+```bash
+ Which class name do you prefer for your Dashboard controller? [DashboardController]:
+ > DashboardController
+
+ In which directory of your project do you want to generate "DashboardController"? [src/Controller/Admin/]:
+ > src/Controller/Admin/
+
+
+                                                                                                                        
+ [OK] Your dashboard class has been successfully generated.
+```
+
+Modification du `config/packages/security.yaml` pour empêcher l'accès à la route `/admin` si l'utilisateur n'a pas le rôle `ROLE_ADMIN` (dans ce cas, il sera redirigé vers la page de connexion)
+```bash
+    access_control:
+        - { path: ^/compte, roles: ROLE_USER }
+        - { path: ^/admin, roles: ROLE_ADMIN }
+```
+Lié l'entité `Utilisateur` à `EasyAdmin` en créant un `CRUD Controllers`:
+
+*https://symfony.com/bundles/EasyAdminBundle/current/crud.html*
+
+`symfony console make:admin:crud`
+
+```bash
+ Which Doctrine entity are you going to manage with this CRUD controller?:
+  [0] App\Entity\Medecin
+  [1] App\Entity\Medicament
+  [2] App\Entity\PlanningMedecin
+  [3] App\Entity\Prescription
+  [4] App\Entity\Sejour
+  [5] App\Entity\Utilisateur
+ > 5
+5
+
+ Which directory do you want to generate the CRUD controller in? [src/Controller/Admin/]:
+ > 
+
+ Namespace of the generated CRUD controller [App\Controller\Admin]:
+ >
+
+                                                                                                                        
+ [OK] Your CRUD controller class has been successfully generated.
+```
+Modification de la classe `DashboardController.php` pour créer un lien avec l'entité `Utilisateur` dans le tableau de bord `DashboardController.php`:
+```bash
+class DashboardController extends AbstractDashboardController
+{
+    #[Route('/admin', name: 'admin')]
+    public function index(): Response
+    {
+        $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
+        return $this->redirect($adminUrlGenerator->setController(UtilisateurCrudController::class)->generateUrl());
+
+    }
+
+    public function configureDashboard(): Dashboard
+    {
+        return Dashboard::new()
+            ->setTitle('SOIGNEMOI Administration' );
+    }
+
+    public function configureMenuItems(): iterable
+    {
+        yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
+        yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-user', Utilisateur::class);
+    }
+}
+```
+
+Personnalisation de l'affichage via les options du CRUD Controller Configuration dans le tableau de bord `UtilisateurCrudController.php`:
+*https://symfony.com/bundles/EasyAdminBundle/current/crud.html#crud-controller-configuration*
+```bash
+class UtilisateurCrudController extends AbstractCrudController
+{
+    public static function getEntityFqcn(): string
+    {
+        return Utilisateur::class;
+    }
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            // Nom d'affichage de l'entité au singulier et au pluriel
+            ->setEntityLabelInSingular('Utilisateur')
+            ->setEntityLabelInPlural('Utilisateurs')
+            ;
+    }
+    ...
+```
+Configuration des champs à afficher dans le tableau de bord `UtilisateurCrudController.php`:
+```bash
+    public function configureFields(string $pageName): iterable
+    {
+        return [
+            IdField::new('id'),
+            TextField::new('nom'),
+            TextField::new('prenom'),
+            EmailField::new('email'),
+        ];
+    }
+```
+```bash
+public function configureFields(string $pageName): iterable
+    {
+        return [
+            TextField::new('nom')->setLabel('Nom'),
+            TextField::new('prenom')->setLabel('Prénom'),
+            // onlyOnIndex() signifie que ce champ ne sera affiché que dans la liste des utilisateurs (sur EasyAdmin) et pas dans la modification de l'utilisateur
+            // pour éviter que l'administrateur modifie les Emails des utilisateurs
+            EmailField::new('email')->setLabel('Email')->onlyOnIndex(),
+        ];
+    }
+```
+
