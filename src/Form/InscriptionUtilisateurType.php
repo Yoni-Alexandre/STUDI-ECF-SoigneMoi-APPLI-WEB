@@ -86,7 +86,7 @@ class InscriptionUtilisateurType extends AbstractType
                 ]
             ])
             ->add('submit', SubmitType::class, [
-                'label' => 'S\'inscrire',
+                'label' => 'Inscription',
                 'attr' => [
                     'class' => 'btn btn-primary mt-2 mb-5'
                 ]
