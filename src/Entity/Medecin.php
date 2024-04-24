@@ -40,11 +40,15 @@ class Medecin
     #[ORM\JoinColumn(nullable: false)]
     private ?SpecialiteMedecin $specialite = null;
 
+    #[ORM\OneToMany(targetEntity: Utilisateur::class, mappedBy: 'medecins')]
+    private Collection $utilisateurs;
+
     public function __construct()
     {
         $this->prescriptions = new ArrayCollection();
         $this->planningMedecins = new ArrayCollection();
         $this->sejours = new ArrayCollection();
+        $this->utilisateurs = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -203,6 +207,36 @@ class Medecin
     public function setSpecialite(?SpecialiteMedecin $specialite): static
     {
         $this->specialite = $specialite;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Utilisateur>
+     */
+    public function getUtilisateurs(): Collection
+    {
+        return $this->utilisateurs;
+    }
+
+    public function addUtilisateur(Utilisateur $utilisateur): static
+    {
+        if (!$this->utilisateurs->contains($utilisateur)) {
+            $this->utilisateurs->add($utilisateur);
+            $utilisateur->setMedecins($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUtilisateur(Utilisateur $utilisateur): static
+    {
+        if ($this->utilisateurs->removeElement($utilisateur)) {
+            // set the owning side to null (unless already changed)
+            if ($utilisateur->getMedecins() === $this) {
+                $utilisateur->setMedecins(null);
+            }
+        }
 
         return $this;
     }

@@ -45,13 +45,16 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Sejour::class, mappedBy: 'utilisateur')]
     private Collection $sejours;
 
-    #[ORM\OneToMany(targetEntity: Medecin::class, mappedBy: 'utilisateur')]
-    private Collection $medecins;
+    #[ORM\ManyToOne(inversedBy: 'utilisateurs')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Medecin $medecins = null;
+
+
 
     public function __construct()
     {
         $this->sejours = new ArrayCollection();
-        $this->medecins = new ArrayCollection();
+
     }
 
     public function getId(): ?int
@@ -194,33 +197,16 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Medecin>
-     */
-    public function getMedecins(): Collection
+    public function getMedecins(): ?Medecin
     {
         return $this->medecins;
     }
 
-    public function addMedecin(Medecin $medecin): static
+    public function setMedecins(?Medecin $medecins): static
     {
-        if (!$this->medecins->contains($medecin)) {
-            $this->medecins->add($medecin);
-            $medecin->setUtilisateur($this);
-        }
+        $this->medecins = $medecins;
 
         return $this;
     }
 
-    public function removeMedecin(Medecin $medecin): static
-    {
-        if ($this->medecins->removeElement($medecin)) {
-            // set the owning side to null (unless already changed)
-            if ($medecin->getUtilisateur() === $this) {
-                $medecin->setUtilisateur(null);
-            }
-        }
-
-        return $this;
-    }
 }
