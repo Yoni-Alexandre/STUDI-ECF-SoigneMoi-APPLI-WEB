@@ -16,35 +16,27 @@
             {% include 'compte/_menu.html.twig' %}
         </div>
         <div class="col-md-9">
-            <h5>Mes rendez-vous</h5>
+            <h5>Prendre un rendez-vous avec un praticien</h5>
             <table class="table">
                 <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">First</th>
-                    <th scope="col">Last</th>
-                    <th scope="col">Handle</th>
+                    <th scope="col">Prénom</th>
+                    <th scope="col">Nom</th>
+                    <th scope="col">Spécialité</th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                </tr>
-                <tr>
-                    <th scope="row">3</th>
-                    <td colspan="2">Larry the Bird</td>
-                    <td>@twitter</td>
-                </tr>
-                </tbody>
+                {% for medecin in medecins %}
+                    <tbody>
+                    <tr>
+                        <th scope="row">{{ loop.index }}</th>
+                        <td>{{ medecin.prenom }}</td>
+                        <td>{{ medecin.nom }}</td>
+                        <td>{{ medecin.specialite }}</td>
+                        <td><a href="{{ path('app_rendez-vous_ajouter', {'id': medecin.id}) }}" class="btn btn-primary">Prendre rendez-vous</a></td>
+                    </tr>
+                    </tbody>
+                {% endfor %}
             </table>
         </div>
     </div>

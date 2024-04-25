@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SoigneMoi - Bienvenue sur la page d'ajout de rendez-vous{% endblock %}
+
+{#   {% block navbar %}{% endblock %} #}
+
+{% block body %}
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Ajouter un rendez-vous</h1>
+
+                {{ form_start(formulaireRdv) }}
+                {{ form_row(formulaireRdv.date) }}
+                {{ form_row(formulaireRdv.utilisateur) }}
+                {{ form_row(formulaireRdv.medecin) }}
+
+                {{ form_end(formulaireRdv) }}
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
