@@ -46,15 +46,21 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $sejours;
 
     #[ORM\ManyToOne(inversedBy: 'utilisateurs')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Medecin $medecins = null;
 
-
+    #[ORM\OneToMany(targetEntity: RendezVousUtilisateur::class, mappedBy: 'utilisateur')]
+    private Collection $rendezVousUtilisateurs;
 
     public function __construct()
     {
         $this->sejours = new ArrayCollection();
+        $this->rendezVousUtilisateurs = new ArrayCollection();
+    }
 
+    public function __toString()
+    {
+        return $this->nom . ' ' . $this->prenom;
     }
 
     public function getId(): ?int
@@ -205,6 +211,36 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setMedecins(?Medecin $medecins): static
     {
         $this->medecins = $medecins;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, RendezVousUtilisateur>
+     */
+    public function getRendezVousUtilisateurs(): Collection
+    {
+        return $this->rendezVousUtilisateurs;
+    }
+
+    public function addRendezVousUtilisateur(RendezVousUtilisateur $rendezVousUtilisateur): static
+    {
+        if (!$this->rendezVousUtilisateurs->contains($rendezVousUtilisateur)) {
+            $this->rendezVousUtilisateurs->add($rendezVousUtilisateur);
+            $rendezVousUtilisateur->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRendezVousUtilisateur(RendezVousUtilisateur $rendezVousUtilisateur): static
+    {
+        if ($this->rendezVousUtilisateurs->removeElement($rendezVousUtilisateur)) {
+            // set the owning side to null (unless already changed)
+            if ($rendezVousUtilisateur->getUtilisateur() === $this) {
+                $rendezVousUtilisateur->setUtilisateur(null);
+            }
+        }
 
         return $this;
     }

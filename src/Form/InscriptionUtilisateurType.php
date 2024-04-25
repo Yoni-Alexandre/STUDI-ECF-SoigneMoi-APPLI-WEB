@@ -26,12 +26,6 @@ class InscriptionUtilisateurType extends AbstractType
                     'placeholder' => 'Entrez votre adresse email'
                 ]
             ])
-            ->add('medecins', null, [
-                'label' => 'Médecin',
-                'attr' => [
-                    'placeholder' => 'Entrez le nom de votre médecin'
-                ]
-            ])
             ->add('motDePasse', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'constraints' => [
