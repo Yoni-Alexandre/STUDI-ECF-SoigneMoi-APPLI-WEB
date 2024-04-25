@@ -23,6 +23,7 @@ class RendezVousUtilisateurCrudController extends AbstractCrudController
         return [
             DateTimeField::new('date')->setLabel('Date et heure du rendez-vous'),
             AssociationField::new('utilisateur')->setLabel('Patient'),
+            AssociationField::new('medecin')->setLabel('Médecin'),
         ];
     }
 }
