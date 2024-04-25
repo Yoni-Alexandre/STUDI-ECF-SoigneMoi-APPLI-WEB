@@ -29,63 +29,6 @@ class CompteController extends AbstractController
         ]);
     }
 
-    # liste des rendez-vous liés à l'utilisateur connecté
-    #[Route('/compte/rendez-vous', name: 'app_rendez-vous')]
-    public function rdv(Security $security, RendezVousUtilisateurRepository $rendezVousUtilisateurRepository): Response
-    {
-        $utilisateur = $security->getUser();
-        $rdvs = $rendezVousUtilisateurRepository->findBy(['utilisateur' => $utilisateur]);
-
-        return $this->render('compte/rendezVous/rendezVous.html.twig',[
-            'rdvs' => $rdvs,
-        ]);
-    }
-
-    # ********************************************************************************************
-    #[Route('/compte/rendez-vous/ajouter', name: 'app_rendez-vous_ajouter')]
-    public function ajouterRendezVous(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $rdv = new RendezVousUtilisateur();
-        $form = $this->createForm(RendezVousUtilisateurType::class, $rdv);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()){
-            $entityManager->persist($rdv);
-            $entityManager->flush();
-            // rediriger vers la liste de rendez-vous après l'ajout
-            return $this->redirectToRoute('app_rendez-vous');
-        }
-
-        return $this->render('compte/rendezVous/ajouterRendezVous.html.twig',[
-            'formulaireRdv' => $form->createView(),
-        ]);
-    }
-
-    #[Route('/compte/rendez-vous/modifier/{id}', name: 'app_rendez-vous_modifier')]
-    public function modifierRendezVous(Request $request, EntityManagerInterface $entityManager, RendezVousUtilisateur $rdv): Response
-    {
-        $form = $this->createForm(RendezVousUtilisateurType::class, $rdv);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()){
-            $entityManager->flush();
-            return $this->redirectToRoute('app_rendez-vous');
-        }
-
-        return $this->render('compte/rendezVous/modifierRendezVous.html.twig',[
-            'formulaireRdv' => $form->createView(),
-        ]);
-    }
-
-    #[Route('/compte/rendez-vous/supprimer/{id}', name: 'app_rendez-vous_supprimer')]
-    public function supprimerRendezVous(EntityManagerInterface $entityManager, RendezVousUtilisateur $rdv): Response
-    {
-        $entityManager->remove($rdv);
-        $entityManager->flush();
-        return $this->redirectToRoute('app_rendez-vous');
-    }
-    # ********************************************************************************************
-
     #[Route('/compte/modification-mot-de-passe', name: 'app_compte_modif-mdp')]
 public function motDePasse(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
 {
