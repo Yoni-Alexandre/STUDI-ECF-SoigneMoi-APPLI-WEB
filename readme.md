@@ -1204,6 +1204,193 @@ public function __toString(): string
 
 ## Gestion des rendez-vous
 
+Pour que l'utilisateur, depuis son espace personnel, puisse prendre un rendez-vous, j'ai crée un contrôleur `RendezVousController.php` avec les fonctionnalités de pouvoir ajouter et annuler un rendez-vous associé à l'utilisateur connecté et à l'id du médecin puis une redirection vers la liste des rendez-vous sera faite :
+```bash
+<?php
+
+namespace App\Controller;
+
+use App\Entity\RendezVousUtilisateur;
+use App\Form\RendezVousUtilisateurType;
+use App\Repository\MedecinRepository;
+use App\Repository\RendezVousUtilisateurRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+
+class RendezVousController extends AbstractController
+{
+    #[Route('/compte/rendez-vous', name: 'app_rendez-vous')]
+    public function rdv(Security $security, RendezVousUtilisateurRepository $rendezVousUtilisateurRepository): Response
+    {
+        // Utilisation du service de sécurité de Symfony pour obtenir l'utilisateur actuellement connecté
+        $utilisateur = $security->getUser();
+        $rdvs = $rendezVousUtilisateurRepository->findBy(['utilisateur' => $utilisateur]);
+
+        return $this->render('rendez_vous/rendezVous.html.twig',[
+            'rdvs' => $rdvs,
+        ]);
+    }
+    #[Route('rendez_vous/ajouter/{medecinId}', name: 'app_rendez-vous_ajouter')]
+    public function ajouterRendezVous(Request $request, EntityManagerInterface $entityManager, Security $security, $medecinId, MedecinRepository $medecinRepository): Response
+    {
+        $rdv = new RendezVousUtilisateur();
+
+        // Récupération et attribution du médecin à partir de l'ID dans l'URL
+        $medecin = $medecinRepository->find($medecinId);
+        $rdv->setMedecin($medecin);
+
+        // Utilisation du service de sécurité de Symfony pour obtenir l'utilisateur actuellement connecté
+        $utilisateur = $security->getUser();
+        $rdv->setUtilisateur($utilisateur);
+
+        $form = $this->createForm(RendezVousUtilisateurType::class, $rdv);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()){
+            $entityManager->persist($rdv);
+            $entityManager->flush();
+            // redirection vers la page des rendez-vous de l'utilisateur
+            return $this->redirectToRoute('app_rendez-vous');
+        }
+
+        return $this->render('rendez_vous/ajouterRendezVous.html.twig',[
+            'formulaireRdv' => $form->createView(),
+            'medecinId' => $medecinId,
+        ]);
+    }
+
+
+    #[Route('rendez_vous/modifier/{id}', name: 'app_rendez-vous_modifier')]
+    public function modifierRendezVous(Request $request, EntityManagerInterface $entityManager, RendezVousUtilisateur $rdv): Response
+    {
+        $form = $this->createForm(RendezVousUtilisateurType::class, $rdv);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()){
+            $entityManager->flush();
+            return $this->redirectToRoute('app_rendez-vous');
+        }
+
+        return $this->render('rendez_vous/modifierRendezVous.html.twig',[
+            'formulaireRdv' => $form->createView(),
+        ]);
+    }
+
+    #[Route('rendez_vous/supprimer/{id}', name: 'app_rendez-vous_supprimer')]
+    public function supprimerRendezVous(EntityManagerInterface $entityManager, RendezVousUtilisateur $rdv): Response
+    {
+        $entityManager->remove($rdv);
+        $entityManager->flush();
+        return $this->redirectToRoute('app_rendez-vous');
+    }
+}
+```
+Sa vue associée pour remplir le formulaire : 
+```bash
+{% extends 'base.html.twig' %}
+
+{% block title %}SoigneMoi - Bienvenue sur la page d'ajout de rendez-vous{% endblock %}
+
+{#   {% block navbar %}{% endblock %} #}
+
+{% block body %}
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Ajouter un rendez-vous</h1>
+
+                {{ form_start(formulaireRdv) }}
+                {{ form_row(formulaireRdv.date) }}
+                {# {{ form_row(formulaireRdv.heure) }} #}
+                {# {{ form_row(formulaireRdv.utilisateur) }} #}
+                {{ form_row(formulaireRdv.motifDeSejour) }}
+                {{ form_row(formulaireRdv.medecin) }}
+
+                {{ form_end(formulaireRdv) }}
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+```
+et le formulaire pour remplir les champs des rendez-vous en base de données :
+```bash
+<?php
+
+namespace App\Form;
+
+use App\Entity\Medecin;
+use App\Entity\RendezVousUtilisateur;
+use App\Entity\Utilisateur;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+class RendezVousUtilisateurType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        $builder
+            // L'utilisateur ne peut pas prendre rendez-vous à une date antérieure à j + 1
+            ->add('date', DateTimeType::class, [
+                'date_widget' => 'single_text',
+                'time_widget' => 'choice',
+                'attr' => [
+                    'min' => (new \DateTime('tomorrow'))->format('Y-m-d H:i')
+                ]
+            ])
+            ->add('medecin', EntityType::class, [
+                'class' => Medecin::class,
+                'choice_label' => 'nom',
+                'label' => 'Nom du médecin',
+                'attr' => [
+                    'class' => 'form-control'
+                ],
+                'disabled' => true,
+            ])
+            /*
+            ->add('utilisateur', EntityType::class, [
+                'class' => Utilisateur::class,
+                'choice_label' => 'nom',
+                'label' => 'Nom de l\'utilisateur',
+                'attr' => [
+                    'class' => 'form-control'
+                ]
+            ])
+            */
+            ->add('motifDeSejour', TextareaType::class, [
+                'label' => 'Indiquez le motif de sejour',
+                'attr' => [
+                    'class' => 'form-control'
+                ]
+            ])
+            ->add('submit', SubmitType::class, [
+                'label' => 'Validez le rendez-vous',
+                'attr' => [
+                    'class' => 'btn btn-primary mt-2 mb-5'
+                ]
+            ])
+        ;
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class' => RendezVousUtilisateur::class,
+        ]);
+    }
+}
+
+```
+
 
 
 
