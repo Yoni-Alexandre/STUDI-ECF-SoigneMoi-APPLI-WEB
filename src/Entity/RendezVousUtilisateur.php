@@ -23,6 +23,9 @@ class RendezVousUtilisateur
     #[ORM\ManyToOne(inversedBy: 'rendezVousUtilisateurs')]
     private ?Medecin $medecin = null;
 
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $motifDeSejour = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -60,6 +63,18 @@ class RendezVousUtilisateur
     public function setMedecin(?Medecin $medecin): static
     {
         $this->medecin = $medecin;
+
+        return $this;
+    }
+
+    public function getMotifDeSejour(): ?string
+    {
+        return $this->motifDeSejour;
+    }
+
+    public function setMotifDeSejour(string $motifDeSejour): static
+    {
+        $this->motifDeSejour = $motifDeSejour;
 
         return $this;
     }

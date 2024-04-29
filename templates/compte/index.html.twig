@@ -33,7 +33,7 @@
                         <td>{{ medecin.prenom }}</td>
                         <td>{{ medecin.nom }}</td>
                         <td>{{ medecin.specialite }}</td>
-                        <td><a href="{{ path('app_rendez-vous_ajouter', {'id': medecin.id}) }}" class="btn btn-primary">Prendre rendez-vous</a></td>
+                        <td><a href="{{ path('app_rendez-vous_ajouter', {'medecinId': medecin.id}) }}" class="btn btn-primary">Prendre rendez-vous</a></td>
                     </tr>
                     </tbody>
                 {% endfor %}

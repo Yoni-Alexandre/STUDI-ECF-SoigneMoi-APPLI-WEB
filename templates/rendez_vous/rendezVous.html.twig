@@ -30,8 +30,8 @@
                         <td>{{ rdv.utilisateur.nom }} {{ rdv.utilisateur.prenom }}</td>
                         <td>{{ rdv.medecin }}</td>
                         <td>
-                            <a href="{{ path('app_rendez-vous_modifier', {'id': rdv.id}) }}" class="btn btn-warning">Modifier</a>
-                            <a href="{{ path('app_rendez-vous_supprimer', {'id': rdv.id}) }}" class="btn btn-danger">Supprimer</a>
+                            <!-- <a href="{{ path('app_rendez-vous_modifier', {'id': rdv.id}) }}" class="btn btn-warning">Modifier</a> -->
+                            <a href="{{ path('app_rendez-vous_supprimer', {'id': rdv.id}) }}" class="btn btn-danger">Annuler</a>
                         </td>
                     </tr>
                 {% endfor %}
