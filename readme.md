@@ -1391,6 +1391,52 @@ class RendezVousUtilisateurType extends AbstractType
 
 ```
 
+#### Status des rendez-vous
+J'ai tout d'abord ajouté un nouveau champ `status` à mon entité `RendezVousUtilisateur.php`
+```bash
+#[ORM\Column(length: 255, nullable: true)]
+private ?string $status = null;
+```
 
+J'ai modifié le contrôleur pour définir l'état du rendez-vous :
+Mise à jour de la méthode ajouterRendezVous dans RendezVousController.php. Plus précisément, j'ai ajouté la ligne ``$rdv->setStatus('à venir');`` juste avant d'appeler ``$form->handleRequest($request);``. Cela garantit que chaque nouveau ``RendezVousUtilisateur`` est initialisé avec le statut 'à venir'.
+```bash
+$rdv->setStatus('à venir');
+```
 
+Ensuite j'ai mis à jour la vue ``rendezVous.html.twig`` pour modifier le design en utilisant Bootstrap pour la mise en forme des informations de rendez-vous en cartes, et j'ai appliqué des couleurs différentes pour chaque statut de rendez-vous.
+```bash
+        <h3>Rendez-vous à venir</h3>
+           <div class="row">
+               {% for rdv in rdvs|filter(rdv => rdv.status == 'à venir') %}
+                  {{ include('rendez_vous/_rendez-vous.html.twig', {'rdv': rdv, 'cardColor': 'bg-primary text-white'}) }}
+                {% endfor %}
+           </div>
 
+        <h3 class="mt-5">Rendez-vous en cours</h3>
+           <div class="row">
+               {% for rdv in rdvs|filter(rdv => rdv.status == 'en cours') %}
+                  {{ include('rendez_vous/_rendez-vous.html.twig', {'rdv': rdv, 'cardColor': 'bg-warning text-dark'}) }}
+               {% endfor %}
+            </div>
+
+        <h3 class="mt-5">Rendez-vous effectué</h3>
+           <div class="row">
+              {% for rdv in rdvs|filter(rdv => rdv.status == 'effectué') %}
+                  {{ include('rendez_vous/_rendez-vous.html.twig', {'rdv': rdv, 'cardColor': 'bg-success text-white'}) }}
+              {% endfor %}
+        </div>
+```
+la vue de l' `include`
+```bash
+<div class="col-md-4 mb-4">
+    <div class="card {{ cardColor }}">
+        <div class="card-body">
+            <h5 class="card-title">{{ rdv.date|date('d/m/Y') }} à {{ rdv.date|date('H:i') }}</h5>
+            <h6 class="card-subtitle mb-2">{{ rdv.utilisateur.nom }} {{ rdv.utilisateur.prenom }}</h6>
+            <p class="card-text">{{ rdv.medecin }}</p>
+            <a href="{{ path('app_rendez-vous_supprimer', {'id': rdv.id}) }}" class="btn btn-light">Annuler</a>
+        </div>
+    </div>
+</div>
+```

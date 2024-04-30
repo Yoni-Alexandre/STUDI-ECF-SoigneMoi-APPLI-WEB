@@ -39,6 +39,8 @@ class RendezVousController extends AbstractController
         $utilisateur = $security->getUser();
         $rdv->setUtilisateur($utilisateur);
 
+        $rdv->setStatus('à venir');
+
         $form = $this->createForm(RendezVousUtilisateurType::class, $rdv);
         $form->handleRequest($request);
 
