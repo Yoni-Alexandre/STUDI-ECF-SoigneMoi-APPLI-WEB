@@ -3,7 +3,7 @@
         <div class="card-body">
             <h5 class="card-title">{{ rdv.date|date('d/m/Y') }} à {{ rdv.date|date('H:i') }}</h5>
             <h6 class="card-subtitle mb-2">{{ rdv.utilisateur.nom }} {{ rdv.utilisateur.prenom }}</h6>
-            <p class="card-text">{{ rdv.medecin }}</p>
+            <p class="card-text">{{ rdv.medecin }} - {{ rdv.medecin.specialite }}</p>
             <a href="{{ path('app_rendez-vous_supprimer', {'id': rdv.id}) }}" class="btn btn-light">Annuler</a>
         </div>
     </div>

@@ -29,6 +29,9 @@ class RendezVousUtilisateur
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $status = null;
 
+    #[ORM\ManyToOne(inversedBy: 'rendezVousUtilisateurs')]
+    private ?SpecialiteMedecin $specialite = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -90,6 +93,18 @@ class RendezVousUtilisateur
     public function setStatus(?string $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getSpecialite(): ?SpecialiteMedecin
+    {
+        return $this->specialite;
+    }
+
+    public function setSpecialite(?SpecialiteMedecin $specialite): static
+    {
+        $this->specialite = $specialite;
 
         return $this;
     }

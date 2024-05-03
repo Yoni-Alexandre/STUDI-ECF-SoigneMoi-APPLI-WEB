@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Medecin;
 use App\Entity\RendezVousUtilisateur;
+use App\Entity\SpecialiteMedecin;
 use App\Entity\Utilisateur;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -35,6 +36,19 @@ class RendezVousUtilisateurType extends AbstractType
                 ],
                 'disabled' => true,
             ])
+
+            ->add('specialite', EntityType::class, [
+                'class' => SpecialiteMedecin::class,
+                'choice_label' => 'specialite',
+                'label' => 'Spécialité',
+                'attr' => [
+                    'class' => 'form-control'
+                ],
+                'mapped' => false,
+                'disabled' => true,
+                'data' => $builder->getData()->getMedecin()->getSpecialite()
+            ])
+
             /*
             ->add('utilisateur', EntityType::class, [
                 'class' => Utilisateur::class,

@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Medecin;
 use App\Entity\PlanningMedecin;
 use App\Entity\RendezVousUtilisateur;
+use App\Entity\Sejour;
 use App\Entity\SpecialiteMedecin;
 use App\Entity\Utilisateur;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
@@ -34,6 +35,7 @@ class DashboardController extends AbstractDashboardController
     {
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
         yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-user', Utilisateur::class);
+        yield MenuItem::linkToCrud('Séjour', 'fas fa-calendar', Sejour::class);
         yield MenuItem::linkToCrud('Médecins', 'fas fa-stethoscope', Medecin::class);
         yield MenuItem::linkToCrud('Spécialités', 'fas fa-heartbeat', SpecialiteMedecin::class);
         yield MenuItem::linkToCrud('Plannings', 'fas fa-calendar', PlanningMedecin::class);

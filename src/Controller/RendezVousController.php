@@ -59,6 +59,7 @@ class RendezVousController extends AbstractController
         // Récupération et attribution du médecin à partir de l'ID dans l'URL
         $medecin = $medecinRepository->find($medecinId);
         $rdv->setMedecin($medecin);
+        $specialite = $medecin->getSpecialite();
 
         // Utilisation du service de sécurité de Symfony pour obtenir l'utilisateur actuellement connecté
         $utilisateur = $security->getUser();
@@ -79,6 +80,7 @@ class RendezVousController extends AbstractController
         return $this->render('rendez_vous/ajouterRendezVous.html.twig',[
             'formulaireRdv' => $form->createView(),
             'medecinId' => $medecinId,
+            'specialite' => $specialite,
         ]);
     }
 

@@ -24,9 +24,16 @@ class SpecialiteMedecin
     #[ORM\OneToMany(targetEntity: Medecin::class, mappedBy: 'specialite')]
     private Collection $medecins;
 
+    /**
+     * @var Collection<int, RendezVousUtilisateur>
+     */
+    #[ORM\OneToMany(targetEntity: RendezVousUtilisateur::class, mappedBy: 'specialite')]
+    private Collection $rendezVousUtilisateurs;
+
     public function __construct()
     {
         $this->medecins = new ArrayCollection();
+        $this->rendezVousUtilisateurs = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -87,6 +94,36 @@ class SpecialiteMedecin
             // set the owning side to null (unless already changed)
             if ($medecin->getSpecialite() === $this) {
                 $medecin->setSpecialite(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, RendezVousUtilisateur>
+     */
+    public function getRendezVousUtilisateurs(): Collection
+    {
+        return $this->rendezVousUtilisateurs;
+    }
+
+    public function addRendezVousUtilisateur(RendezVousUtilisateur $rendezVousUtilisateur): static
+    {
+        if (!$this->rendezVousUtilisateurs->contains($rendezVousUtilisateur)) {
+            $this->rendezVousUtilisateurs->add($rendezVousUtilisateur);
+            $rendezVousUtilisateur->setSpecialite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRendezVousUtilisateur(RendezVousUtilisateur $rendezVousUtilisateur): static
+    {
+        if ($this->rendezVousUtilisateurs->removeElement($rendezVousUtilisateur)) {
+            // set the owning side to null (unless already changed)
+            if ($rendezVousUtilisateur->getSpecialite() === $this) {
+                $rendezVousUtilisateur->setSpecialite(null);
             }
         }
 
