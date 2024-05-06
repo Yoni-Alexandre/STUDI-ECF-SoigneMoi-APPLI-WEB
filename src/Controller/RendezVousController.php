@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\RendezVousUtilisateur;
 use App\Form\RendezVousUtilisateurType;
 use App\Repository\MedecinRepository;
+use App\Repository\PlanningMedecinRepository;
 use App\Repository\RendezVousUtilisateurRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -52,7 +53,7 @@ class RendezVousController extends AbstractController
         ]);
     }
     #[Route('rendez_vous/ajouter/{medecinId}', name: 'app_rendez-vous_ajouter')]
-    public function ajouterRendezVous(Request $request, EntityManagerInterface $entityManager, Security $security, $medecinId, MedecinRepository $medecinRepository): Response
+    public function ajouterRendezVous(Request $request, EntityManagerInterface $entityManager, Security $security, $medecinId, MedecinRepository $medecinRepository, PlanningMedecinRepository $planningMedecinRepository): Response
     {
         $rdv = new RendezVousUtilisateur();
 
@@ -67,14 +68,21 @@ class RendezVousController extends AbstractController
 
         $rdv->setStatus('à venir');
 
-        $form = $this->createForm(RendezVousUtilisateurType::class, $rdv);
+        $form = $this->createForm(RendezVousUtilisateurType::class, $rdv, ['planningMedecinRepository' => $planningMedecinRepository]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()){
-            $entityManager->persist($rdv);
-            $entityManager->flush();
-            // redirection vers la page des rendez-vous de l'utilisateur
-            return $this->redirectToRoute('app_rendez-vous');
+            // Vérifier la disponibilité
+            $isAvailable = $planningMedecinRepository->disponibiliteMedecin($rdv->getDate(), $rdv->getMedecin());
+            if($isAvailable) {
+                $entityManager->persist($rdv);
+                $entityManager->flush();
+                // redirection vers la page des rendez-vous de l'utilisateur
+                return $this->redirectToRoute('app_rendez-vous');
+            } else {
+                // Si le formulaire est soumis et que le menu déroulant est vide, le message "Il n\'y a plus de place disponible à cette date pour ce médecin." sera afficher
+                $this->addFlash('danger', 'Il n\'y a plus de place disponible à cette date pour ce médecin.');
+            }
         }
 
         return $this->render('rendez_vous/ajouterRendezVous.html.twig',[

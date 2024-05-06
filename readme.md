@@ -1470,3 +1470,50 @@ Mise à jour du statut de chaque rendez-vous selon que la date du rendez-vous es
         // Flush dans la base de données les opérations préparées avec $entityManager->persist($rdv);
         $entityManager->flush();
 ```
+#### Ajout de la correspondance entre les rendez-vous des utilisateurs et les plannings des médecins
+Ajout de la fonction `disponibiliteMedecin()` dans le repository `PlanningMedecinRepository` pour retourner les créneaux d'un medecin spécifique
+```bash
+public function disponibiliteMedecin(\DateTimeInterface $date, Medecin $medecin)
+    {
+        $query = $this->createQueryBuilder('p')
+            ->select('p.nombre_patients_max - COUNT(r) as available')
+            ->leftJoin('p.rendezVousUtilisateurs', 'r')
+            ->andWhere('p.medecin = :medecin')
+            ->andWhere('p.date = :date')
+            ->setParameter('medecin', $medecin)
+            ->setParameter('date', $date)
+            ->groupBy('p.id')
+            ->getQuery();
+
+        $result = $query->getOneOrNullResult();
+        return ($result == null || $result['available'] > 0);
+    }
+```
+Modification du formulaire `RendezVousUtilisateurType.php` pour ajouter les créneaux disponibles en utilisant la fonction `disponibiliteMedecin()`
+
+Lorsqu'un utilisateur souhaitera prendre un rendez-vous, il ne verra que les créneaux disponibles pour le médecin sélectionné
+```bash
+$planningMedecinRepo = $options['planningMedecinRepository'];
+        $placeDisponible = $planningMedecinRepo->disponibiliteMedecins($builder->getData()->getMedecin());
+
+        $choices = [];
+        foreach($placeDisponible as $place)
+        {
+            if ($place instanceof \DateTime) {
+                $choices[$place->format('Y-m-d H:i')] = $place;
+            } else {
+                
+            }
+        } 
+
+        $builder
+
+            ->add('date', ChoiceType::class, [
+                'choices' => $choices,
+                'choice_label' => function($date){
+                    return $date->format('Y-m-d H:i');
+                },
+                'label' => 'Choisissez un créneau',
+            ])
+```
+
