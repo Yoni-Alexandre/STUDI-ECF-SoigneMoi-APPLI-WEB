@@ -55,40 +55,61 @@ class RendezVousController extends AbstractController
     #[Route('rendez_vous/ajouter/{medecinId}', name: 'app_rendez-vous_ajouter')]
     public function ajouterRendezVous(Request $request, EntityManagerInterface $entityManager, Security $security, $medecinId, MedecinRepository $medecinRepository, PlanningMedecinRepository $planningMedecinRepository): Response
     {
+        // Crée un nouvel objet RendezVousUtilisateur
         $rdv = new RendezVousUtilisateur();
-
-        // Récupération et attribution du médecin à partir de l'ID dans l'URL
+        // Trouve un médecin spécifique dans la base de données en utilisant son ID
         $medecin = $medecinRepository->find($medecinId);
+        // Associe le rendez-vous avec le médecin trouvé
         $rdv->setMedecin($medecin);
-        $specialite = $medecin->getSpecialite();
 
-        // Utilisation du service de sécurité de Symfony pour obtenir l'utilisateur actuellement connecté
+        // Récupère l'utilisateur actuellement connecté
         $utilisateur = $security->getUser();
+        // Associe le rendez-vous à cet utilisateur
         $rdv->setUtilisateur($utilisateur);
 
-        $rdv->setStatus('à venir');
+        /// Utilise le PlanningMedecinRepository pour vérifier les créneaux disponibles pour le médecin spécifié
+        $disponibiliteMedecins = $planningMedecinRepository->disponibiliteMedecins($medecin);
+        // Si aucun créneau n'est disponible, il envoie un message flash à l'utilisateur et le redirige vers une autre page
+        if (empty($disponibiliteMedecins)) {
+            $this->addFlash('danger', 'Il n\'y a plus de disponibilité pour ce médecin.');
+            // Rediriger vers la page précédente ou une autre page appropriée.
+            return $this->redirectToRoute('app_rendez-vous');
+        }
 
-        $form = $this->createForm(RendezVousUtilisateurType::class, $rdv, ['planningMedecinRepository' => $planningMedecinRepository]);
+        // Crée un formulaire pour le rendez-vous utillisant RendezVousUtilisateurType comme classe de formulaire.
+        $form = $this->createForm(RendezVousUtilisateurType::class, $rdv);
         $form->handleRequest($request);
 
+        // Vérifie si le formulaire a été soumis et si toutes les données du formulaire sont valides
         if ($form->isSubmitted() && $form->isValid()){
-            // Vérifier la disponibilité
-            $isAvailable = $planningMedecinRepository->disponibiliteMedecin($rdv->getDate(), $rdv->getMedecin());
-            if($isAvailable) {
-                $entityManager->persist($rdv);
-                $entityManager->flush();
-                // redirection vers la page des rendez-vous de l'utilisateur
-                return $this->redirectToRoute('app_rendez-vous');
+            // Récupère les données du formulaire
+            $rdv = $form->getData();
+            // Récupère la date du rendez-vous
+            $date = $rdv->getDate();
+            // Si une date a été sélectionnée, le code vérifie s'il y a des créneaux disponibles pour cette date
+            if ($date !== null) {
+                $disponibilite = $planningMedecinRepository->disponibiliteMedecin($date, $rdv->getMedecin());
+                // S'il y a des places disponibles pour cette date, le rendez-vous est enregistré dans la base de données
+                // et l'utilisateur est redirigé vers la page des rendez-vous.
+                if($disponibilite) {
+                    $entityManager->persist($rdv);
+                    $entityManager->flush();
+                    // redirection vers la page des rendez-vous de l'utilisateur
+                    return $this->redirectToRoute('app_rendez-vous');
+                // S'il n'y a pas de place disponible pour cette date, un message flash est généré.
+                } else {
+                    // Si le formulaire est soumis et que le menu déroulant est vide, le message "Il n\'y a plus de place disponible à cette date pour ce médecin." sera afficher
+                    $this->addFlash('danger', 'Il n\'y a plus de place disponible à cette date pour ce médecin.');
+                }
             } else {
-                // Si le formulaire est soumis et que le menu déroulant est vide, le message "Il n\'y a plus de place disponible à cette date pour ce médecin." sera afficher
-                $this->addFlash('danger', 'Il n\'y a plus de place disponible à cette date pour ce médecin.');
+                // S'il n'y a pas de date sélectionnée, un autre message flash est généré.
+                $this->addFlash('warning', 'Il n\'y a plus de place disponible à cette date pour ce médecin.');
             }
         }
 
         return $this->render('rendez_vous/ajouterRendezVous.html.twig',[
             'formulaireRdv' => $form->createView(),
             'medecinId' => $medecinId,
-            'specialite' => $specialite,
         ]);
     }
 

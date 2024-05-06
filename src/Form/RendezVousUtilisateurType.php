@@ -17,27 +17,31 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RendezVousUtilisateurType extends AbstractType
 {
+    private $planningMedecinRepo;
+
+    public function __construct(PlanningMedecinRepository $planningMedecinRepo)
+    {
+        $this->planningMedecinRepo = $planningMedecinRepo;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $planningMedecinRepo = $options['planningMedecinRepository'];
-        $placeDisponible = $planningMedecinRepo->disponibiliteMedecins($builder->getData()->getMedecin());
+        $placeDisponible = $this->planningMedecinRepo->disponibiliteMedecins($builder->getData()->getMedecin());
 
         $choices = [];
         foreach($placeDisponible as $place)
         {
             if ($place instanceof \DateTime) {
-                $choices[$place->format('Y-m-d H:i')] = $place;
-            } else {
-                
+                $choices[$place->format('d-m-Y H:i')] = $place;
             }
-        } 
+        }
 
         $builder
 
             ->add('date', ChoiceType::class, [
                 'choices' => $choices,
                 'choice_label' => function($date){
-                    return $date->format('Y-m-d H:i');
+                    return $date->format('d-m-Y H:i');
                 },
                 'label' => 'Choisissez un créneau',
             ])
@@ -63,16 +67,6 @@ class RendezVousUtilisateurType extends AbstractType
                 'data' => $builder->getData()->getMedecin()->getSpecialite()
             ])
 
-            /*
-            ->add('utilisateur', EntityType::class, [
-                'class' => Utilisateur::class,
-                'choice_label' => 'nom',
-                'label' => 'Nom de l\'utilisateur',
-                'attr' => [
-                    'class' => 'form-control'
-                ]
-            ])
-            */
             ->add('motifDeSejour', TextareaType::class, [
                 'label' => 'Indiquez le motif de sejour',
                 'attr' => [
@@ -92,7 +86,6 @@ class RendezVousUtilisateurType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => RendezVousUtilisateur::class,
-            'planningMedecinRepository' => null,
         ]);
     }
 }
