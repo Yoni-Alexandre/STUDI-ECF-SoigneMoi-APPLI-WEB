@@ -42,9 +42,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $adresse_postale = null;
 
-    #[ORM\OneToMany(targetEntity: Sejour::class, mappedBy: 'utilisateur')]
-    private Collection $sejours;
-
     #[ORM\ManyToOne(inversedBy: 'utilisateurs')]
     #[ORM\JoinColumn(nullable: true)]
     private ?Medecin $medecins = null;
@@ -54,7 +51,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
-        $this->sejours = new ArrayCollection();
         $this->rendezVousUtilisateurs = new ArrayCollection();
     }
 
@@ -169,36 +165,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAdressePostale(string $adresse_postale): static
     {
         $this->adresse_postale = $adresse_postale;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Sejour>
-     */
-    public function getSejours(): Collection
-    {
-        return $this->sejours;
-    }
-
-    public function addSejour(Sejour $sejour): static
-    {
-        if (!$this->sejours->contains($sejour)) {
-            $this->sejours->add($sejour);
-            $sejour->setUtilisateur($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSejour(Sejour $sejour): static
-    {
-        if ($this->sejours->removeElement($sejour)) {
-            // set the owning side to null (unless already changed)
-            if ($sejour->getUtilisateur() === $this) {
-                $sejour->setUtilisateur(null);
-            }
-        }
 
         return $this;
     }

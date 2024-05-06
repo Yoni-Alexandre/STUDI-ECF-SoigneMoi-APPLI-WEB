@@ -33,9 +33,6 @@ class Medecin
     #[ORM\OneToMany(targetEntity: PlanningMedecin::class, mappedBy: 'medecin')]
     private Collection $planningMedecins;
 
-    #[ORM\OneToMany(targetEntity: Sejour::class, mappedBy: 'medecin')]
-    private Collection $sejours;
-
     #[ORM\ManyToOne(inversedBy: 'medecins')]
     #[ORM\JoinColumn(nullable: false)]
     private ?SpecialiteMedecin $specialite = null;
@@ -50,7 +47,6 @@ class Medecin
     {
         $this->prescriptions = new ArrayCollection();
         $this->planningMedecins = new ArrayCollection();
-        $this->sejours = new ArrayCollection();
         $this->utilisateurs = new ArrayCollection();
         $this->rendezVousUtilisateurs = new ArrayCollection();
     }
@@ -167,36 +163,6 @@ class Medecin
             // set the owning side to null (unless already changed)
             if ($planningMedecin->getMedecin() === $this) {
                 $planningMedecin->setMedecin(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Sejour>
-     */
-    public function getSejours(): Collection
-    {
-        return $this->sejours;
-    }
-
-    public function addSejour(Sejour $sejour): static
-    {
-        if (!$this->sejours->contains($sejour)) {
-            $this->sejours->add($sejour);
-            $sejour->setMedecin($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSejour(Sejour $sejour): static
-    {
-        if ($this->sejours->removeElement($sejour)) {
-            // set the owning side to null (unless already changed)
-            if ($sejour->getMedecin() === $this) {
-                $sejour->setMedecin(null);
             }
         }
 
