@@ -32,6 +32,9 @@ class RendezVousUtilisateur
     #[ORM\ManyToOne(inversedBy: 'rendezVousUtilisateurs')]
     private ?SpecialiteMedecin $specialite = null;
 
+    #[ORM\ManyToOne(inversedBy: 'rendezVousUtilisateurs')]
+    private ?PlanningMedecin $planningMedecin = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -105,6 +108,18 @@ class RendezVousUtilisateur
     public function setSpecialite(?SpecialiteMedecin $specialite): static
     {
         $this->specialite = $specialite;
+
+        return $this;
+    }
+
+    public function getPlanningMedecin(): ?PlanningMedecin
+    {
+        return $this->planningMedecin;
+    }
+
+    public function setPlanningMedecin(?PlanningMedecin $planningMedecin): static
+    {
+        $this->planningMedecin = $planningMedecin;
 
         return $this;
     }

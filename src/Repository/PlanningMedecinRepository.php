@@ -3,22 +3,52 @@
 namespace App\Repository;
 
 use App\Entity\PlanningMedecin;
+use App\Entity\Medecin;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @extends ServiceEntityRepository<PlanningMedecin>
- *
- * @method PlanningMedecin|null find($id, $lockMode = null, $lockVersion = null)
- * @method PlanningMedecin|null findOneBy(array $criteria, array $orderBy = null)
- * @method PlanningMedecin[]    findAll()
- * @method PlanningMedecin[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- */
 class PlanningMedecinRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, PlanningMedecin::class);
+    }
+
+    public function disponibiliteMedecins(Medecin $medecin)
+    {
+        $query = $this->createQueryBuilder('p')
+            ->select('p.date')
+            ->andWhere('p.medecin = :medecin')
+            ->andWhere('p.nombre_patients_max > (SELECT COUNT(r) FROM App\Entity\RendezVousUtilisateur r WHERE r.date = p.date AND r.medecin = p.medecin)')
+            ->setParameter('medecin', $medecin)
+            ->orderBy('p.date', 'ASC');
+
+        $dates = $query->getQuery()->getArrayResult();
+
+        $availableSlots = [];
+        foreach ($dates as $dateArr) {
+            if (isset($dateArr['date']) && $dateArr['date'] instanceof \DateTime) {
+                $availableSlots[] = $dateArr['date'];
+            }
+        }
+
+        return $availableSlots;
+    }
+
+    public function disponibiliteMedecin(\DateTimeInterface $date, Medecin $medecin)
+    {
+        $query = $this->createQueryBuilder('p')
+            ->select('p.nombre_patients_max - COUNT(r) as available')
+            ->leftJoin('p.rendezVousUtilisateurs', 'r')
+            ->andWhere('p.medecin = :medecin')
+            ->andWhere('p.date = :date')
+            ->setParameter('medecin', $medecin)
+            ->setParameter('date', $date)
+            ->groupBy('p.id')
+            ->getQuery();
+
+        $result = $query->getOneOrNullResult();
+        return ($result == null || $result['available'] > 0);
     }
 
 //    /**
