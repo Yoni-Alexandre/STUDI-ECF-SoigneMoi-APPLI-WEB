@@ -3,10 +3,12 @@
 namespace App\Form;
 
 use App\Entity\Medecin;
+use App\Entity\PlanningMedecin;
 use App\Entity\RendezVousUtilisateur;
 use App\Entity\SpecialiteMedecin;
 use App\Repository\PlanningMedecinRepository;
 use App\Entity\Utilisateur;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -28,22 +30,41 @@ class RendezVousUtilisateurType extends AbstractType
     {
         $placeDisponible = $this->planningMedecinRepo->disponibiliteMedecins($builder->getData()->getMedecin());
 
-        $choices = [];
+        $choix = [];
         foreach($placeDisponible as $place)
         {
             if ($place instanceof \DateTime) {
-                $choices[$place->format('d-m-Y H:i')] = $place;
+                $choix[$place->format('d-m-Y H:i')] = $place;
             }
         }
 
         $builder
 
             ->add('date', ChoiceType::class, [
-                'choices' => $choices,
+                'choices' => $choix,
                 'choice_label' => function($date){
-                    return $date->format('d-m-Y H:i');
+                    //return $date->format('d-m-Y H:i');
+                    return $date->format('d-m-Y');
                 },
                 'label' => 'Choisissez un créneau',
+            ])
+            ->add('planningMedecin', EntityType::class, [
+                'class' => PlanningMedecin::class,
+                'choice_label' => 'nombre_patients_max',
+                'label' => 'Places restantes',
+                'attr' => [
+                    'class' => 'form-control'
+                ],
+                'mapped' => true,
+                'disabled' => true,
+                'data' => $builder->getData()->getPlanningMedecin()
+            ])
+            ->add('nombrePlacesReservees', IntegerType::class, [
+                'label' => 'Nombre de places à réserver',
+                'attr' => [
+                    'class' => 'form-control',
+                    'min' => 1
+                ]
             ])
             ->add('medecin', EntityType::class, [
                 'class' => Medecin::class,

@@ -57,15 +57,15 @@ class RendezVousController extends AbstractController
     {
         // Crée un nouvel objet RendezVousUtilisateur
         $rdv = new RendezVousUtilisateur();
-        // Trouve un médecin spécifique dans la base de données en utilisant son ID
-        $medecin = $medecinRepository->find($medecinId);
-        // Associe le rendez-vous avec le médecin trouvé
-        $rdv->setMedecin($medecin);
-
         // Récupère l'utilisateur actuellement connecté
         $utilisateur = $security->getUser();
         // Associe le rendez-vous à cet utilisateur
         $rdv->setUtilisateur($utilisateur);
+
+        // Trouve un médecin spécifique dans la base de données en utilisant son ID
+        $medecin = $medecinRepository->find($medecinId);
+        // Associe le rendez-vous avec le médecin trouvé
+        $rdv->setMedecin($medecin);
 
         /// Utilise le PlanningMedecinRepository pour vérifier les créneaux disponibles pour le médecin spécifié
         $disponibiliteMedecins = $planningMedecinRepository->disponibiliteMedecins($medecin);
@@ -75,8 +75,10 @@ class RendezVousController extends AbstractController
             // Rediriger vers la page précédente ou une autre page appropriée.
             return $this->redirectToRoute('app_rendez-vous');
         }
+        // Par défaut, le statut du rendez-vous est "à venir"
+        $rdv->setStatus('à venir');
 
-        // Crée un formulaire pour le rendez-vous utillisant RendezVousUtilisateurType comme classe de formulaire.
+        // Crée un formulaire pour le rendez-vous utilisant "RendezVousUtilisateurType" comme classe de formulaire.
         $form = $this->createForm(RendezVousUtilisateurType::class, $rdv);
         $form->handleRequest($request);
 
@@ -88,23 +90,41 @@ class RendezVousController extends AbstractController
             $date = $rdv->getDate();
             // Si une date a été sélectionnée, le code vérifie s'il y a des créneaux disponibles pour cette date
             if ($date !== null) {
-                $disponibilite = $planningMedecinRepository->disponibiliteMedecin($date, $rdv->getMedecin());
-                // S'il y a des places disponibles pour cette date, le rendez-vous est enregistré dans la base de données
-                // et l'utilisateur est redirigé vers la page des rendez-vous.
-                if($disponibilite) {
-                    $entityManager->persist($rdv);
-                    $entityManager->flush();
-                    // redirection vers la page des rendez-vous de l'utilisateur
+                // On récupère le planning associé à la date et au médecin
+                $planningMedecin = $planningMedecinRepository->findOneBy([
+                    'date' => $date,
+                    'medecin' => $rdv->getMedecin()
+                ]);
+                // Si aucun planning n'est associé à cette date et médecin, on refuse la réservation
+                if (!$planningMedecin) {
+                    $this->addFlash('danger', 'Il n\'y a plus de places disponibles pour ce créneau.');
                     return $this->redirectToRoute('app_rendez-vous');
-                // S'il n'y a pas de place disponible pour cette date, un message flash est généré.
-                } else {
-                    // Si le formulaire est soumis et que le menu déroulant est vide, le message "Il n\'y a plus de place disponible à cette date pour ce médecin." sera afficher
-                    $this->addFlash('danger', 'Il n\'y a plus de place disponible à cette date pour ce médecin.');
                 }
+                // Récupère toutes les places disponibles et le nombre de places que l'utilisateur souhaite réserver
+                $totalPlacesDisponibles = $planningMedecin->getNombrePatientsMax();
+                $placesReservees = $rdv->getNombrePlacesReservees();
+                // Vérifie si suffisamment de places sont disponibles. Si ce n'est pas le cas, affiche un message d'erreur et redirige vers app_rendez-vous
+                if ($totalPlacesDisponibles < $placesReservees) {
+                    $this->addFlash('danger', 'Il n\'y a pas assez de places disponibles pour ce créneau.');
+                    return $this->redirectToRoute('app_rendez-vous');
+                }
+
+                // Met à jour le nombre de places restantes
+                $planningMedecin->setNombrePatientsMax($totalPlacesDisponibles - $placesReservees);
+                // Persiste le planningMedecin dans la base de données
+                $entityManager->persist($planningMedecin);
+
+                $entityManager->persist($rdv);
+                $entityManager->flush();
+                // redirection vers la page des rendez-vous de l'utilisateur
+                return $this->redirectToRoute('app_rendez-vous');
+                // S'il n'y a pas de place disponible pour cette date, un message flash est généré.
             } else {
-                // S'il n'y a pas de date sélectionnée, un autre message flash est généré.
-                $this->addFlash('warning', 'Il n\'y a plus de place disponible à cette date pour ce médecin.');
+                $this->addFlash('danger', 'Il n\'y a plus de place disponible à cette date pour ce médecin.');
             }
+        } else {
+            // S'il n'y a pas de date sélectionnée, un autre message flash est généré.
+            $this->addFlash('warning', 'Il n\'y a plus de place disponible à cette date pour ce médecin.');
         }
 
         return $this->render('rendez_vous/ajouterRendezVous.html.twig',[

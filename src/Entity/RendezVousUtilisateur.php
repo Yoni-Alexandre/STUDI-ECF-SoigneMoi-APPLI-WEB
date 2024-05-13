@@ -35,6 +35,9 @@ class RendezVousUtilisateur
     #[ORM\ManyToOne(inversedBy: 'rendezVousUtilisateurs')]
     private ?PlanningMedecin $planningMedecin = null;
 
+    #[ORM\Column]
+    private ?int $nombrePlacesReservees = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -120,6 +123,18 @@ class RendezVousUtilisateur
     public function setPlanningMedecin(?PlanningMedecin $planningMedecin): static
     {
         $this->planningMedecin = $planningMedecin;
+
+        return $this;
+    }
+
+    public function getNombrePlacesReservees(): ?int
+    {
+        return $this->nombrePlacesReservees;
+    }
+
+    public function setNombrePlacesReservees(int $nombrePlacesReservees): static
+    {
+        $this->nombrePlacesReservees = $nombrePlacesReservees;
 
         return $this;
     }
