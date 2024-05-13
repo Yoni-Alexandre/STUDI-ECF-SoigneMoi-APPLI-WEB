@@ -1579,4 +1579,16 @@ Vérification des places disponibles avant d'entrer dans le formulaire dans le c
         ]);
     }
 ```
+## Re-factorisation du code
+Ayant des méthodes et des routes dans certains contrôleurs qui ne correspondent plus forcément au contrôleur initial, 
+je re-factorise le code en créant de nouveaux contrôleurs pour y injecter les méthodes et les routes qui ne correspondent plus aux anciens contrôleurs.
+Ainsi mes contrôleurs seront plus clairs et plus faciles à maintenir.
+
+
+
 ## API 
+Création d'une API REST pour les médecins avec les fonctionnalités pouvoir de saisir depuis son mobile, une prescription et un avis qu'il donne à un patient pour l'ajouter à son dossier.
+Un avis aura un libelle(un titre de l'avis), une date, une description, le nom et le prénom du médecin.
+Une préscription aura une liste de médicament, une posologie, une date de début de traitement ainsi  qu'une date de fin de traitement, la fate de fin pourra être modifié par le médecin si il juge que le patient est soigné.
+
+
