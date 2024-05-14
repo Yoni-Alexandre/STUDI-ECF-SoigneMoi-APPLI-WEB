@@ -1980,6 +1980,24 @@ class PrescriptionCrudController extends AbstractCrudController
 
 }
 ````
+Organisation dans EasyAdmin des CrudControllers à l'aide de `yield MenuItem::section()` pour les regrouper par catégories
+
+```bash
+yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
+        yield MenuItem::section('Utilisateurs');
+        yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-user', Utilisateur::class);
+        yield MenuItem::section('Médecins');
+        yield MenuItem::linkToCrud('Médecins', 'fas fa-stethoscope', Medecin::class);
+        yield MenuItem::linkToCrud('Spécialités', 'fas fa-heartbeat', SpecialiteMedecin::class);
+        yield MenuItem::linkToCrud('Plannings', 'fas fa-calendar', PlanningMedecin::class);
+        yield MenuItem::section('Rendez-Vous');
+        yield MenuItem::linkToCrud('Rendez-Vous', 'fas fa-calendar', RendezVousUtilisateur::class);
+        yield MenuItem::section('Gestion des avis et prescriptions');
+        yield MenuItem::linkToCrud('Avis', 'fas fa-comment-medical', Avis::class);
+        yield MenuItem::linkToCrud('Prescription', 'fas fa-file-medical', Prescription::class);
+        yield MenuItem::section('Médicaments');
+        yield MenuItem::linkToCrud('Médicament', 'fas fa-pills', Medicament::class);
+```
 
 ## API 
 Création d'une API REST pour les médecins avec les fonctionnalités pouvoir de saisir depuis son mobile, une prescription et un avis qu'il donne à un patient pour l'ajouter à son dossier.
