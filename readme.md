@@ -1614,6 +1614,12 @@ Ayant des méthodes et des routes dans certains contrôleurs qui ne corresponden
 j'ai re-factorisé le code en créant de nouveaux contrôleurs pour y injecter les méthodes et les routes qui ne correspondent plus aux anciens contrôleurs.
 Mes contrôleurs seront plus clairs et plus faciles à maintenir.
 
+#### Ajouts de nouveaux contrôleurs pour les rendez-vous et déplacement des fonctions
+- `ajouterRendezVous()` dans le contrôleur `RendezVousAjoutController.php`
+- `modifierRendezVous()` dans le contrôleur `RendezVousModificationController.php`
+- `supprimerRendezVous()` dans le contrôleur `RendezVousAnnulationController.php`
+du contrôleur principal `RendezVousController.php` pour que les contrôleurs soient plus lisibles.
+
 
 
 ## API 
