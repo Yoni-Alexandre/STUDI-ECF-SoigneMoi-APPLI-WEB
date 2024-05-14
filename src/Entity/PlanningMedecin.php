@@ -20,7 +20,7 @@ class PlanningMedecin
     private ?\DateTimeInterface $date = null;
 
     #[ORM\Column]
-    private ?int $nombre_patients_max = null;
+    private ?int $nombre_patients_max = 5;
 
     #[ORM\ManyToOne(inversedBy: 'planningMedecins')]
     private ?Medecin $medecin = null;

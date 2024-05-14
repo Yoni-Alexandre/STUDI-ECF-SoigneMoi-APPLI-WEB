@@ -43,9 +43,6 @@ class Medecin
     #[ORM\OneToMany(targetEntity: RendezVousUtilisateur::class, mappedBy: 'medecin')]
     private Collection $rendezVousUtilisateurs;
 
-    #[ORM\Column]
-    private ?int $nbPlace = null;
-
     public function __construct()
     {
         $this->prescriptions = new ArrayCollection();
@@ -240,18 +237,6 @@ class Medecin
                 $rendezVousUtilisateur->setMedecin(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getNbPlace(): ?int
-    {
-        return $this->nbPlace;
-    }
-
-    public function setNbPlace(int $nbPlace): static
-    {
-        $this->nbPlace = $nbPlace;
 
         return $this;
     }

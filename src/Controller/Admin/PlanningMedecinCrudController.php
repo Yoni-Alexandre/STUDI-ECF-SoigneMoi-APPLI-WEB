@@ -31,8 +31,13 @@ class PlanningMedecinCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id')->setLabel('ID')->hideOnForm(),
-            DateTimeField::new('date')->setLabel('Date'),
-            IntegerField::new('nombre_patients_max')->setLabel('Nombre de patients max'),
+            DateTimeField::new('date')
+                ->setLabel('Date'),
+            IntegerField::new('nombre_patients_max')
+                ->setLabel('Nombre de patients maximum')
+                ->setFormTypeOptions([
+                    'disabled' => true
+                ]),
             AssociationField::new('medecin')->setLabel('Médecin'),
         ];
     }

@@ -46,21 +46,10 @@ class RendezVousUtilisateurType extends AbstractType
                     //return $date->format('d-m-Y H:i');
                     return $date->format('d-m-Y');
                 },
-                'label' => 'Choisissez un créneau',
-            ])
-            ->add('planningMedecin', EntityType::class, [
-                'class' => PlanningMedecin::class,
-                'choice_label' => 'nombre_patients_max',
-                'label' => 'Places restantes',
-                'attr' => [
-                    'class' => 'form-control'
-                ],
-                'mapped' => true,
-                'disabled' => true,
-                'data' => $builder->getData()->getPlanningMedecin()
+                'label' => 'Choisissez une date de séjour',
             ])
             ->add('nombrePlacesReservees', IntegerType::class, [
-                'label' => 'Nombre de places à réserver',
+                'label' => 'Nombre de places à réserver (5 maximum)',
                 'attr' => [
                     'class' => 'form-control',
                     'min' => 1

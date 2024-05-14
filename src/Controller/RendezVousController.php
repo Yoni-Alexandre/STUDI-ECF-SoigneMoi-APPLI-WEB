@@ -122,9 +122,6 @@ class RendezVousController extends AbstractController
             } else {
                 $this->addFlash('danger', 'Il n\'y a plus de place disponible à cette date pour ce médecin.');
             }
-        } else {
-            // S'il n'y a pas de date sélectionnée, un autre message flash est généré.
-            $this->addFlash('warning', 'Il n\'y a plus de place disponible à cette date pour ce médecin.');
         }
 
         return $this->render('rendez_vous/ajouterRendezVous.html.twig',[
