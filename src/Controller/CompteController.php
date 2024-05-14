@@ -36,17 +36,17 @@ public function motDePasse(Request $request, EntityManagerInterface $entityManag
     $utilisateur = $this->getUser();
     # transmission de l'utilisateur connecté au formulaire
     $form = $this->createForm(ModificationMotdePasseUtilisateurType::class, $utilisateur, [
-        # Ne pas oublier l'injection de dépendances pour le UserPasswordHasherInterface
-        # On transmet le UserPasswordHasherInterface au formulaire
+        // Ne pas oublier l'injection de dépendances pour le UserPasswordHasherInterface
+        // On transmet le UserPasswordHasherInterface au formulaire
         'password_hashers' => $passwordHasher
     ]);
 
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()){
-        # persister les données dans la table utilisateur
+        // persiste les données dans la table utilisateur
         $entityManager->flush();
-        # notification Flash Messages
+        // notification Flash Messages
         $this->addFlash(
             'success',
             'Votre mot de passe a bien été modifié');
