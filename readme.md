@@ -1520,6 +1520,12 @@ $planningMedecinRepo = $options['planningMedecinRepository'];
             ])
 ```
 Vérification des places disponibles avant d'entrer dans le formulaire dans le contrôleur RendezVousController.php
+
+La fonction `ajouterRendezVous()` crée un nouvel objet de rendez-vous pour l'utilisateur qui est actuellement connecté, elle trouve le médecin dans la base de données à l'aide de son identifiant, puis vérifie la disponibilité d'un créneau horaire pour ce médecin. 
+S'il est disponible, la fonction `ajouterRendezVous()` crée un formulaire pour le rendez-vous. 
+Si le formulaire est soumis et valide, elle vérifie si suffisamment de places sont disponibles pour le nombre de places demandées. 
+Si oui, elle met à jour le nombre de places disponibles et enregistre les détails du rendez-vous dans la base de données. 
+Pour finir, la fonction renvoie un message de validation ou non du rendez-vous et redirige l'utilisateur.
 ```bash
 #[Route('rendez_vous/ajouter/{medecinId}', name: 'app_rendez-vous_ajouter')]
     public function ajouterRendezVous(Request $request, EntityManagerInterface $entityManager, Security $security, $medecinId, MedecinRepository $medecinRepository, PlanningMedecinRepository $planningMedecinRepository): Response
@@ -1604,9 +1610,9 @@ Vérification des places disponibles avant d'entrer dans le formulaire dans le c
     }
 ```
 ## Re-factorisation du code
-Ayant des méthodes et des routes dans certains contrôleurs qui ne correspondent plus forcément au contrôleur initial, 
-je re-factorise le code en créant de nouveaux contrôleurs pour y injecter les méthodes et les routes qui ne correspondent plus aux anciens contrôleurs.
-Ainsi mes contrôleurs seront plus clairs et plus faciles à maintenir.
+Ayant des méthodes et des routes dans certains contrôleurs qui ne correspondent plus forcément au contrôleur initial (notamment pour les rendez-vous), 
+j'ai re-factorisé le code en créant de nouveaux contrôleurs pour y injecter les méthodes et les routes qui ne correspondent plus aux anciens contrôleurs.
+Mes contrôleurs seront plus clairs et plus faciles à maintenir.
 
 
 
