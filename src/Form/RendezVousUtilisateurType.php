@@ -77,6 +77,16 @@ class RendezVousUtilisateurType extends AbstractType
                 'data' => $builder->getData()->getMedecin()->getSpecialite()
             ])
 
+            /* ->add('utilisateur', EntityType::class, [
+                'class' => Utilisateur::class,
+                'choice_label' => 'nom',
+                'label' => 'Nom de l\'utilisateur',
+                'attr' => [
+                    'class' => 'form-control'
+                ],
+                'disabled' => true,
+            ]) */
+
             ->add('motifDeSejour', TextareaType::class, [
                 'label' => 'Indiquez le motif de sejour',
                 'attr' => [

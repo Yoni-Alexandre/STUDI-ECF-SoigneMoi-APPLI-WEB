@@ -2,25 +2,26 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\SpecialiteMedecin;
+use App\Entity\Medicament;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
-class SpecialiteMedecinCrudController extends AbstractCrudController
+class MedicamentCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return SpecialiteMedecin::class;
+        return Medicament::class;
     }
 
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
             // Nom d'affichage de l'entité au singulier et au pluriel
-            ->setEntityLabelInSingular('Spécialité')
-            ->setEntityLabelInPlural('Spécialités')
+            ->setEntityLabelInSingular('Médicament')
+            ->setEntityLabelInPlural('Médicaments')
             ;
     }
 
@@ -28,9 +29,8 @@ class SpecialiteMedecinCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            TextField::new('specialite', 'Spécialité')->setHelp('Veuillez saisir le nom de la spécialité'),
-            SlugField::new('slug')->setLabel('Slug')->setTargetFieldName('specialite')->setHelp('URL de la spécialité')
+            TextField::new('nom', 'Nom du médicament'),
+            TextEditorField::new('posologie', 'Posologie'),
         ];
     }
-
 }

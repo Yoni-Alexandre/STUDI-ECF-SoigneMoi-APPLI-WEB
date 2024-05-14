@@ -1614,13 +1614,372 @@ Ayant des méthodes et des routes dans certains contrôleurs qui ne corresponden
 j'ai re-factorisé le code en créant de nouveaux contrôleurs pour y injecter les méthodes et les routes qui ne correspondent plus aux anciens contrôleurs.
 Mes contrôleurs seront plus clairs et plus faciles à maintenir.
 
-#### Ajouts de nouveaux contrôleurs pour les rendez-vous et déplacement des fonctions
+### Ajouts de nouveaux contrôleurs pour les rendez-vous et déplacement des fonctions
 - `ajouterRendezVous()` dans le contrôleur `RendezVousAjoutController.php`
 - `modifierRendezVous()` dans le contrôleur `RendezVousModificationController.php`
 - `supprimerRendezVous()` dans le contrôleur `RendezVousAnnulationController.php`
 du contrôleur principal `RendezVousController.php` pour que les contrôleurs soient plus lisibles.
 
+### Modification d'entités pour correspondre aux fonctionnalités demandées dans le devoir
+- Modification de l'entité `Avis.php`, `Prescription.php` et `Medicaments.php` en ayant une relation `ManyToOne` pour les associer entre elles ainsi que les médecins et patients. 
+ 
+##### Avis.php
+```bash
+<?php
 
+namespace App\Entity;
+
+use App\Repository\AvisRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(repositoryClass: AvisRepository::class)]
+class Avis
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $libelle = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $date = null;
+
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $description = null;
+
+    #[ORM\ManyToOne(inversedBy: 'avis')]
+    private ?Medecin $medecin = null;
+
+    #[ORM\ManyToOne(inversedBy: 'avis')]
+    private ?Utilisateur $utilisateur = null;
+
+    #[ORM\ManyToOne(targetEntity: Prescription::class, inversedBy: 'avis')]
+    private ?Prescription $prescription = null;
+
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getLibelle(): ?string
+    {
+        return $this->libelle;
+    }
+
+    public function setLibelle(string $libelle): static
+    {
+        $this->libelle = $libelle;
+
+        return $this;
+    }
+
+    public function getDate(): ?\DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    public function setDate(\DateTimeInterface $date): static
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getMedecin(): ?Medecin
+    {
+        return $this->medecin;
+    }
+
+    public function setMedecin(?Medecin $medecin): static
+    {
+        $this->medecin = $medecin;
+
+        return $this;
+    }
+
+    public function getUtilisateur(): ?Utilisateur
+    {
+        return $this->utilisateur;
+    }
+
+    public function setUtilisateur(?Utilisateur $utilisateur): static
+    {
+        $this->utilisateur = $utilisateur;
+
+        return $this;
+    }
+    public function getPrescription(): ?Prescription
+    {
+        return $this->prescription;
+    }
+    public function setPrescription(?Prescription $prescription): self
+    {
+        $this->prescription = $prescription;
+
+        return $this;
+    }
+}
+```
+##### Prescription.php
+```bash
+<?php
+
+namespace App\Entity;
+
+use App\Repository\PrescriptionRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(repositoryClass: PrescriptionRepository::class)]
+class Prescription
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $dateDebutTraitement = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $dateFinTraitement = null;
+
+    #[ORM\ManyToOne(inversedBy: 'prescription')]
+    private ?Medicament $medicament = null;
+
+    #[ORM\ManyToOne(inversedBy: 'prescription')]
+    private ?Medecin $medecin = null;
+
+    /**
+     * @var Collection<int, Avis>
+     */
+    #[ORM\OneToMany(targetEntity: Avis::class, mappedBy: 'prescription')]
+    private Collection $avis;
+
+    #[ORM\Column(length: 255)]
+    private ?string $nom = null;
+
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function __construct()
+    {
+        $this->avis = new ArrayCollection();
+    }
+
+    public function __toString(): string
+    {
+        return $this->nom;
+    }
+
+    public function getDateDebutTraitement(): ?\DateTimeInterface
+    {
+        return $this->dateDebutTraitement;
+    }
+
+    public function setDateDebutTraitement(\DateTimeInterface $dateDebutTraitement): static
+    {
+        $this->dateDebutTraitement = $dateDebutTraitement;
+
+        return $this;
+    }
+
+    public function getDateFinTraitement(): ?\DateTimeInterface
+    {
+        return $this->dateFinTraitement;
+    }
+
+    public function setDateFinTraitement(\DateTimeInterface $dateFinTraitement): static
+    {
+        $this->dateFinTraitement = $dateFinTraitement;
+
+        return $this;
+    }
+
+    public function getMedicament(): ?Medicament
+    {
+        return $this->medicament;
+    }
+
+    public function setMedicament(?Medicament $medicament): static
+    {
+        $this->medicament = $medicament;
+
+        return $this;
+    }
+
+    public function getMedecin(): ?Medecin
+    {
+        return $this->medecin;
+    }
+
+    public function setMedecin(?Medecin $medecin): static
+    {
+        $this->medecin = $medecin;
+
+        return $this;
+    }
+
+
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): static
+    {
+        $this->nom = $nom;
+
+        return $this;
+    }
+    /**
+     * @return Collection<int, Avis>
+     */
+    public function getAvis(): Collection
+    {
+        return $this->avis;
+    }
+
+    public function addAvis(Avis $avi): self
+    {
+        if (!$this->avis->contains($avi)) {
+            $this->avis[] = $avi;
+            $avi->setPrescription($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAvis(Avis $avi): self
+    {
+        if ($this->avis->removeElement($avi)) {
+            // set the owning side to null (unless already changed)
+            if ($avi->getPrescription() === $this) {
+                $avi->setPrescription(null);
+            }
+        }
+
+        return $this;
+    }
+}
+```
+
+Modification des CRUDController associés
+
+##### AvisCrudController.php
+```bash
+<?php
+
+namespace App\Controller\Admin;
+
+use App\Entity\Avis;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+
+class AvisCrudController extends AbstractCrudController
+{
+    public static function getEntityFqcn(): string
+    {
+        return Avis::class;
+    }
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            // Nom d'affichage de l'entité au singulier et au pluriel
+            ->setEntityLabelInSingular('Avis')
+            ->setEntityLabelInPlural('Avis')
+            ;
+    }
+
+
+    public function configureFields(string $pageName): iterable
+    {
+        return [
+            TextField::new('libelle', 'Titre de l\'avis'),
+            DateField::new('date', 'Date de l\'avis'),
+            TextEditorField::new('description', 'Description de l\'avis'),
+            AssociationField::new('medecin')->setLabel('Médecin'),
+            AssociationField::new('utilisateur')->setLabel('Patient'),
+            AssociationField::new('prescription')->setLabel('Prescriptions'),
+        ];
+    }
+
+}
+````
+##### PrescriptionCrudController.php
+```bash
+<?php
+
+namespace App\Controller\Admin;
+
+use App\Entity\Prescription;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+
+class PrescriptionCrudController extends AbstractCrudController
+{
+    public static function getEntityFqcn(): string
+    {
+        return Prescription::class;
+    }
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            // Nom d'affichage de l'entité au singulier et au pluriel
+            ->setEntityLabelInSingular('Prescription')
+            ->setEntityLabelInPlural('Prescriptions')
+            ;
+    }
+
+
+    public function configureFields(string $pageName): iterable
+    {
+        return [
+            TextField::new('nom', 'Nom de la prescription'),
+            DateField::new('dateDebutTraitement', 'Date du début de traitement'),
+            DateField::new('dateFinTraitement', 'Date de fin de traitement'),
+            AssociationField::new('medicament')->setLabel('Médicament'),
+        ];
+    }
+
+}
+````
 
 ## API 
 Création d'une API REST pour les médecins avec les fonctionnalités pouvoir de saisir depuis son mobile, une prescription et un avis qu'il donne à un patient pour l'ajouter à son dossier.

@@ -16,78 +16,75 @@ class Prescription
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $libelle = null;
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $dateDebutTraitement = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $date = null;
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $dateFinTraitement = null;
 
-    #[ORM\Column(type: Types::TEXT)]
-    private ?string $description = null;
+    #[ORM\ManyToOne(inversedBy: 'prescription')]
+    private ?Medicament $medicament = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $nom_prenom_medecin = null;
-
-    #[ORM\ManyToOne(inversedBy: 'prescriptions')]
+    #[ORM\ManyToOne(inversedBy: 'prescription')]
     private ?Medecin $medecin = null;
 
-    #[ORM\OneToMany(targetEntity: Medicament::class, mappedBy: 'prescription')]
-    private Collection $medicaments;
+    /**
+     * @var Collection<int, Avis>
+     */
+    #[ORM\OneToMany(targetEntity: Avis::class, mappedBy: 'prescription')]
+    private Collection $avis;
 
-    public function __construct()
-    {
-        $this->medicaments = new ArrayCollection();
-    }
+    #[ORM\Column(length: 255)]
+    private ?string $nom = null;
+
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getLibelle(): ?string
+    public function __construct()
     {
-        return $this->libelle;
+        $this->avis = new ArrayCollection();
     }
 
-    public function setLibelle(string $libelle): static
+    public function __toString(): string
     {
-        $this->libelle = $libelle;
+        return $this->nom;
+    }
+
+    public function getDateDebutTraitement(): ?\DateTimeInterface
+    {
+        return $this->dateDebutTraitement;
+    }
+
+    public function setDateDebutTraitement(\DateTimeInterface $dateDebutTraitement): static
+    {
+        $this->dateDebutTraitement = $dateDebutTraitement;
 
         return $this;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDateFinTraitement(): ?\DateTimeInterface
     {
-        return $this->date;
+        return $this->dateFinTraitement;
     }
 
-    public function setDate(\DateTimeInterface $date): static
+    public function setDateFinTraitement(\DateTimeInterface $dateFinTraitement): static
     {
-        $this->date = $date;
+        $this->dateFinTraitement = $dateFinTraitement;
 
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getMedicament(): ?Medicament
     {
-        return $this->description;
+        return $this->medicament;
     }
 
-    public function setDescription(string $description): static
+    public function setMedicament(?Medicament $medicament): static
     {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    public function getNomPrenomMedecin(): ?string
-    {
-        return $this->nom_prenom_medecin;
-    }
-
-    public function setNomPrenomMedecin(string $nom_prenom_medecin): static
-    {
-        $this->nom_prenom_medecin = $nom_prenom_medecin;
+        $this->medicament = $medicament;
 
         return $this;
     }
@@ -104,30 +101,42 @@ class Prescription
         return $this;
     }
 
-    /**
-     * @return Collection<int, Medicament>
-     */
-    public function getMedicaments(): Collection
+
+    public function getNom(): ?string
     {
-        return $this->medicaments;
+        return $this->nom;
     }
 
-    public function addMedicament(Medicament $medicament): static
+    public function setNom(string $nom): static
     {
-        if (!$this->medicaments->contains($medicament)) {
-            $this->medicaments->add($medicament);
-            $medicament->setPrescription($this);
+        $this->nom = $nom;
+
+        return $this;
+    }
+    /**
+     * @return Collection<int, Avis>
+     */
+    public function getAvis(): Collection
+    {
+        return $this->avis;
+    }
+
+    public function addAvis(Avis $avi): self
+    {
+        if (!$this->avis->contains($avi)) {
+            $this->avis[] = $avi;
+            $avi->setPrescription($this);
         }
 
         return $this;
     }
 
-    public function removeMedicament(Medicament $medicament): static
+    public function removeAvis(Avis $avi): self
     {
-        if ($this->medicaments->removeElement($medicament)) {
+        if ($this->avis->removeElement($avi)) {
             // set the owning side to null (unless already changed)
-            if ($medicament->getPrescription() === $this) {
-                $medicament->setPrescription(null);
+            if ($avi->getPrescription() === $this) {
+                $avi->setPrescription(null);
             }
         }
 

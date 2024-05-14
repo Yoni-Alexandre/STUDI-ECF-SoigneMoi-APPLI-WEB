@@ -27,9 +27,6 @@ class Medecin
     #[ORM\ManyToOne(inversedBy: 'medecins')]
     private ?Utilisateur $utilisateur = null;
 
-    #[ORM\OneToMany(targetEntity: Prescription::class, mappedBy: 'medecin')]
-    private Collection $prescriptions;
-
     #[ORM\OneToMany(targetEntity: PlanningMedecin::class, mappedBy: 'medecin')]
     private Collection $planningMedecins;
 
@@ -43,12 +40,25 @@ class Medecin
     #[ORM\OneToMany(targetEntity: RendezVousUtilisateur::class, mappedBy: 'medecin')]
     private Collection $rendezVousUtilisateurs;
 
+    /**
+     * @var Collection<int, Avis>
+     */
+    #[ORM\OneToMany(targetEntity: Avis::class, mappedBy: 'medecin')]
+    private Collection $avis;
+
+    /**
+     * @var Collection<int, Prescription>
+     */
+    #[ORM\OneToMany(targetEntity: Prescription::class, mappedBy: 'medecin')]
+    private Collection $prescription;
+
     public function __construct()
     {
-        $this->prescriptions = new ArrayCollection();
         $this->planningMedecins = new ArrayCollection();
         $this->utilisateurs = new ArrayCollection();
         $this->rendezVousUtilisateurs = new ArrayCollection();
+        $this->avis = new ArrayCollection();
+        $this->prescription = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -105,36 +115,6 @@ class Medecin
     public function setUtilisateur(?Utilisateur $utilisateur): static
     {
         $this->utilisateur = $utilisateur;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Prescription>
-     */
-    public function getPrescriptions(): Collection
-    {
-        return $this->prescriptions;
-    }
-
-    public function addPrescription(Prescription $prescription): static
-    {
-        if (!$this->prescriptions->contains($prescription)) {
-            $this->prescriptions->add($prescription);
-            $prescription->setMedecin($this);
-        }
-
-        return $this;
-    }
-
-    public function removePrescription(Prescription $prescription): static
-    {
-        if ($this->prescriptions->removeElement($prescription)) {
-            // set the owning side to null (unless already changed)
-            if ($prescription->getMedecin() === $this) {
-                $prescription->setMedecin(null);
-            }
-        }
 
         return $this;
     }
@@ -235,6 +215,66 @@ class Medecin
             // set the owning side to null (unless already changed)
             if ($rendezVousUtilisateur->getMedecin() === $this) {
                 $rendezVousUtilisateur->setMedecin(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Avis>
+     */
+    public function getAvis(): Collection
+    {
+        return $this->avis;
+    }
+
+    public function addAvi(Avis $avi): static
+    {
+        if (!$this->avis->contains($avi)) {
+            $this->avis->add($avi);
+            $avi->setMedecin($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAvi(Avis $avi): static
+    {
+        if ($this->avis->removeElement($avi)) {
+            // set the owning side to null (unless already changed)
+            if ($avi->getMedecin() === $this) {
+                $avi->setMedecin(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Prescription>
+     */
+    public function getPrescription(): Collection
+    {
+        return $this->prescription;
+    }
+
+    public function addPrescription(Prescription $prescription): static
+    {
+        if (!$this->prescription->contains($prescription)) {
+            $this->prescription->add($prescription);
+            $prescription->setMedecin($this);
+        }
+
+        return $this;
+    }
+
+    public function removePrescription(Prescription $prescription): static
+    {
+        if ($this->prescription->removeElement($prescription)) {
+            // set the owning side to null (unless already changed)
+            if ($prescription->getMedecin() === $this) {
+                $prescription->setMedecin(null);
             }
         }
 
