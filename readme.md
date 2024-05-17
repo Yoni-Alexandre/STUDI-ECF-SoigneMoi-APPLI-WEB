@@ -2413,7 +2413,7 @@ Je fais un test dans via Postman de l'API pour voir si les données sont bien ex
 Pour la méthode POST, j'utilise les iri des entités `Medecin`, `Utilisateur` et `Prescription` pour les associer à l'entité `Avis` dans le body de la requête.
 Depuis Postman, je configure header pour que sa clé soit `Content-Type` et sa valeur `application/ld+json`
 
-Je soumets la requête ci-dessous dans le Body : 
+Je soumets la requête ci-dessous dans le Body en utilisant les iri pour les entités Medecin; Utilisateur et Préscription : 
 
 ```bash
 {
