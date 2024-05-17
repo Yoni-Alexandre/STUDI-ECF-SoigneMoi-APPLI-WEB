@@ -2153,9 +2153,287 @@ class AppFixtures extends Fixture
 }
 ```
 
-## API 
-Création d'une API REST pour les médecins avec les fonctionnalités pouvoir de saisir depuis son mobile, une prescription et un avis qu'il donne à un patient pour l'ajouter à son dossier.
-Un avis aura un libelle(un titre de l'avis), une date, une description, le nom et le prénom du médecin.
-Une préscription aura une liste de médicament, une posologie, une date de début de traitement ainsi  qu'une date de fin de traitement, la fate de fin pourra être modifié par le médecin si il juge que le patient est soigné.
+## Exposer une API avec API Platform en lecture et écriture pour les Médecins 
+
+*https://api-platform.com/docs/distribution/*
+
+API Platform est une API "Auto découvrable" qui fait partie des critères pour être une API RESTful. 
+Création d'une API REST avec API Platform pour les médecins pour pouvoir saisir depuis leur mobile, une prescription et un avis qu'il donne à un patient pour l'ajouter à son dossier.
+Un avis aura un libelle (un titre de l'avis), une date, une description, le nom et le prénom du médecin.
+Une préscription aura une liste de médicament, une posologie, une date de début de traitement ainsi qu'une date de fin de traitement, la fate de fin pourra être modifié par le médecin si il juge que le patient est soigné.
+
+Installation de API Platform avec la commande
+`composer require api`
+
+Après l'installation de API Platform, je modifie le prefix `/api` en `/apiMedecins` pour les routes de l'API dans le fichier `config/routes/api_platform.yaml`
+
+```bash 
+api_platform:
+    resource: .
+    type: api_platform
+    prefix: /apiMedecins
+```
+
+Ensuite j'indique les entités à exposer dans l'API (sérialisant en JSON) dans l'entête des annotations des entités `Avis.php` et `Prescription.php` 
+
+`#[ApiResource]` (en n'oubliant pas d'importer la classe `ApiResource` dans `ApiPlatform\Metadata\ApiResource` de API Platform).
+
+Tous les sous objets de l'entité `Avis.php` doivent avoirs dans leur entête d'annotation `#[ApiResource]` pour ne pas avoir de référence circulaire (boucle).
+
+Une référence circulaire se produit lorsqu'un objet contient une référence à un autre objet (sous objet de l'objet initial) qui contient une référence à l'objet d'origine.
+
+Entité `Avis.php`
+```bash
+namespace App\Entity;
+
+use ApiPlatform\Metadata\ApiResource;
+use App\Repository\AvisRepository;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(repositoryClass: AvisRepository::class)]
+#[ApiResource]
+class Avis
+{
+  ...
+}
+```
+et les objets (Sous objet de Avis) `Medecin.php`, `Utilisateur.php`, `Prescription.php`
+
+`Medecin.php`
+```bash
+namespace App\Entity;
+
+use ApiPlatform\Metadata\ApiResource;
+use App\Repository\MedecinRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(repositoryClass: MedecinRepository::class)]
+#[ApiResource] 
+class Medecin
+{
+  ...
+}
+```
+
+`Utilisateur.php`
+```bash
+namespace App\Entity;
+
+use ApiPlatform\Metadata\ApiResource;
+use App\Repository\UtilisateurRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+
+#[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
+#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+#[ApiResource]
+
+class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
+{
+    ...
+}
+```
+
+`Prescription.php`
+```bash
+namespace App\Entity;
+
+use ApiPlatform\Metadata\ApiResource;
+use App\Repository\PrescriptionRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(repositoryClass: PrescriptionRepository::class)]
+#[ApiResource]
+class Prescription
+{
+  ...
+}
+```
+
+#### Gestion des expositions des routes de l'API
+
+*https://api-platform.com/docs/core/operations/*
+
+Il est possible avec API Plateform de préciser si les valeurs par défaut ne conviennent pas (Tout est autorisé par défaut).
+
+Exemples: 
+- *Avoir une exposition en GET et pas en POST* 
+- *Accès à la route seulement pour les utilisateurs connectés ou juste les médecins, etc.*
+- *Limiter certaines opérations à certains rôles*
+- *Création de groupes de sérialisation pour les entités*
+
+Je crée les groupes de "sérialisation" `avis:read` et "désérialisation" `avis:write` en utilisant la convention de séparateur `:` pour les `Avis`, `Prescription` et `Medicament` pour ne pas exposer toutes les données de l'entité.
+
+`#[ApiResource(normalizationContext: normalizationContext: ['groups' => ['avis:read']]), denormalizationContext: ['groups' => ['avis:write']])]`
+
+et j'importe la classe `ApiResource` dans `ApiPlatform\Metadata\ApiResource` de API Platform.
+
+J'utilise aussi l'attribut `uriTemplate` pour personnaliser la route de l'API, car par défaut API Platform utilise l'iri de l'entité pour les routes de l'API et ajoute un pluriel ce qui donnait pour "Avis" -> "Aviss" avec deux "s".
+J'ajoute aussi l'attribut `security` pour limiter l'accès à la route seulement pour les utilisateurs connectés.avec un message d'erreur personnalisé.
+```bash
+#[ApiResource(
+    operations: [
+        new Get(
+            uriTemplate: '/avis/{id}',
+            normalizationContext: ['groups' => ['avis:read']]),
+        
+        new GetCollection(
+            uriTemplate: '/avis',
+            normalizationContext: ['groups' => ['avis:read']],
+            security: "is_granted('ROLE_ADMIN')",
+            securityMessage: "Vous n'avez pas les droits pour accéder à cette ressource"),
+
+        new Post(
+            uriTemplate: '/avis',
+            denormalizationContext: ['groups' => ['avis:write']],
+            security: "is_granted('ROLE_ADMIN')",
+            securityMessage: "Vous n'avez pas les droits pour accéder à cette ressource"),
+
+        new Delete(
+            uriTemplate: '/avis/{id}',
+            security: "is_granted('ROLE_ADMIN')",
+            securityMessage: "Vous n'avez pas les droits pour accéder à cette ressource")
+    ],
+    normalizationContext: ['groups' => ['avis:read']],
+    denormalizationContext: ['groups' => ['avis:write']]
+)]
+```
+Puis j'ajoute le groupe de sérialisation `avis:read` et désérialisation `avis:write` dans les autres entités qui ont une relation avec l'entité `Avis` pour éviter les références circulaires et pour ne pas exposer toutes les données de l'entité.
+J'en profite aussi pour personnaliser aussi les groupes de chaque entité
+
+Exemple sur la classe Medecin.php :
+```bash
+#[ApiResource(
+    normalizationContext: ['groups' => ['medecin:read']],
+    denormalizationContext: ['groups' => ['medecin:write']]
+)]
+class Medecin
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    #[ORM\Column(length: 255)]
+    #[Groups(['medecin:read', 'medecin:write', 'avis:read'])]
+    private ?string $nom = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $prenom = null;
+
+    #[ORM\Column(length: 255)]
+    #[Groups(['medecin:read', 'medecin:write', 'avis:read'])]
+    private ?string $matricule = null;
+
+    #[ORM\ManyToOne(inversedBy: 'medecins')]
+    private ?Utilisateur $utilisateur = null;
+
+    #[ORM\OneToMany(targetEntity: PlanningMedecin::class, mappedBy: 'medecin')]
+    private Collection $planningMedecins;
+
+    #[ORM\ManyToOne(inversedBy: 'medecins')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?SpecialiteMedecin $specialite = null;
+```
+Idem pour les autres entités qui ont une relation avec l'entité `Avis`.
+
+J'ajoute dans le fichier `security.yaml` (config/packages/security.yaml) l'autorisation à la route de l'API `apiMedecins/avis` provisoirement au role admin`- { path: ^/apiMedecin, roles: ROLE_ADMIN }`
+
+Je fais un test dans via Postman de l'API pour voir si les données sont bien exposées en JSON en utilisant le verbe GET  et GET COLLECTION.
+
+#### Méthode GET (retour via Postman)
+
+`http://127.0.0.1:8000/apiMedecins/avis/3`
+
+```bash
+{
+    "@context": "/apiMedecins/contexts/Avis",
+    "@id": "/apiMedecins/avis/3",
+    "@type": "Avis",
+    "libelle": "Eos sed voluptas ut aspernatur aut non.",
+    "date": "2024-05-25T00:00:00+00:00",
+    "description": "Id est iusto veniam assumenda ut est iusto. Occaecati iure alias aspernatur quia earum et. Qui at totam occaecati unde et reiciendis pariatur ipsum.",
+    "medecin": {
+        "@id": "/apiMedecins/medecins/67",
+        "@type": "Medecin",
+        "nom": "Laporte",
+        "matricule": "97932691"
+    }
+}
+```
+#### Méthode GET COLLECTION (retour via Postman)
+
+`http://127.0.0.1:8000/apiMedecins/avis/`
+
+```bash
+{
+    "@context": "/apiMedecins/contexts/Avis",
+    "@id": "/apiMedecins/avis",
+    "@type": "hydra:Collection",
+    "hydra:totalItems": 16,
+    "hydra:member": [
+        {
+            "@id": "/apiMedecins/avis/3",
+            "@type": "Avis",
+            "libelle": "Eos sed voluptas ut aspernatur aut non.",
+            "date": "2024-05-25T00:00:00+00:00",
+            "description": "Id est iusto veniam assumenda ut est iusto. Occaecati iure alias aspernatur quia earum et. Qui at totam occaecati unde et reiciendis pariatur ipsum.",
+            "medecin": {
+                "@id": "/apiMedecins/medecins/67",
+                "@type": "Medecin",
+                "nom": "Laporte",
+                "matricule": "97932691"
+            }
+        },
+        {
+            "@id": "/apiMedecins/avis/4",
+            "@type": "Avis",
+            "libelle": "Aut sequi qui nam voluptate sit culpa numquam.",
+            "date": "2024-05-17T00:00:00+00:00",
+            "description": "In consequatur accusantium ducimus in. Id natus voluptates et expedita. Ipsam nostrum et veritatis expedita corrupti.",
+            "medecin": {
+                "@id": "/apiMedecins/medecins/63",
+                "@type": "Medecin",
+                "nom": "Perez",
+                "matricule": "50971877"
+            }
+        }
+        ...
+```
+
+Pour la méthode POST, j'utilise les iri des entités `Medecin`, `Utilisateur` et `Prescription` pour les associer à l'entité `Avis` dans le body de la requête.
+Depuis Postman, je configure header pour que sa clé soit `Content-Type` et sa valeur `application/ld+json`
+
+Je soumets la requête ci-dessous dans le Body : 
+
+```bash
+{
+  "libelle": "Test API",
+  "date": "2024-05-15T14:28:46.849Z",
+  "description": "TestPOST API",
+  "medecin": "/apiMedecins/medecins/61",
+  "utilisateur": "/apiMedecins/utilisateurs/123",
+  "prescription": "/apiMedecins/prescriptions/11"
+}
+```
+Si les informations ne s'affichent pas correctement et que le code est bon, il faut vider le cache de l'API avec la commande `php bin/console cache:clear` pour que les modifications soient prises en compte.
+
+## Sécurité de l'API par authentification JWT
+Pour l'application web j'utilise le système de sécurité de Symfony avec les rôles pour limiter l'accès à certaines routes.
+Je hash les mots de passe des utilisateurs avec l'algorithme par défaut pour sécuriser les mots de passe.
+
+Pour l'API, j'utilise l'authentification JWT (JSON Web Token) pour sécuriser l'accès à l'API.
+
+
+
 
 

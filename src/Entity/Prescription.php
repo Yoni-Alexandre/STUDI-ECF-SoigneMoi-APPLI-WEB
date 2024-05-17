@@ -2,13 +2,19 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\PrescriptionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PrescriptionRepository::class)]
+#[ApiResource(
+    normalizationContext: ['groups' => ['prescription:read']],
+    denormalizationContext: ['groups' => ['prescription:write']]
+)]
 class Prescription
 {
     #[ORM\Id]
@@ -17,12 +23,15 @@ class Prescription
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['prescription:read', 'prescription:write', 'avis:read'])]
     private ?\DateTimeInterface $dateDebutTraitement = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['prescription:read', 'prescription:write', 'avis:read'])]
     private ?\DateTimeInterface $dateFinTraitement = null;
 
     #[ORM\ManyToOne(inversedBy: 'prescription')]
+    #[Groups(['prescription:read', 'prescription:write', 'avis:read'])]
     private ?Medicament $medicament = null;
 
     #[ORM\ManyToOne(inversedBy: 'prescription')]
@@ -35,6 +44,7 @@ class Prescription
     private Collection $avis;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['prescription:read', 'prescription:write'])]
     private ?string $nom = null;
 
 

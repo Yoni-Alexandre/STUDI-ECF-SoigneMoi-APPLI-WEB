@@ -2,13 +2,48 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
 use App\Repository\AvisRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 
 #[ORM\Entity(repositoryClass: AvisRepository::class)]
+#[ApiResource(
+    operations: [
+        new Get(
+            uriTemplate: '/avis/{id}',
+            normalizationContext: ['groups' => ['avis:read']]
+        ),
+        
+        new GetCollection(
+            uriTemplate: '/avis',
+            normalizationContext: ['groups' => ['avis:read']],
+            //security: "is_granted('ROLE_ADMIN')",
+            //securityMessage: "Vous n'avez pas les droits pour accéder à cette ressource"
+        ),
+
+        new Post(
+            uriTemplate: '/avis',
+            denormalizationContext: ['groups' => ['avis:write']],
+            //security: "is_granted('ROLE_ADMIN')",
+            //securityMessage: "Vous n'avez pas les droits pour accéder à cette ressource"
+        ),
+
+        new Delete(
+            uriTemplate: '/avis/{id}',
+            //security: "is_granted('ROLE_ADMIN')",
+            //securityMessage: "Vous n'avez pas les droits pour accéder à cette ressource"
+        )
+    ],
+    normalizationContext: ['groups' => ['avis:read']],
+    denormalizationContext: ['groups' => ['avis:write']]
+)]
 class Avis
 {
     #[ORM\Id]
@@ -17,15 +52,19 @@ class Avis
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['avis:read', 'avis:write'])]
     private ?string $libelle = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['avis:read', 'avis:write'])]
     private ?\DateTimeInterface $date = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['avis:read', 'avis:write'])]
     private ?string $description = null;
 
     #[ORM\ManyToOne(inversedBy: 'avis')]
+    #[Groups(['avis:read', 'avis:write'])]
     private ?Medecin $medecin = null;
 
     #[ORM\ManyToOne(inversedBy: 'avis')]

@@ -2,12 +2,18 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\MedecinRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MedecinRepository::class)]
+#[ApiResource(
+    normalizationContext: ['groups' => ['medecin:read']],
+    denormalizationContext: ['groups' => ['medecin:write']]
+)]
 class Medecin
 {
     #[ORM\Id]
@@ -16,12 +22,14 @@ class Medecin
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['medecin:read', 'medecin:write', 'avis:read'])]
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
     private ?string $prenom = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['medecin:read', 'medecin:write', 'avis:read'])]
     private ?string $matricule = null;
 
     #[ORM\ManyToOne(inversedBy: 'medecins')]

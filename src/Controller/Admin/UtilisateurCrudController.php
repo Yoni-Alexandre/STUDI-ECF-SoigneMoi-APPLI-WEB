@@ -38,6 +38,9 @@ class UtilisateurCrudController extends AbstractCrudController
             // onlyOnIndex() signifie que ce champ ne sera affiché que dans la liste des utilisateurs (sur EasyAdmin) et pas dans la modification de l'utilisateur
             // pour éviter que l'administrateur modifie les Emails des utilisateurs
             EmailField::new('email')->setLabel('Email')->onlyOnIndex(),
+            TextField::new('adresse_postale')->setLabel('Adresse postale'),
+            EmailField::new('email')->setLabel('Email'),
+            TextField::new('password')->setLabel('Mot de passe'),
             AssociationField::new('medecins')->setLabel('Médecins'),
         ];
     }
