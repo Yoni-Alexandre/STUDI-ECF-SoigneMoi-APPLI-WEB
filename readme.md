@@ -54,10 +54,10 @@ DATABASE_URL="mysql://root@127.0.0.1:3306/soignemoi?serverVersion=8.0.32&charset
 ```bash  
 symfony console doctrine:database:create
 ```  
-## Création des Entités  
-  
-#### Entité Utilisateur (sécurisé)  
-  
+## Création des Entités
+
+#### Entité Utilisateur (sécurisé)
+
 ```bash  
 symfony console make:user  
 The name of the security user class (e.g. User) [User]:  > Utilisateur  
@@ -70,7 +70,7 @@ Does this app need to hash/check user passwords? (yes/no) [yes]:
  > yes
  ```  
 - Champs de l'entité :
-   - Les champs **email** et **password** sont créés lors de la création du **make:user**
+    - Les champs **email** et **password** sont créés lors de la création du **make:user**
 - nom : `nom`, type : `string`, longueur : `255`
 - prenom : `prenom`, type : `string`, longueur : `255`
 - adresse_postale : `adresse_postale`, type : `text`
@@ -84,7 +84,7 @@ symfony console make:entity
 - Nom de l'entité : Sejour
 
 Champs de l'entité :
-   - Champ : ```date_debut```, type : ```datetime```, null en BDD : ```non```
+- Champ : ```date_debut```, type : ```datetime```, null en BDD : ```non```
 - Champ : ```date_fin```, type : ```datetime```, null en BDD : ```non```
 - Champ : ```motif```, type : ```string```, longueur : ```255```, null en BDD : ```non```
 
@@ -108,7 +108,7 @@ Champs de l'entité :
 - Nom de l'entité : Prescription
 
 Champs de l'entité :
-   - Champ : ```libelle```, type : ```string```, longueur : ```255```, null en BDD : ```non```
+- Champ : ```libelle```, type : ```string```, longueur : ```255```, null en BDD : ```non```
 - Champ : ```date```, type : ```datetime```, null en BDD : ```non```
 - Champ : ```description```, type : ```text```, null en BDD : ```non```
 - Champ : ```nom_prenom_medecin```, type : ```string```, longueur : ```255```, null en BDD : ```non```
@@ -118,7 +118,7 @@ Champs de l'entité :
 - Nom de l'entité : Medicament
 
 Champs de l'entité :
-   - Champ : ```nom```, type : ```string```, longueur : ```255```, null en BDD : ```non```
+- Champ : ```nom```, type : ```string```, longueur : ```255```, null en BDD : ```non```
 - Champ : ```posologie```, type : ```string```, longueur : ```255```, null en BDD : ```non```
 - Champ : ```date_debut_traitement```, type : ```datetime```, null en BDD : ```non```
 - Champ : ```date_fin_traitement```, type : ```datetime```, null en BDD : ```non```
@@ -127,7 +127,7 @@ Champs de l'entité :
 - Nom de l'entité : PlanningMedecin
 
 Champs de l'entité :
-   - Champ : ```date```, type : ```datetime```, null en BDD : ```non```
+- Champ : ```date```, type : ```datetime```, null en BDD : ```non```
 - Champ : ```nombre_patients_max```, type : ```integer```, longueur : ```255```, null en BDD : ```non```
 
 ## Définition des Relations
@@ -158,14 +158,14 @@ What type of relationship is this?
 - Relation entre `Sejour` et `Utilisateur` : **ManyToOne**
 - Chaque `Sejour` est lié à (possède) un `Utilisateur`.
 - Chaque `Utilisateur` peut être lié à (peut avoir) plusieurs objets `Sejour`.
-   - Nom de l'entité : Sejour
-      - Champs de l'entité : `utilisateur`, type : `relation (ManyToOne)`, classe cible : `Utilisateur`
+    - Nom de l'entité : Sejour
+        - Champs de l'entité : `utilisateur`, type : `relation (ManyToOne)`, classe cible : `Utilisateur`
 #  
 - Relation entre `Sejour` et `Medecin` : **ManyToOne**
 - Chaque `Sejour` est lié à (possède) un `Medecin`.
 - Chaque `Medecin` peut être lié à (peut avoir) plusieurs objets `Sejour`.
-   - Nom de l'entité : Sejour
-      - Champs de l'entité : `medecin`, type : `relation (ManyToOne)`, classe cible : `Medecin`
+    - Nom de l'entité : Sejour
+        - Champs de l'entité : `medecin`, type : `relation (ManyToOne)`, classe cible : `Medecin`
 
 - Relation entre `Medecin` et `Specialite` : **ManyToOne**
 - Chaque `Medecin` est lié à (possède) une `Specialite`.
@@ -176,36 +176,36 @@ What type of relationship is this?
 - Relation entre `Medecin` et `Utilisateur` : **ManyToOne**
 - Chaque `Medecin` est lié à (possède) un `Utilisateur`.
 - Chaque `Utilisateur` peut être lié à (peut avoir) plusieurs objets `Medecin`.
-   - Nom de l'entité : Medecin
-      - Champs de l'entité : `utilisateur`, type : `relation (ManyToOne)`, classe cible : `Utilisateur`
+    - Nom de l'entité : Medecin
+        - Champs de l'entité : `utilisateur`, type : `relation (ManyToOne)`, classe cible : `Utilisateur`
 #  
 - Relation entre `Prescription` et `Medecin` : **ManyToOne**
 - Chaque `Prescription` est lié à (possède) un `Medecin`.
 - Chaque `Medecin` peut être lié à (peut avoir) plusieurs objets `Prescription`.
-   - Nom de l'entité : Prescription
-      - Champs de l'entité : `medecin`, type : `relation (ManyToOne)`, classe cible : `Medecin`
+    - Nom de l'entité : Prescription
+        - Champs de l'entité : `medecin`, type : `relation (ManyToOne)`, classe cible : `Medecin`
 #  
 - Relation entre `Medicament` et `Prescription` : **ManyToOne**
 - Chaque `Medicament` est lié à (possède) un `Prescription`.
 - Chaque `Prescription` peut être lié à (peut avoir) plusieurs objets `Medicament`.
-   - Nom de l'entité : Medicament
-      - Champs de l'entité : `prescription`, type : `relation (ManyToOne)`, classe cible : `Prescription`
+    - Nom de l'entité : Medicament
+        - Champs de l'entité : `prescription`, type : `relation (ManyToOne)`, classe cible : `Prescription`
 #  
 - Relation entre `PlanningMedecin` et `Medecin` : **ManyToOne**
 - Chaque `PlanningMedecin` est lié à (possède) un `Medecin`.
 - Chaque `Medecin` peut être lié à (peut avoir) plusieurs objets `PlanningMedecin`.
-   - Nom de l'entité : PlanningMedecin
-      - Champs de l'entité : `medecin`, type : `relation (ManyToOne)`, classe cible : `Medecin`
+    - Nom de l'entité : PlanningMedecin
+        - Champs de l'entité : `medecin`, type : `relation (ManyToOne)`, classe cible : `Medecin`
 #  
 #### Création de la migration
 ```bash  
 symfony console make:migration
 ```  
-#### Exécution de la migration  
+#### Exécution de la migration
 ```bash  
 symfony console doctrine:migrations:migrate
 ```  
-## Création du contrôleur d'inscription des utilisateurs (patients)  
+## Création du contrôleur d'inscription des utilisateurs (patients)
 ```bash  
 symfony console make:controller  
 Choose a name for your controller class (e.g. OrangeChefController):  
@@ -213,8 +213,8 @@ Choose a name for your controller class (e.g. OrangeChefController):
  created: src/Controller/InscriptionController.php  created: templates/inscription/index.html.twig  
   Success! 
 ```
-## Création du formulaire des utilisateurs (patients)  
-#### Formulaire de création de comptes pour les utilisateurs  
+## Création du formulaire des utilisateurs (patients)
+#### Formulaire de création de comptes pour les utilisateurs
 ```bash  
 symfony console make:form  
 The name of the form class (e.g. GentlePuppyType):  
@@ -224,7 +224,7 @@ The name of the form class (e.g. GentlePuppyType):
   
  created: src/Form/InscriptionUtilisateurType.php  Success! 
  ```  
-#### Lier le contrôleur `InscriptionController`au  formulaire `InscriptionUtilisateurType`  
+#### Lier le contrôleur `InscriptionController`au  formulaire `InscriptionUtilisateurType`
 ```bash  
 $utilisateur = new Utilisateur(); $form = $this->createForm(InscriptionUtilisateurType::class, $utilisateur);    
  return $this->render('inscription/index.html.twig', [    
@@ -237,7 +237,7 @@ et ajouter :
 twig:     
   form_themes: ['bootstrap_5_layout.html.twig']
 ```  
-#### Création du formulaire (Exemple du formulaire d'inscription)  
+#### Création du formulaire (Exemple du formulaire d'inscription)
 ```bash  
 public function buildForm(FormBuilderInterface $builder, array $options): void {    
     $builder    
@@ -868,7 +868,7 @@ Ajout de l' `include` en PHP avec TWIG dans la partie vue de l'espace personnel 
 
 *https://symfony.com/doc/current/testing.html*
 
->" Test unitaire : Un test unitaire est une procédure automatisée visant à vérifier le bon fonctionnement individuel d'une petite unité de code, comme une fonction ou une méthode, en isolant son comportement du reste du système. " 
+>" Test unitaire : Un test unitaire est une procédure automatisée visant à vérifier le bon fonctionnement individuel d'une petite unité de code, comme une fonction ou une méthode, en isolant son comportement du reste du système. "
 
 >" Test fonctionnel : Un test fonctionnel est une procédure automatisée visant à vérifier le bon fonctionnement d'une fonctionnalité ou d'un ensemble de fonctionnalités d'un logiciel du point de vue de l'utilisateur, en simulant des scénarios d'utilisation réels. "
 
@@ -959,12 +959,12 @@ Choose a class name for your test, like:
            
   Success!
 ```
-Les étapes suivantes seront : 
+Les étapes suivantes seront :
 1. Création d'une base de données fictives de test (soignemoi_test)
 2. Création d'un client pour simuler une requête HTTP
 3. Remplir les champs du formulaire
 4. Test et suivi de la redirection
-5. Vérifier si dans la page de redirection (message flash), le message:  
+5. Vérifier si dans la page de redirection (message flash), le message:
 >" Votre compte est bien créé. Vous pouvez vous connecter."
 
 est bien présent.
@@ -977,7 +977,7 @@ symfony console doctrine:database:create --env=test
 Created database `soignemoi_test` for connection named default
 ```
 
-Ajout des tables qui se trouvent dans la base de données de production avec les flags `-n` (non interactif) et `--env=test`: 
+Ajout des tables qui se trouvent dans la base de données de production avec les flags `-n` (non interactif) et `--env=test`:
 ```bash
 symfony console doctrine:migrations:migrate -n --env=test
 ```
@@ -1292,7 +1292,7 @@ class RendezVousController extends AbstractController
     }
 }
 ```
-Sa vue associée pour remplir le formulaire : 
+Sa vue associée pour remplir le formulaire :
 ```bash
 {% extends 'base.html.twig' %}
 
@@ -1521,10 +1521,10 @@ $planningMedecinRepo = $options['planningMedecinRepository'];
 ```
 Vérification des places disponibles avant d'entrer dans le formulaire dans le contrôleur RendezVousController.php
 
-La fonction `ajouterRendezVous()` crée un nouvel objet de rendez-vous pour l'utilisateur qui est actuellement connecté, elle trouve le médecin dans la base de données à l'aide de son identifiant, puis vérifie la disponibilité d'un créneau horaire pour ce médecin. 
-S'il est disponible, la fonction `ajouterRendezVous()` crée un formulaire pour le rendez-vous. 
-Si le formulaire est soumis et valide, elle vérifie si suffisamment de places sont disponibles pour le nombre de places demandées. 
-Si oui, elle met à jour le nombre de places disponibles et enregistre les détails du rendez-vous dans la base de données. 
+La fonction `ajouterRendezVous()` crée un nouvel objet de rendez-vous pour l'utilisateur qui est actuellement connecté, elle trouve le médecin dans la base de données à l'aide de son identifiant, puis vérifie la disponibilité d'un créneau horaire pour ce médecin.
+S'il est disponible, la fonction `ajouterRendezVous()` crée un formulaire pour le rendez-vous.
+Si le formulaire est soumis et valide, elle vérifie si suffisamment de places sont disponibles pour le nombre de places demandées.
+Si oui, elle met à jour le nombre de places disponibles et enregistre les détails du rendez-vous dans la base de données.
 Pour finir, la fonction renvoie un message de validation ou non du rendez-vous et redirige l'utilisateur.
 ```bash
 #[Route('rendez_vous/ajouter/{medecinId}', name: 'app_rendez-vous_ajouter')]
@@ -1610,7 +1610,7 @@ Pour finir, la fonction renvoie un message de validation ou non du rendez-vous e
     }
 ```
 ## Re-factorisation du code
-Ayant des méthodes et des routes dans certains contrôleurs qui ne correspondent plus forcément au contrôleur initial (notamment pour les rendez-vous), 
+Ayant des méthodes et des routes dans certains contrôleurs qui ne correspondent plus forcément au contrôleur initial (notamment pour les rendez-vous),
 j'ai re-factorisé le code en créant de nouveaux contrôleurs pour y injecter les méthodes et les routes qui ne correspondent plus aux anciens contrôleurs.
 Mes contrôleurs seront plus clairs et plus faciles à maintenir.
 
@@ -1618,11 +1618,11 @@ Mes contrôleurs seront plus clairs et plus faciles à maintenir.
 - `ajouterRendezVous()` dans le contrôleur `RendezVousAjoutController.php`
 - `modifierRendezVous()` dans le contrôleur `RendezVousModificationController.php`
 - `supprimerRendezVous()` dans le contrôleur `RendezVousAnnulationController.php`
-du contrôleur principal `RendezVousController.php` pour que les contrôleurs soient plus lisibles.
+  du contrôleur principal `RendezVousController.php` pour que les contrôleurs soient plus lisibles.
 
 ### Modification d'entités pour correspondre aux fonctionnalités demandées dans le devoir
-- Modification de l'entité `Avis.php`, `Prescription.php` et `Medicaments.php` en ayant une relation `ManyToOne` pour les associer entre elles ainsi que les médecins et patients. 
- 
+- Modification de l'entité `Avis.php`, `Prescription.php` et `Medicaments.php` en ayant une relation `ManyToOne` pour les associer entre elles ainsi que les médecins et patients.
+
 ##### Avis.php
 ```bash
 <?php
@@ -2153,11 +2153,11 @@ class AppFixtures extends Fixture
 }
 ```
 
-## Exposer une API avec API Platform en lecture et écriture pour les Médecins 
+## Exposer une API avec API Platform en lecture et écriture pour les Médecins
 
 *https://api-platform.com/docs/distribution/*
 
-API Platform est une API "Auto découvrable" qui fait partie des critères pour être une API RESTful. 
+API Platform est une API "Auto découvrable" qui fait partie des critères pour être une API RESTful.
 Création d'une API REST avec API Platform pour les médecins pour pouvoir saisir depuis leur mobile, une prescription et un avis qu'il donne à un patient pour l'ajouter à son dossier.
 Un avis aura un libelle (un titre de l'avis), une date, une description, le nom et le prénom du médecin.
 Une préscription aura une liste de médicament, une posologie, une date de début de traitement ainsi qu'une date de fin de traitement, la fate de fin pourra être modifié par le médecin si il juge que le patient est soigné.
@@ -2174,7 +2174,7 @@ api_platform:
     prefix: /apiMedecins
 ```
 
-Ensuite j'indique les entités à exposer dans l'API (sérialisant en JSON) dans l'entête des annotations des entités `Avis.php` et `Prescription.php` 
+Ensuite j'indique les entités à exposer dans l'API (sérialisant en JSON) dans l'entête des annotations des entités `Avis.php` et `Prescription.php`
 
 `#[ApiResource]` (en n'oubliant pas d'importer la classe `ApiResource` dans `ApiPlatform\Metadata\ApiResource` de API Platform).
 
@@ -2265,8 +2265,8 @@ class Prescription
 
 Il est possible avec API Plateform de préciser si les valeurs par défaut ne conviennent pas (Tout est autorisé par défaut).
 
-Exemples: 
-- *Avoir une exposition en GET et pas en POST* 
+Exemples:
+- *Avoir une exposition en GET et pas en POST*
 - *Accès à la route seulement pour les utilisateurs connectés ou juste les médecins, etc.*
 - *Limiter certaines opérations à certains rôles*
 - *Création de groupes de sérialisation pour les entités*
@@ -2413,7 +2413,7 @@ Je fais un test dans via Postman de l'API pour voir si les données sont bien ex
 Pour la méthode POST, j'utilise les iri des entités `Medecin`, `Utilisateur` et `Prescription` pour les associer à l'entité `Avis` dans le body de la requête.
 Depuis Postman, je configure header pour que sa clé soit `Content-Type` et sa valeur `application/ld+json`
 
-Je soumets la requête ci-dessous dans le Body en utilisant les iri pour les entités Medecin; Utilisateur et Préscription : 
+Je soumets la requête ci-dessous dans le Body en utilisant les iri pour les entités Medecin; Utilisateur et Préscription :
 
 ```bash
 {
@@ -2428,12 +2428,259 @@ Je soumets la requête ci-dessous dans le Body en utilisant les iri pour les ent
 Si les informations ne s'affichent pas correctement et que le code est bon, il faut vider le cache de l'API avec la commande `php bin/console cache:clear` pour que les modifications soient prises en compte.
 
 ## Sécurité de l'API par authentification JWT
-Pour l'application web j'utilise le système de sécurité de Symfony avec les rôles pour limiter l'accès à certaines routes.
+
+Pour l'application web j'utilise le système de sécurité de Symfony avec les rôles pour limiter l'accès à certaines routes.    
 Je hash les mots de passe des utilisateurs avec l'algorithme par défaut pour sécuriser les mots de passe.
 
 Pour l'API, j'utilise l'authentification JWT (JSON Web Token) pour sécuriser l'accès à l'API.
 
+*https://api-platform.com/docs/core/jwt/#installing-lexikjwtauthenticationbundle*
 
+```markdown
+## ⚠️ Attention Important
+Dans le fichier php.ini, décommenter l'extension sodium pour qu'elle soit active
+"extension=sodium"
+```
 
+Installation du bundle `lexik/jwt-authentication-bundle` avec la commande :
 
+`composer require lexik/jwt-authentication-bundle`
 
+Avant de Créer une clé privée et publique pour l'API, il faut vérifier que OpenSSL est installé sur le serveur   
+en utilisant cette commande :
+
+`openssl version`
+
+```markdown
+## ⚠️ Attention Important
+Pour un serveur Windows,
+
+Si OpenSSL n'est pas installé ou s'il est dans une ancienne version (version actuelle 3.3.0), se rendre sur le site *https://www.openssl.org/source/* ou  *https://slproweb.com/products/Win32OpenSSL.html* pour télécharger et installer la dernière version d'OpenSSL.
+
+Ajouter dans le variables d'environnements de Windows le chemin `C:\Program Files\OpenSSL-Win64\bin`
+```
+Création d'une clé privée et publique pour l'API avec la commande :
+
+`symfony console lexik:jwt:generate-keypair`
+
+un message validera la commande
+`[OK] Done! `
+
+Les clés seront créées dans le répertoire `config/jwt`. (Exclure du dépot git via le .gitignore)
+
+Configuration du fichier `config/packages/security.yaml` pour l'authentification JWT en ajoutant dans `api` :
+
+```bash 
+        api:
+            pattern: ^/apiMedecins
+            stateless: true
+            provider: app_user_provider
+            jwt: ~
+```
+
+Mettre à true `stateless: true` signifie que l'application est "SANS ETAT" donc l'application ne conserve pas de sessions pour l'authetification.
+Il faut à chaque fois prouver dans l'entête que l'on est le bon utilisateur.
+
+Cela est utile pour les API et les services où chaque requête doit être indépendante et contenir ses propres informations d'authentification.
+
+Tous les firewalls :
+
+```bash
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            pattern: ^/
+            form_login:
+                # app_connexion est le nom de la route de mon contrôleur 'ConnexionController'.
+                # Si je modifie la route dans mon contrôleur, je dois aussi la modifier ici.
+                login_path: app_connexion
+                check_path: app_connexion
+            # Chemin de déconnexion de l'utilisateur (app_deconnexion définit dans ConnexionController.php
+            logout:
+                path: app_deconnexion
+            lazy: true
+            provider: app_user_provider
+
+        api:
+            pattern: ^/apiMedecins
+            stateless: true
+            provider: app_user_provider
+            jwt: ~
+```
+
+Ajout de la route `/auth` dans le fichier `config/routes.yaml` pour l'authentification JWT
+
+```bash
+controllers:
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
+    type: attribute
+auth:
+    path: /auth
+    methods: ['POST']
+```   
+
+Le fichier `config/packages/lexik_jwt_authentication.yaml` est configuré automatiquement lors de l'installation pour l'authentification JWT
+
+```bash 
+lexik_jwt_authentication:
+    secret_key: '%env(resolve:JWT_SECRET_KEY)%'
+    public_key: '%env(resolve:JWT_PUBLIC_KEY)%'
+    pass_phrase: '%env(JWT_PASSPHRASE)%'
+```    
+
+Modification du fichier `/config/packages/api_platform.yaml` pour configurer l'authentification JWT pour l'API
+
+```bash 
+api_platform:
+    title: API SoigneMoi
+    version: 1.0.0
+    formats:
+        jsonld: ['application/ld+json']
+    docs_formats:
+        jsonld: ['application/ld+json']
+        jsonopenapi: ['application/vnd.openapi+json']
+        html: ['text/html']
+    defaults:
+        stateless: true
+        cache_headers:
+            vary: ['Content-Type', 'Authorization', 'Origin']
+        extra_properties:
+            standard_put: true
+            rfc_7807_compliant_errors: true
+    keep_legacy_inflector: false
+    use_symfony_listeners: true
+
+    swagger:
+        api_keys:
+            JWT:
+                name: Authorization
+                type: header
+``` 
+
+Ajout dans le fichier security.yaml du firewall dédié à l'authetification JWT `auth`
+
+```bash
+        auth:
+            pattern: ^/auth
+            stateless: true
+            provider: app_user_provider
+            json_login:
+                check_path: /auth
+                username_path: email
+                password_path: password
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+```
+
+J'aurais pu gérer dans le même firewall que ^/apiMedecins mais pour plus de clarté j'ai séparé les deux.
+```markdown
+## ⚠️ Exemple de ce que pourrais donner les deux patterns dans le meme firewall
+```
+```bash
+        api:
+            pattern: ^/(apiMedecins|auth)
+            stateless: true
+            provider: app_user_provider
+            json_login:
+                check_path: /auth
+                username_path: email
+                password_path: password
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+            jwt: ~
+```
+
+Le fichier security.yaml en entier
+
+```bash
+security:
+    # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+    # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
+    providers:
+        # used to reload user from session & other features (e.g. switch_user)
+        app_user_provider:
+            entity:
+                class: App\Entity\Utilisateur
+                property: email
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            pattern: ^/
+            form_login:
+                # app_connexion est le nom de la route de mon contrôleur 'ConnexionController'.
+                # Si je modifie la route dans mon contrôleur, je dois aussi la modifier ici.
+                login_path: app_connexion
+                check_path: app_connexion
+            # Chemin de déconnexion de l'utilisateur (app_deconnexion définit dans ConnexionController.php
+            logout:
+                path: app_deconnexion
+            lazy: true
+            provider: app_user_provider
+
+        auth:
+            pattern: ^/auth
+            stateless: true
+            provider: app_user_provider
+            json_login:
+                check_path: /auth
+                username_path: email
+                password_path: password
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+        api:
+            pattern: ^/apiMedecins
+            stateless: true
+            provider: app_user_provider
+            jwt: ~
+
+    access_control:
+        - { path: ^/apiMedecins, roles: ROLE_USER }
+        - { path: ^/compte, roles: ROLE_USER }
+        - { path: ^/admin, roles: ROLE_ADMIN }
+        # Permet l'accès anonyme aux pages d'accueil et de connexion
+        #- { path: ^/accueil, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        #- { path: ^/connexion, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        #- { path: ^/inscription, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+
+when@test:
+    security:
+        password_hashers:
+            # By default, password hashers are resource intensive and take time. This is
+            # important to generate secure password hashes. In tests however, secure hashes
+            # are not important, waste resources and increase test times. The following
+            # reduces the work factor to the lowest possible values.
+            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+                algorithm: auto
+                cost: 4 # Lowest possible value for bcrypt
+                time_cost: 3 # Lowest possible value for argon
+                memory_cost: 10 # Lowest possible value for argon
+
+```
+
+Sur la page de la documentation de l'API (Pour ma part l'URI est configurée à /apiMedecins) une nouvelle section apparait en POST (comme configuré dans le fichier `config/routes.yaml`)
+
+![img.png](Readme/img.png)
+
+Ce qui me permet de récupérer le token JWT pour l'authentification de l'API.
+![img.png](Readme/Token.png)
+
+Maintenant je vais configurer les accès aux routes de l'API avec les rôles pour limiter l'accès à certaines routes.
+
+```bash
+    access_control:
+        - { path: ^/apiMedecins/, roles: ROLE_ADMIN }   # API avec accès administrateur (A changer - temporaire)
+        - { path: ^/admin, roles: ROLE_ADMIN }          # Panneau d'aministration (admin et plus tard secretaires)
+        - { path: ^/connexion, roles: PUBLIC_ACCESS }   # Page de connexion
+        - { path: ^/apiMedecins, roles: PUBLIC_ACCESS } # APIs ouverte publique
+        - { path: ^/auth, roles: PUBLIC_ACCESS }        # Appels relatifs à l'authentification (Login/logout)
+        - { path: ^/$, roles: PUBLIC_ACCESS }           # Accueil
+        - { path: ^/, roles: PUBLIC_ACCESS }            # Tous les autres chemins
+```

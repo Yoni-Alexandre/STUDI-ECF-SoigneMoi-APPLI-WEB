@@ -13,7 +13,25 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+
+        auth:
+            pattern: ^/auth
+            stateless: true
+            provider: app_user_provider
+            json_login:
+                check_path: /auth
+                username_path: email
+                password_path: password
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+        api:
+            pattern: ^/apiMedecins
+            stateless: true
+            provider: app_user_provider
+            jwt: ~
+
         main:
+            pattern: ^/
             form_login:
                 # app_connexion est le nom de la route de mon contrôleur 'ConnexionController'.
                 # Si je modifie la route dans mon contrôleur, je dois aussi la modifier ici.
@@ -25,20 +43,15 @@ security:
             lazy: true
             provider: app_user_provider
 
-            # activate different ways to authenticate
-            # https://symfony.com/doc/current/security.html#the-firewall
-
-            # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
-
-    # Easy way to control access for large sections of your site
-    # Note: Only the *first* access control that matches will be used
     access_control:
+        - { path: ^/apiMedecins, roles: ROLE_ADMIN }
+        - { path: ^/apiMedecins, roles: ROLE_ADMIN }
         - { path: ^/compte, roles: ROLE_USER }
         - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/apiMedecin, roles: ROLE_ADMIN }
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        # Permet l'accès anonyme aux pages d'accueil et de connexion
+        #- { path: ^/accueil, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        #- { path: ^/connexion, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        #- { path: ^/inscription, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
 when@test:
     security:
