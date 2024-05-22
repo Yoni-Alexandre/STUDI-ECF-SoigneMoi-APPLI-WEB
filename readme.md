@@ -2684,3 +2684,4 @@ Maintenant je vais configurer les accès aux routes de l'API avec les rôles pou
         - { path: ^/$, roles: PUBLIC_ACCESS }           # Accueil
         - { path: ^/, roles: PUBLIC_ACCESS }            # Tous les autres chemins
 ```
+
