@@ -2709,3 +2709,154 @@ Maintenant je vais configurer les accès aux routes de l'API avec les rôles pou
         - { path: ^/$, roles: PUBLIC_ACCESS }           # Accueil
         - { path: ^/, roles: PUBLIC_ACCESS }            # Tous les autres chemins
 ```
+
+## Frontend
+
+#### Mise en place du Frontend (navbar et footer)
+
+Pour le Frontend, j'utilise le moteur de template Twig de Symfony pour générer les pages HTML.
+
+Je m'attaque tout d'abord à la page d'accueil en débutant par la "NavBar" et le "Footer" qui seront présents certaines pages du site.
+
+Dans le fichier `base.html.twig`, j'ai crée mes block pour la NavBar et le Footer. J'y ai intégré du HTML/CSS en utilisant Bootstrap et un fichier css personnel pour personnaliser au maximum.
+
+J'utilise le CDN de Bootstrap pour les fichiers CSS et JS et celui de Font Awesome pour les icônes.
+Pour le fichier perso CSS je place dans `assets/css/soigneMoi.css`.
+
+```bash
+        {% block stylesheets %}
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+            <link rel="stylesheet" href="{{ asset('assets/css/soigneMoi.css') }}">
+            <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+        {% endblock %}
+```
+Je crée ma navbar en utilisant les classes de Bootstrap et je la personnalise avec mon fichier CSS perso notamment au niveau des boutons.
+
+Je conçois un menu burger pour les écrans mobiles.
+
+Dans cette Navbar j'utilise aussi des conditions TWIG pour rendre dynamique l'affichage en fonction que l'utilisateur soit connecté ou non.
+
+
+```bash
+{% block navbar %}
+            <!-- DEBUT : NAVBAR -->
+                <nav class="navbar navbar-expand-lg">
+                    <div class="container-fluid d-flex justify-content-between">
+                        <!-- LOGO -->
+                        <a class="navbar-brand" href="{{ path('app_accueil') }}">
+                            <img src="{{ asset('assets/images/soignemoi-logo.png') }}" alt="Logo" width="80" height="60" class="bi bi-heart-fill" />
+                        </a>
+                        <!-- BOUTON BURGER -->
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Déclencher la navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <!-- MENU -->
+                        <div class="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
+                            <ul class="navbar-nav text-center">
+                                <li class="nav-item">
+                                    <a class="nav-link ybMenu-bold" aria-current="page" href="{{ path('app_accueil') }}">Accueil</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link ybMenu-bold" href="{{ path('app_accueil') }}">Nous contacter</a>
+                                </li>
+
+                                <!-- VUE MOBILE DANS LE MENU BURGER -->
+                                <!-- BOUTONS DE INTERFACE QUAND L'UTILISATEUR EST CONNECTE-->
+                                {% if app.user %}
+                                <li class="nav-item d-lg-none">
+                                    <a href="{{ path('app_compte') }}"><button class="btn btn-primary mt-3" type="submit">Mon compte</button></a>
+                                </li>
+                                <li class="nav-item d-lg-none">
+                                    <a href="{{ path('app_deconnexion') }}"><button class="btn btn-primary mt-3" type="submit">Se déconnecter</button></a>
+                                </li>
+                                <!-- BOUTONS DE INTERFACE QUAND L'UTILISATEUR N'EST PAS CONNECTE-->
+                                {% else %}
+                                <li class="nav-item d-lg-none">
+                                    <a href="{{ path('app_connexion') }}"><button class="btn btn-primary mt-3" type="submit">Se connecter</button></a>
+                                </li>
+                                <li class="nav-item d-lg-none">
+                                    <a href="{{ path('app_inscription') }}"><button class="btn btn-primary mt-3" type="submit">S'inscrire</button></a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                        <!-- VUE DESKTOP EN DEHORS DU MENU BURGER -->
+                        <div class="d-none d-lg-block">
+                            <!-- BOUTONS DE INTERFACE QUAND L'UTILISATEUR EST CONNECTE-->
+                            {% if app.user %}
+                                <a href="{{ path('app_compte') }}"><button class="btn btn-primary" type="submit">Mon compte</button></a>
+                                <a href="{{ path('app_deconnexion') }}"><button class="btn btn-primary" type="submit">Se déconnecter</button></a>
+                            <!-- BOUTONS DE INTERFACE QUAND L'UTILISATEUR N'EST PAS CONNECTE-->
+                            {% else %}
+                                <a href="{{ path('app_connexion') }}"><button class="ybButton" type="submit"><i class="fas fa-user"></i>Se connecter</button></a>
+                                <a href="{{ path('app_inscription') }}"><button class="ybButton" type="submit"><i class="fas fa-user"></i>S'inscrire</button></a>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                </nav>
+                <!-- FIN : NAVBAR -->
+        {% endblock %}
+```
+Pour le footer, j'essaie de respecter au maximum le design de la maquette en utilisant les classes personnelles avec fichier CSS perso.
+
+Je crée un footer qui comporte trois colonnes principales dans la section supérieure, où sont disposés le logo, les liens de services santé et les réseaux sociaux. 
+
+Dans la section inférieure, il y a une autre ligne avec trois colonnes pour les mentions légales, les conditions générales d'utilisation et les données personnelles.
+
+```bash
+        <!-- FOOTER -->
+        {% block footer %}
+            <footer class="ybFooter text-white text-center text-lg-start">
+                <div class="ybContainer p-4 d-flex justify-content-between align-items-center">
+                    <!-- LOGO -->
+                    <div class="ybLogoContainer">
+                        <a href="{{ path('app_accueil') }}">
+                            <img src="{{ asset('assets/images/soignemoi-logo.png') }}" alt="Logo" class="img-fluid ybLogoFooter">
+                        </a>
+                    </div>
+                    <!-- LIENS -->
+                    <div class="ybServicesContainer text-center">
+                        <h5 class="text-uppercase">SERVICES SANTÉ</h5>
+                        <ul class="list-unstyled mb-0">
+                            <li><a href="{{ path('app_accueil') }}" class="text-white text-decoration-none">Accueil</a></li>
+                            <li><a href="{{ path('app_connexion') }}" class="text-white text-decoration-none">Me connecter</a></li>
+                            <li><a href="{{ path('app_inscription') }}" class="text-white text-decoration-none">Créer un compte</a></li>
+                        </ul>
+                    </div>
+                    <!-- RESEAUX SOCIAUX -->
+                    <div class="ybSocialContainer text-right">
+                        <h5 class="text-uppercase">NOUS SUIVRE</h5>
+                        <a href="#" class="text-white me-4 ybSocialIcon">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-white me-4 ybSocialIcon">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="#" class="text-white me-4 ybSocialIcon">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="#" class="text-white me-4 ybSocialIcon">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                    </div>
+                </div>
+                <!-- MENTIONS LEGALES -->
+                <div class="text-center p-3 ybFooterBottom">
+                    <div class="ybContainer">
+                        <div class="row">
+                            <div class="col">
+                                <a href="#" class="text-white text-decoration-none">Mentions légales</a>
+                            </div>
+                            <div class="col">
+                                <a href="#" class="text-white text-decoration-none">Conditions générales d'utilisation</a>
+                            </div>
+                            <div class="col">
+                                <a href="#" class="text-white text-decoration-none">Données personnelles</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        {% endblock %}
+```

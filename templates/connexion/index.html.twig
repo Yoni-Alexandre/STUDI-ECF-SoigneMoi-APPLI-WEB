@@ -3,29 +3,30 @@
 {% block title %}SoigneMoi - Bienvenue sur la page {{ titre_connexion }}{% endblock %}
 
 {% block body %}
-<div class="container my-5">
-    <div class="row">
-        <div class="col-md-12">
-            <h1>{{ titre_connexion }}</h1>
-            <p><i>Vous n'avez pas de compte ? <a href="{{ path('app_inscription') }}">Inscrivez-vous</a></i></p>
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>{{ titre_connexion }}</h1>
+                <p><i>Vous n'avez pas de compte ? <a href="{{ path('app_inscription') }}">Inscrivez-vous</a></i></p>
 
-            {% if error %}
-                <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-            {% endif %}
+                {% if error %}
+                    <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                {% endif %}
 
-            <form action="{{ path('app_connexion') }}" method="post">
-                <label for="username">Adresse email:</label>
-                <input class="form-control" type="text" id="username" name="_username" value="{{ last_username }}">
+                <form action="{{ path('app_connexion') }}" method="post">
+                    <label for="username">Adresse email:</label>
+                    <input class="form-control" type="text" id="username" name="_username" value="{{ last_username }}">
 
-                <label for="password ">Mot de passe:</label>
-                <input class="form-control" type="password" id="password" name="_password">
+                    <label for="password ">Mot de passe:</label>
+                    <input class="form-control" type="password" id="password" name="_password">
 
-                {# Redirection de l'utilisateur vers sont espace membre #}
-                <input type="hidden" name="_target_path" value="{{ path('app_compte') }}">
+                    {# Redirection de l'utilisateur vers sont espace membre #}
+                    <input type="hidden" name="_target_path" value="{{ path('app_compte') }}">
 
-                <button class="btn btn-primary mt-3" type="submit">Se connecter</button>
-            </form>
+                    <button class="btn btn-primary mt-3" type="submit">Se connecter</button>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}
+{% block footer %} {% endblock %}
