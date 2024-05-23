@@ -2483,13 +2483,30 @@ Il faut à chaque fois prouver dans l'entête que l'on est le bon utilisateur.
 
 Cela est utile pour les API et les services où chaque requête doit être indépendante et contenir ses propres informations d'authentification.
 
-Tous les firewalls :
+Tous les firewalls dans un ordre précis, le firewall `main` a un motif `(pattern: ^/)` qui correspond à toutes les routes et est donc toujours utilisé, je mets `auth` au-dessus du firewall `main` pour qu'il soit pris en compte pour les routes commençant par /auth :
 
 ```bash
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+
+        auth:
+            pattern: ^/auth
+            stateless: true
+            provider: app_user_provider
+            json_login:
+                check_path: /auth
+                username_path: email
+                password_path: password
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+        api:
+            pattern: ^/apiMedecins
+            stateless: true
+            provider: app_user_provider
+            jwt: ~
+
         main:
             pattern: ^/
             form_login:
@@ -2502,12 +2519,6 @@ Tous les firewalls :
                 path: app_deconnexion
             lazy: true
             provider: app_user_provider
-
-        api:
-            pattern: ^/apiMedecins
-            stateless: true
-            provider: app_user_provider
-            jwt: ~
 ```
 
 Ajout de la route `/auth` dans le fichier `config/routes.yaml` pour l'authentification JWT
@@ -2665,12 +2676,26 @@ when@test:
 
 ```
 
-Sur la page de la documentation de l'API (Pour ma part l'URI est configurée à /apiMedecins) une nouvelle section apparait en POST (comme configuré dans le fichier `config/routes.yaml`)
+Sur la page de la documentation de l'API (Pour ma part l'URI est configurée à /apiMedecins) une nouvelle section apparait en POST
 
 ![img.png](Readme/img.png)
 
 Ce qui me permet de récupérer le token JWT pour l'authentification de l'API.
 ![img.png](Readme/Token.png)
+
+Pour mes tests, je crée un firewall que je nomme api_public qui me permet d'y accéder sans être authentifié
+
+```bash
+        # Temporaire pour les tests. Me permet de me connecter sans JWT à API Platform.
+        api_public:
+            pattern: ^/apiMedecins$
+            security: false
+        api:
+            pattern: ^/apiMedecins
+            stateless: true
+            provider: app_user_provider
+            jwt: ~
+```
 
 Maintenant je vais configurer les accès aux routes de l'API avec les rôles pour limiter l'accès à certaines routes.
 

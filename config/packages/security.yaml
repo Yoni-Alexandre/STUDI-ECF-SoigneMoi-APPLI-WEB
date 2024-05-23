@@ -24,6 +24,11 @@ security:
                 password_path: password
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
+
+        # Temporaire pour les tests. Me permet de me connecter sans JWT à API Platform.
+        api_public:
+            pattern: ^/apiMedecins$
+            security: false
         api:
             pattern: ^/apiMedecins
             stateless: true
@@ -44,8 +49,8 @@ security:
             provider: app_user_provider
 
     access_control:
-        - { path: ^/apiMedecins, roles: ROLE_ADMIN }
-        - { path: ^/apiMedecins, roles: ROLE_ADMIN }
+        - { path: ^/apiMedecins$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/apiMedecins/, roles: ROLE_ADMIN }
         - { path: ^/compte, roles: ROLE_USER }
         - { path: ^/admin, roles: ROLE_ADMIN }
         # Permet l'accès anonyme aux pages d'accueil et de connexion
