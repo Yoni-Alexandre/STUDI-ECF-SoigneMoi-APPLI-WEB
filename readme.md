@@ -2716,9 +2716,11 @@ Maintenant je vais configurer les accès aux routes de l'API avec les rôles pou
 
 Pour le Frontend, j'utilise le moteur de template Twig de Symfony pour générer les pages HTML.
 
-Je m'attaque tout d'abord à la page d'accueil en débutant par la "NavBar" et le "Footer" qui seront présents certaines pages du site.
+Je m'attaque tout d'abord à la page d'accueil en débutant par la "NavBar" et le "Footer" qui seront présents sur certaines pages du site.
 
-Dans le fichier `base.html.twig`, j'ai crée mes block pour la NavBar et le Footer. J'y ai intégré du HTML/CSS en utilisant Bootstrap et un fichier css personnel pour personnaliser au maximum.
+Dans le fichier `base.html.twig`, je crée mes blocks pour la NavBar et le Footer. 
+
+J'y ai intégré du HTML/CSS en utilisant Bootstrap et un fichier css personnel pour personnaliser au maximum.
 
 J'utilise le CDN de Bootstrap pour les fichiers CSS et JS et celui de Font Awesome pour les icônes.
 Pour le fichier perso CSS je place dans `assets/css/soigneMoi.css`.
@@ -2732,10 +2734,9 @@ Pour le fichier perso CSS je place dans `assets/css/soigneMoi.css`.
 ```
 Je crée ma navbar en utilisant les classes de Bootstrap et je la personnalise avec mon fichier CSS perso notamment au niveau des boutons.
 
-Je conçois un menu burger pour les écrans mobiles.
+Je conçois un menu burger pour les écrans mobiles en utilisant un exemple de navbar déjà tout fait dans la documentation de Bootstrap.
 
 Dans cette Navbar j'utilise aussi des conditions TWIG pour rendre dynamique l'affichage en fonction que l'utilisateur soit connecté ou non.
-
 
 ```bash
 {% block navbar %}
@@ -2798,9 +2799,9 @@ Dans cette Navbar j'utilise aussi des conditions TWIG pour rendre dynamique l'af
                 <!-- FIN : NAVBAR -->
         {% endblock %}
 ```
-Pour le footer, j'essaie de respecter au maximum le design de la maquette en utilisant les classes personnelles avec fichier CSS perso.
+Pour le footer, j'essaie de respecter au maximum le design de la maquette en utilisant les classes personnelles avec mon fichier CSS perso.
 
-Je crée un footer qui comporte trois colonnes principales dans la section supérieure, où sont disposés le logo, les liens de services santé et les réseaux sociaux. 
+Je crée un footer qui comporte trois colonnes principales dans la section supérieure, où sont disposé le logo, les liens de services santé et les réseaux sociaux. 
 
 Dans la section inférieure, il y a une autre ligne avec trois colonnes pour les mentions légales, les conditions générales d'utilisation et les données personnelles.
 
@@ -2859,4 +2860,146 @@ Dans la section inférieure, il y a une autre ligne avec trois colonnes pour les
                 </div>
             </footer>
         {% endblock %}
+```
+Je crée enfin le body de la page d'accueil en commencent pas le Hero qui est la première section de la page d'accueil.
+
+Le hero aura une image de fond, un titre et un sous-titre. J'utilise des classes de Bootstrap pour le positionnement des éléments.
+
+```bash
+
+{% block body %}
+    <div class="ybHeader">
+        <div class="ybHeaderFond"></div>
+        <div class="ybHeaderImage"></div>
+        <div class="ybTexteHeader">
+            <h1>SoigneMoi, l'excellence au <br> service de votre bien-être.</h1>
+            <p>J’ai besoin de :</p>
+        </div>
+        <div class="ybBouton" style="left: 97px; top: 449px;">
+
+            <span class="ybTexteBouton">A Propos</span>
+        </div>
+        <div class="ybBouton" style="left: 530px; top: 449px;">
+
+            <span class="ybTexteBouton">Nous suivre</span>
+        </div>
+        <div class="ybBouton" style="left: 97px; top: 566px;">
+
+            <span class="ybTexteBouton">Prendre un rendez-vous</span>
+        </div>
+        <div class="ybBouton" style="left: 530px; top: 566px;">
+
+            <span class="ybTexteBouton">Trouver un praticien</span>
+        </div>
+    </div>
+
+{% endblock %}
+```
+
+Et mon fichier perso CSS `soigneMoi.css` pour personnaliser les éléments de la section Hero.
+
+```bash
+/***** DEBUT:ACCUEIL:HERO *****/
+.ybHeader {
+    position: relative;
+    width: 100%;
+    height: 786px;
+    overflow: hidden;
+}
+
+.ybHeaderFond {
+    box-sizing: border-box;
+    position: absolute;
+    width: 70%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: linear-gradient(248.61deg, #003366 12.13%, #0066CC 43.23%);
+    border-bottom: 4px solid #000000;
+    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 0px 0px 500px 0px;
+    z-index: 1;
+}
+
+.ybHeaderImage {
+    box-sizing: border-box;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: url('../images/Hero.png') no-repeat center center;
+    background-size: cover;
+    z-index: 0;
+}
+
+.ybTexteHeader {
+    position: relative;
+    z-index: 2;
+    color: #FFFFFF;
+    margin: 0 5%;
+    top: 20%;
+}
+
+.ybTexteHeader h1 {
+    font-weight: 700;
+    font-size: 3rem;
+    line-height: 1.2;
+    margin: 0;
+}
+
+.ybTexteHeader p {
+    font-weight: 400;
+    font-size: 1.25rem;
+    line-height: 1.4;
+    margin: 10px 0 0;
+}
+
+.ybBouton {
+    position: absolute;
+    width: calc(100% - 20%);
+    max-width: 407px;
+    height: 72px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 2px solid #003366;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 23px;
+    display: flex;
+    align-items: center;
+    padding: 4px 24px;
+    z-index: 2;
+    left: 5%;
+}
+
+.ybTexteBouton {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: #003366;
+    margin: 0;
+}
+
+.ybLogoBouton {
+    width: 40px;
+    height: 40px;
+    position: relative;
+    margin-right: 10px;
+}
+
+.ybCercle {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background: #003366;
+    border: 1px solid #000000;
+}
+
+.ybFleche {
+    position: absolute;
+    width: 16px;
+    height: 0;
+    left: 12px;
+    top: 20px;
+    border: 2px solid #FFFFFF;
+}
+/***** FIN:ACCUEIL:HERO *****/
 ```
