@@ -3003,3 +3003,29 @@ Et mon fichier perso CSS `soigneMoi.css` pour personnaliser les éléments de la
 }
 /***** FIN:ACCUEIL:HERO *****/
 ```
+Ajout de la section presentation de l'accueil en utilisant les classes bootstrap pour créer les cards : 
+```bash
+{# DEBUT:ACCUEIL:PRESENTATION #}
+    <div class="container my-5">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <p>Chez SoigneMoi, nous avons inscrit la prévention au  cœur de nos actions et élargi notre offre de soins en apportant des  solutions toujours plus innovantes.
+                    Conçue pour s’adapter aux nouveaux  comportements des patients et des citoyens,SoigneMoi est une plateforme digitale de services destinée à améliorer
+                    l’accès aux soins, la santé et le bien-être.  À la maison comme en établissement de santé, Ramsay Services vous guide  pas à pas dans vos démarches, vous
+                    informe en toute transparence sur  les étapes à venir, et vous accompagne à travers de multiples services pour vous apporter confort et tranquillité,
+                    et préserver votre santé et votre bien-être au quotidien.</p>
+            </div>
+            <div class="col-md-6">
+                <img src="{{ asset('assets/images/PRESENTATION-image.png') }}" alt="Image d'un bloc opératoire" class="img-fluid">
+            </div>
+        </div>
+    </div>
+    {# FIN:ACCUEIL:PRESENTATION #}
+```
+
+et le carousel:
+```bash
+    {# DEBUT:ACCUEIL:CAROUSEL #}
+
+    {# FIN:ACCUEIL:CAROUSEL #}
+```

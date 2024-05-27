@@ -3,6 +3,7 @@
 {% block title %}À vos cotés pour votre santé | SoigneMoi{% endblock %}
 
 {% block body %}
+    {# DEBUT:ACCUEIL:HERO #}
     <div class="ybHeader">
         <div class="ybHeaderFond"></div>
         <div class="ybHeaderImage"></div>
@@ -11,21 +12,81 @@
             <p>J’ai besoin de :</p>
         </div>
         <div class="ybBouton" style="left: 97px; top: 449px;">
-
+            <img src="{{ asset('assets/images/HERO-fleche.png') }}" class="ybLogoBouton" alt="Logo">
             <span class="ybTexteBouton">A Propos</span>
         </div>
         <div class="ybBouton" style="left: 530px; top: 449px;">
-
+            <img src="{{ asset('assets/images/HERO-fleche.png') }}" class="ybLogoBouton" alt="Logo">
             <span class="ybTexteBouton">Nous suivre</span>
         </div>
         <div class="ybBouton" style="left: 97px; top: 566px;">
-
+            <img src="{{ asset('assets/images/HERO-fleche.png') }}" class="ybLogoBouton" alt="Logo">
             <span class="ybTexteBouton">Prendre un rendez-vous</span>
         </div>
         <div class="ybBouton" style="left: 530px; top: 566px;">
-
+            <img src="{{ asset('assets/images/HERO-fleche.png') }}" class="ybLogoBouton" alt="Logo">
             <span class="ybTexteBouton">Trouver un praticien</span>
         </div>
     </div>
+    {# FIN:ACCUEIL:HERO #}
+
+{# DEBUT:ACCUEIL:PRESENTATION #}
+    <div class="container my-5">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <p>Chez SoigneMoi, nous avons inscrit la prévention au  cœur de nos actions et élargi notre offre de soins en apportant des  solutions toujours plus innovantes.
+                    Conçue pour s’adapter aux nouveaux  comportements des patients et des citoyens,SoigneMoi est une plateforme digitale de services destinée à améliorer
+                    l’accès aux soins, la santé et le bien-être.  À la maison comme en établissement de santé, Ramsay Services vous guide  pas à pas dans vos démarches, vous
+                    informe en toute transparence sur  les étapes à venir, et vous accompagne à travers de multiples services pour vous apporter confort et tranquillité,
+                    et préserver votre santé et votre bien-être au quotidien.</p>
+            </div>
+            <div class="col-md-6">
+                <img src="{{ asset('assets/images/PRESENTATION-image.png') }}" alt="Image d'un bloc opératoire" class="img-fluid">
+            </div>
+        </div>
+    </div>
+    {# FIN:ACCUEIL:PRESENTATION #}
+
+    {# DEBUT:ACCUEIL:CARDS #}
+    <div class="container my-5">
+        <div class="row align-items-start">
+            <div class="col-md-12">
+                <h2>SoigneMoi, à vos côtés pour votre santé</h2>
+                <div class="row">
+                    <div class="col-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Plus de 1.6 million</h5>
+                                <p class="card-text">de patients nous ont fait confiance pour réaliser leurs démarches en ligne.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Plus de 1.6 million</h5>
+                                <p class="card-text">de patients nous ont fait confiance pour réaliser leurs démarches en ligne.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Plus de 1.6 million</h5>
+                                <p class="card-text">de patients nous ont fait confiance pour réaliser leurs démarches en ligne.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {# FIN:ACCUEIL:CARDS #}
+
+    {# DEBUT:ACCUEIL:CAROUSEL #}
+
+    {# FIN:ACCUEIL:CAROUSEL #}
+
+
 
 {% endblock %}

@@ -1,0 +1,254 @@
+/***** DEBUT:RESET *****/
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+    background-color: #ffffff;
+}
+/***** FIN:RESET *****/
+
+
+/***** DEBUT:NAVBAR *****/
+/* MENU ("Accueil" / "Nous contacter") */
+.ybMenu-bold {
+    font-weight: bold;
+    margin-left: 15px;
+    margin-right: 15px;
+}
+/* BOUTONS */
+.ybButton {
+    background-color: #003366;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    padding: 10px 20px;
+}
+
+.ybButton i {
+    margin-right: 10px;
+}
+
+.ybButton:hover {
+    background-color: #011f44;
+}
+/***** FIN:NAVBAR *****/
+
+
+/***** DEBUT:FOOTER *****/
+.ybFooter {
+    background: linear-gradient(to bottom right, #013b6c, #007bff);
+    color: white;
+    padding: 40px 0 0 0;
+    text-align: center;
+}
+
+.ybFooter .ybContainer {
+    width: 100%;
+    padding: 0 20px;
+}
+
+.ybLogoContainer, .ybServicesContainer, .ybSocialContainer {
+    flex: 1 1 100%;
+    text-align: center;
+    padding: 10px 0;
+}
+
+.ybFooter h5 {
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    margin-bottom: 10px;
+}
+
+.ybFooter a {
+    color: white;
+    text-decoration: none;
+}
+
+.ybLogoFooter {
+    width: 120px;
+    height: auto;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+.ybSocialIcon {
+    font-size: 32px;
+    margin: 0 10px;
+}
+
+.ybFooterBottom .row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+/***** FIN:FOOTER *****/
+
+/***** DEBUT:ACCUEIL:HERO *****/
+.ybHeader {
+    position: relative;
+    width: 100%;
+    height: 786px;
+    overflow: hidden;
+}
+
+.ybHeaderFond {
+    box-sizing: border-box;
+    position: absolute;
+    width: 70%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: linear-gradient(248.61deg, #003366 12.13%, #0066CC 43.23%);
+    border-bottom: 4px solid #000000;
+    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 0px 0px 500px 0px;
+    z-index: 1;
+}
+
+.ybHeaderImage {
+    box-sizing: border-box;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: url('../images/HERO-image.png') no-repeat center center;
+    background-size: cover;
+    z-index: 0;
+}
+
+.ybTexteHeader {
+    position: relative;
+    z-index: 2;
+    color: #FFFFFF;
+    margin: 0 5%;
+    top: 20%;
+}
+
+.ybTexteHeader h1 {
+    font-weight: 700;
+    font-size: 3rem;
+    line-height: 1.2;
+    margin: 0;
+}
+
+.ybTexteHeader p {
+    font-weight: 400;
+    font-size: 1.25rem;
+    line-height: 1.4;
+    margin: 10px 0 0;
+}
+
+.ybBouton {
+    position: absolute;
+    width: calc(100% - 20%);
+    max-width: 407px;
+    height: 72px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 2px solid #003366;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 23px;
+    display: flex;
+    align-items: center;
+    padding: 4px 24px;
+    z-index: 2;
+    left: 5%;
+}
+
+.ybTexteBouton {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: #003366;
+    margin: 0;
+}
+
+.ybLogoBouton {
+    width: 40px;
+    height: 40px;
+    position: relative;
+    margin-right: 10px;
+}
+
+.ybCercle {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background: #003366;
+    border: 1px solid #000000;
+}
+
+.ybFleche {
+    position: absolute;
+    width: 16px;
+    height: 0;
+    left: 12px;
+    top: 20px;
+    border: 2px solid #FFFFFF;
+}
+/***** FIN:ACCUEIL:HERO *****/
+
+/***** DEBUT:RESPONSIVE *****/
+/* max-width: 768px -> Si la largeur de l'écran est inférieure ou égale
+*  à 768px, alors les règles CSS suivantes s'appliquent
+*/
+@media (max-width: 768px) {
+    .ybLogoContainer, .ybServicesContainer, .ybSocialContainer {
+        flex: 1 1 auto;
+        text-align: left;
+    }
+
+    .ybServicesContainer, .ybSocialContainer {
+        text-align: center;
+    }
+
+    .ybFooterBottom .row {
+        flex-direction: row;
+    }
+
+    .ybFooterBottom .col {
+        text-align: center;
+    }
+
+    .ybTexteHeader h1 {
+        font-size: 2rem;
+    }
+
+    .ybTexteHeader p {
+        font-size: 1rem;
+    }
+
+    .ybBouton {
+        height: 60px;
+        padding: 4px 16px;
+    }
+
+    .ybLogoBouton {
+        width: 30px;
+        height: 30px;
+    }
+
+    .ybCercle {
+        width: 30px;
+        height: 30px;
+    }
+
+    .ybFleche {
+        left: 9px;
+        top: 15px;
+        width: 12px;
+        height: 0;
+    }
+}
+/***** FIN:RESPONSIVE *****/
+
+
+
+
+
+
+
+
+
+
+
