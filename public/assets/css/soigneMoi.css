@@ -233,6 +233,13 @@ body {
 }
 /**** FIN:INSCRIPTION *****/
 
+/**** DEBUT:RENDEZ-VOUS *****/
+.ybRDV-Cards {
+    border-bottom-left-radius: 2rem;
+    border-bottom-right-radius: 2rem;
+}
+
+
 /***** DEBUT:RESPONSIVE *****/
 /* max-width: 768px -> Si la largeur de l'écran est inférieure ou égale
 *  à 768px, alors les règles CSS suivantes s'appliquent

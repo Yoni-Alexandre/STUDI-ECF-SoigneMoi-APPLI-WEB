@@ -7,7 +7,7 @@
 {% block body %}
     <div class="container my-5">
         <div class="row">
-            <div class="col-md-7">
+            <div class="col-md-8">
                 <h1>{{ titre_inscription }}</h1>
 
                 <p><i>Vous avez déjà un compte ? <a href="{{ path('app_connexion') }}">Connectez-vous</a></i></p>
@@ -26,7 +26,7 @@
                 {{ form_row(formulaireUtilisateurs.submit) }}
                 {{ form_end(formulaireUtilisateurs) }}
             </div>
-            <div class="col-md-5 d-none d-md-block">
+            <div class="col-md-4 d-none d-md-block">
                 <img src="{{ asset('assets/images/INSCRIPTION-image-01.png') }}" alt="Image droite du formulaire d'inscription" class="img-fluid" style="height: 770px;">
             </div>
         </div>
