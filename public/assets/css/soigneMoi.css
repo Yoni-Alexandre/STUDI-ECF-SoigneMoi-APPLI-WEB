@@ -10,6 +10,15 @@ body {
 }
 /***** FIN:RESET *****/
 
+/***** DEBUT:VARIABLES ******/
+:root {
+    --ybTitre-couleur: #003366;
+    --ybFontSize16: 16;
+    --ybFontSize24: 24;
+    --ybBoxShadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
+}
+/***** FIN:VARIABLES ******/
+
 
 /***** DEBUT:NAVBAR *****/
 /* MENU ("Accueil" / "Nous contacter") */
@@ -187,6 +196,34 @@ body {
     border: 2px solid #FFFFFF;
 }
 /***** FIN:ACCUEIL:HERO *****/
+
+/**** DEBUT:ACCUEIL:PRESENTATION *****/
+.ybTextePresentation {
+    font-size: var(--ybFontSize24);
+}
+/**** FIN:ACCUEIL:PRESENTATION *****/
+
+/**** DEBUT:ACCUEIL:CARROUSEL *****/
+.carousel-control-prev,
+.carousel-control-next {
+    width: 5%; /* Réduit la largeur des boutons pour les placer plus à l'extrémité */
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: black;
+}
+/**** FIN:ACCUEIL:CARROUSEL *****/
+
+/**** DEBUT:ACCUEIL:CARDS *****/
+.ybCard-titre {
+    color: var(--ybTitre-couleur);
+}
+.ybCard-image {
+    box-shadow: var(--ybBoxShadow);
+}
+/**** FIN:ACCUEIL:CARDS *****/
+
 
 /***** DEBUT:RESPONSIVE *****/
 /* max-width: 768px -> Si la largeur de l'écran est inférieure ou égale

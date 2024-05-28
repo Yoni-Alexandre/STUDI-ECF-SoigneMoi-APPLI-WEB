@@ -2863,7 +2863,9 @@ Dans la section inférieure, il y a une autre ligne avec trois colonnes pour les
 ```
 Je crée enfin le body de la page d'accueil en commencent pas le Hero qui est la première section de la page d'accueil.
 
-Le hero aura une image de fond, un titre et un sous-titre. J'utilise des classes de Bootstrap pour le positionnement des éléments.
+La section Hero aura une image de fond, un titre et un sous-titre. 
+
+J'utilise des classes de Bootstrap pour le positionnement des éléments.
 
 ```bash
 
@@ -3003,7 +3005,22 @@ Et mon fichier perso CSS `soigneMoi.css` pour personnaliser les éléments de la
 }
 /***** FIN:ACCUEIL:HERO *****/
 ```
+
+Dans mon fichier personnel CSS, je crée aussi des variables, ce qui me permet de changer les couleurs et les tailles de police plus facilement.
+
+```bash
+/***** DEBUT:VARIABLES ******/
+:root {
+    --ybTitre-couleur: #003366;
+    --ybFontSize16: 16;
+    --ybFontSize24: 24;
+    --ybBoxShadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
+}
+/***** FIN:VARIABLES ******/
+```
+
 Ajout de la section presentation de l'accueil en utilisant les classes bootstrap pour créer les cards : 
+
 ```bash
 {# DEBUT:ACCUEIL:PRESENTATION #}
     <div class="container my-5">
@@ -3024,8 +3041,128 @@ Ajout de la section presentation de l'accueil en utilisant les classes bootstrap
 ```
 
 et le carousel:
+
 ```bash
     {# DEBUT:ACCUEIL:CAROUSEL #}
-
+    <div class="container my-5">
+        <div class="row align-items-start">
+            <div class="col-md-12">
+                <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <div class="row">
+                                <div class="col-md-4 mt-5">
+                                    <img class="d-block w-100" src="{{ asset('assets/images/CAROUSEL-image-01.png') }}" alt="First slide">
+                                </div>
+                                <div class="col-md-4 mt-5">
+                                    <img class="d-block w-100" src="{{ asset('assets/images/CAROUSEL-image-02.png') }}" alt="First slide">
+                                </div>
+                                <div class="col-md-4 mt-5">
+                                    <img class="d-block w-100" src="{{ asset('assets/images/CAROUSEL-image-03.png') }}" alt="First slide">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <div class="row">
+                                <div class="col-md-4 mt-5">
+                                    <img class="d-block w-100" src="{{ asset('assets/images/CAROUSEL-image-03.png') }}" alt="Second slide">
+                                </div>
+                                <div class="col-md-4 mt-5">
+                                    <img class="d-block w-100" src="{{ asset('assets/images/CAROUSEL-image-02.png') }}" alt="Second slide">
+                                </div>
+                                <div class="col-md-4 mt-5">
+                                    <img class="d-block w-100" src="{{ asset('assets/images/CAROUSEL-image-01.png') }}" alt="Second slide">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <div class="row">
+                                <div class="col-md-4 mt-5">
+                                    <img class="d-block w-100" src="{{ asset('assets/images/CAROUSEL-image-02.png') }}" alt="Third slide">
+                                </div>
+                                <div class="col-md-4 mt-5">
+                                    <img class="d-block w-100" src="{{ asset('assets/images/CAROUSEL-image-03.png') }}" alt="Third slide">
+                                </div>
+                                <div class="col-md-4 mt-5">
+                                    <img class="d-block w-100" src="{{ asset('assets/images/CAROUSEL-image-01.png') }}" alt="Third slide">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
     {# FIN:ACCUEIL:CAROUSEL #}
 ```
+
+J'ajoute ensuite les différentes sections que compose la page d'accueil en respectant le design de la maquette.
+
+```bash
+{# DEBUT:ACCUEIL:BANDEAU:PUB #}
+    <div class="container my-5">
+        <div class="row align-items-center">
+            <div class="col-md-4">
+                <h3 class="text-center fw-bold"><span class="ybCard-titre mt-5">Etre à vos cotés </span>pour votre santé c'est...</h3>
+            </div>
+            <div class="col-md-4">
+                <img src="{{ asset('assets/images/BANDEAU-image-01.png') }}" alt="Image d'une croix" class="img-fluid mx-auto d-block mt-5">
+            </div>
+            <div class="col-md-4">
+                <p class="text-left mt-5">
+                    Des expertises médicales à portée de main
+                    Bénéficiez de services accessibles
+                    en ligne, depuis votre smartphone
+                    ou ordinateur.</p>
+            </div>
+        </div>
+    </div>
+    {# FIN:ACCUEIL:BANDEAU:PUB #}
+
+    {# DEBUT:ACCUEIL:NEWSLETTER #}
+    <div class="container my-5">
+        <div class="row align-items-center">
+            <div class="col-md-4">
+                <div class="card mb-5 h-100 d-flex flex-column justify-content-between ybCard-image mt-5">
+                    <div class="card-body">
+                        <h4 class="card-title text-left fw-bold mb-5">Restez informé sur les nouveautés de SoigneMoi Services</h4>
+                        <p class="card-text text-left mb-5">
+                            Suspendisse venenatis a ex eget lacinia. Sed
+                            ultricies quis magna sit amet laoreet.
+                            In congue rutrum nibh id pretium.
+                            Vivamus rutrum sit amet velit nec ultrices.
+                            Suspendisse venenatis a ex eget lacinia. Sed
+                            ultricies quis magna sit amet laoreet.
+                            In congue rutrum nibh id pretium.
+                            Vivamus rutrum sit amet velit nec ultrices
+                        </p>
+                    </div>
+                    <div class="text-center mb-3">
+                        <a href="{{ path('app_inscription') }}">
+                            <button class="ybButton w-50 mt-5" type="submit">
+                                <i class="fas fa-user"></i> S'inscrire
+                            </button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-5"></div>
+            <div class="col-md-4 mb-5">
+                <img src="{{ asset('assets/images/NEWSLETTER-image-01.png') }}" alt="Image d'une croix" class="img-fluid mx-auto d-block h-100 ybCard-image">
+            </div>
+        </div>
+    </div>
+
+    {# FIN:ACCUEIL:NEWSLETTER #}
+```
+Sur le même principe je modifie les pages de connexion et d'inscription en utilisant les classes de Bootstrap et personnelles pour le design en respectant la maquette. 
+
+
