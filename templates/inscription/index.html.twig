@@ -7,22 +7,30 @@
 {% block body %}
     <div class="container my-5">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-7">
                 <h1>{{ titre_inscription }}</h1>
 
                 <p><i>Vous avez déjà un compte ? <a href="{{ path('app_connexion') }}">Connectez-vous</a></i></p>
+
+                <h4 class="ybTitreInscription">Votre identité</h4>
 
                 {{ form_start(formulaireUtilisateurs) }}
                 {{ form_row(formulaireUtilisateurs.nom) }}
                 {{ form_row(formulaireUtilisateurs.prenom) }}
                 {{ form_row(formulaireUtilisateurs.adresse_postale) }}
+
+                <h4 class="ybTitreInscription mt-4">Informations de connexion</h4>
+
                 {{ form_row(formulaireUtilisateurs.email) }}
                 {{ form_row(formulaireUtilisateurs.motDePasse) }}
                 {{ form_row(formulaireUtilisateurs.submit) }}
                 {{ form_end(formulaireUtilisateurs) }}
-
+            </div>
+            <div class="col-md-5 d-none d-md-block">
+                <img src="{{ asset('assets/images/INSCRIPTION-image-01.png') }}" alt="Image droite du formulaire d'inscription" class="img-fluid" style="height: 770px;">
             </div>
         </div>
     </div>
 {% endblock %}
+
 {% block footer %} {% endblock %}

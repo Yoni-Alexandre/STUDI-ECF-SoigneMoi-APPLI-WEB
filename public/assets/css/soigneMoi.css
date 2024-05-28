@@ -13,6 +13,8 @@ body {
 /***** DEBUT:VARIABLES ******/
 :root {
     --ybTitre-couleur: #003366;
+    --ybTitre-inscription-Couleur: #186ABB;
+    --ybTitre-inscription-Taille: 30px;
     --ybFontSize16: 16;
     --ybFontSize24: 24;
     --ybBoxShadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
@@ -224,6 +226,12 @@ body {
 }
 /**** FIN:ACCUEIL:CARDS *****/
 
+/**** DEBUT:INSCRIPTION *****/
+.ybTitreInscription {
+    color: var(--ybTitre-inscription-Couleur);
+    font-size: var(--ybTitre-inscription-Taille);
+}
+/**** FIN:INSCRIPTION *****/
 
 /***** DEBUT:RESPONSIVE *****/
 /* max-width: 768px -> Si la largeur de l'écran est inférieure ou égale
