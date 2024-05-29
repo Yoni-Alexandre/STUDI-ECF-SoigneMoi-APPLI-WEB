@@ -60,6 +60,9 @@ class Medecin
     #[ORM\OneToMany(targetEntity: Prescription::class, mappedBy: 'medecin')]
     private Collection $prescription;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $photo = null;
+
     public function __construct()
     {
         $this->planningMedecins = new ArrayCollection();
@@ -285,6 +288,18 @@ class Medecin
                 $prescription->setMedecin(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto(?string $photo): static
+    {
+        $this->photo = $photo;
 
         return $this;
     }

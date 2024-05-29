@@ -2152,6 +2152,7 @@ class AppFixtures extends Fixture
     }
 }
 ```
+La commande pour lancer les fixtures : `php bin/console doctrine:fixtures:load`
 
 ## Exposer une API avec API Platform en lecture et écriture pour les Médecins
 
@@ -3164,5 +3165,85 @@ J'ajoute ensuite les différentes sections que compose la page d'accueil en resp
     {# FIN:ACCUEIL:NEWSLETTER #}
 ```
 Sur le même principe je modifie les pages de connexion et d'inscription en utilisant les classes de Bootstrap et personnelles pour le design en respectant la maquette. 
+
+Pour la page des rendez-vous, je crée, pour l'entité `Medecin`, un champ `photo` (avec ses setter et getter) pour associer une photo à chaque médecin.
+
+```bash
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $photo = null;
+    
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto(?string $photo): static
+    {
+        $this->photo = $photo;
+
+        return $this;
+    }
+```
+
+Ensuite, pour que les secrétaires puissent ajouter, lors de la création d'un médecin, une photo, je modifie mon CRUD Controller pour ajouter un `ImageField` dans le formulaire de création avec une création de noms aléatoire pour éviter de se retrouver avec plusieurs photos dont le nom serait le même.
+
+```bash
+    public function configureFields(string $pageName): iterable
+    {
+        return [
+            TextField::new('nom', 'Nom'),
+            TextField::new('prenom', 'Prénom'),
+            ImageField::new('photo', 'Photo')
+                ->setBasePath('assets/photos/')
+                ->setUploadDir('public/assets/photos/')
+                ->setUploadedFileNamePattern('[randomhash].[extension]')
+                ->setRequired(false),
+            AssociationField::new('specialite', 'Spécialité'),
+            TextField::new('matricule', 'Matricule'),
+        ];
+    }
+```
+
+Je modifie aussi mes fixtures en y ajoutant les photos `$medecin->setPhoto($faker->image('public/assets/photos', 320, 320, null, false));`
+
+J'ajoute aussi une fonctionnalité, qui me permet avant chaque création de photos par les fixtures, de supprimer les photos déjà existantes pour éviter de se retrouver avec des photos en double.
+
+```bash
+    // Suppression des images existantes
+        $uploadImages = glob('public/assets/photos/*');
+        foreach ($uploadImages as $uploadImage) {
+            if (is_file($uploadImage)) {
+                unlink($uploadImage);
+            }
+        }
+```
+
+Pour finir, je modifie la vue pour ajouter la photo qui correspond au médecin (qui est défini dans la logique du contrôleur des rendez-vous) :
+
+```bash
+{% block stylesheets %}{% endblock %}
+{% block javascripts %}{% endblock %}
+
+<div class="card mb-3 text-left ybRDV-Cards" style="max-width: 18rem;">
+    <div class="card-header bg-white text-dark">
+        <div class="d-flex align-items-center">
+                <img src="/assets/photos/{{ rdv.medecin.photo }}" alt="Photo du praticien" class="rounded-circle" style="width: 50px; height: 50px;">
+            <div>
+                <p class="card-text mb-0 mx-lg-3">Praticien : {{ rdv.medecin }}</p>
+                <p class="card-text mx-lg-3">Spécialité : {{ rdv.medecin.specialite }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="card-body text-center bg-primary text-white rounded-bottom-corners ybRDV-Cards">
+        <h5 class="card-title">
+            <i class="fas fa-calendar-alt"></i> {{ rdv.date|date('d/m/Y') }} <i class="fas fa-clock"></i> {{ rdv.date|date('H:i') }}
+        </h5>
+        <a href="{{ path('app_rendez-vous_supprimer', {'id': rdv.id}) }}" class="btn btn-danger">Annuler</a>
+    </div>
+</div>
+```
+
+
+
 
 

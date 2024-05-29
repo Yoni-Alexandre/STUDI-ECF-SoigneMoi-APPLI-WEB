@@ -208,7 +208,7 @@ body {
 /**** DEBUT:ACCUEIL:CARROUSEL *****/
 .carousel-control-prev,
 .carousel-control-next {
-    width: 5%; /* Réduit la largeur des boutons pour les placer plus à l'extrémité */
+    width: 5%;
 }
 
 .carousel-control-prev-icon,
@@ -235,8 +235,21 @@ body {
 
 /**** DEBUT:RENDEZ-VOUS *****/
 .ybRDV-Cards {
+    background-color: #186ABB;
     border-bottom-left-radius: 2rem;
     border-bottom-right-radius: 2rem;
+}
+.ybRDV-bouton {
+    background-color: #186ABB;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+}
+.ybRDVCardsSeparation {
+    width: 50%;
+    margin: 20px auto;
+    border: 10px solid #000;
 }
 
 

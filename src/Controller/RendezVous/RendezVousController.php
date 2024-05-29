@@ -2,15 +2,11 @@
 
 namespace App\Controller\RendezVous;
 
-use App\Entity\RendezVousUtilisateur;
-use App\Form\RendezVousUtilisateurType;
-use App\Repository\MedecinRepository;
-use App\Repository\PlanningMedecinRepository;
+use App\Entity\Medecin;
 use App\Repository\RendezVousUtilisateurRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 

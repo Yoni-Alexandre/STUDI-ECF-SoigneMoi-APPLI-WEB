@@ -25,8 +25,18 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
+        // Suppression des images existantes
+        $uploadImages = glob('public/assets/photos/*');
+        foreach ($uploadImages as $uploadImage) {
+            if (is_file($uploadImage)) {
+                unlink($uploadImage);
+            }
+        }
+
+
         $faker = Faker::create('fr_FR');
 
+        // Création des utilisateurs
         for ($i = 0; $i < 10; $i++) {
             $utilisateur = new Utilisateur();
             $utilisateur->setNom($faker->lastName);
@@ -71,8 +81,9 @@ class AppFixtures extends Fixture
             $medecin = new Medecin();
             $medecin->setNom($faker->lastName);
             $medecin->setPrenom($faker->firstName);
+            $medecin->setPhoto($faker->imageUrl(640, 480, 'people'));
             $medecin->setMatricule($faker->randomNumber(8));
-
+            $medecin->setPhoto($faker->image('public/assets/photos', 320, 320, null, false));
             $randomSpecialite = $specialites[array_rand($specialites)];
             $medecin->setSpecialite($randomSpecialite);
 

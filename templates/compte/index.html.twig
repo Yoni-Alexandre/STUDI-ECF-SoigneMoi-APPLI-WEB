@@ -3,43 +3,53 @@
 {% block title %}SoigneMoi - Bienvenue sur la page {{ titre_compte }}{% endblock %}
 
 {% block body %}
-<div class="container my-5">
-    <h1>Bienvenue sur votre espace personnel</h1>
-    {% if app.user is not null %}
-        <p>Vous êtes connecté en tant que <b>{{ app.user.prenom ~ ' ' ~ app.user.nom }}</b></p>
-        <p><i>Ce n'est pas vous ? <a href="{{ path('app_deconnexion') }}">Cliquez ici</a></i></p>
-    {% else %}
-        <p>Vous n'êtes pas connecté.</p>
-    {% endif %}
-    <div class="row">
-        <div class="col-md-3">
-            {% include 'compte/_menu.html.twig' %}
+    <div class="container my-5">
+        <div class="text-center">
+            <h1>Bienvenue sur votre espace  <span class="text-primary">personnel</span></h1>
+
+            {% if app.user is not null %}
+                <p>Vous êtes connecté en tant que  <span class="text-primary">{{ app.user.prenom ~ ' ' ~ app.user.nom }}</span></p>
+                <p><i>Ce n'est pas vous ? <a href="{{ path('app_deconnexion') }}">Cliquez ici</a></i></p>
+            {% else %}
+                <p>Vous n'êtes pas connecté.</p>
+            {% endif %}
         </div>
-        <div class="col-md-9">
-            <h5>Prendre un rendez-vous avec un praticien</h5>
-            <table class="table">
-                <thead>
-                <tr>
-                    <!-- <th scope="col">#</th> -->
-                    <th scope="col">Prénom</th>
-                    <th scope="col">Nom</th>
-                    <th scope="col">Spécialité</th>
-                </tr>
-                </thead>
-                {% for medecin in medecins %}
-                    <tbody>
-                    <tr>
-                        <!-- <th scope="row">{{ loop.index }}</th> -->
-                        <td>{{ medecin.prenom }}</td>
-                        <td>{{ medecin.nom }}</td>
-                        <td>{{ medecin.specialite }}</td>
-                        <td><a href="{{ path('app_rendez-vous_ajouter', {'medecinId': medecin.id}) }}" class="btn btn-primary">Prendre rendez-vous</a></td>
-                    </tr>
-                    </tbody>
-                {% endfor %}
-            </table>
+        <div class="row">
+            <div class="col-md-3">
+                {% include 'compte/_menu.html.twig' %}
+            </div>
+            <div class="col-md-9">
+                <h2 class="mb-4">Liste de rendez-vous</h2>
+                <h5>Prendre un rendez-vous avec un praticien</h5>
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                    {% for medecin in medecins %}
+                        <div class="col">
+                            <div class="card mb-3 text-left ybRDV-Cards" style="max-width: 18rem;">
+                                <div class="card-header bg-white text-dark">
+                                    <div class="d-flex align-items-center">
+                                        {% if medecin.photo %}
+                                            <img src="/assets/photos/{{ medecin.photo }}" alt="Photo du praticien" class="rounded-circle" style="width: 50px; height: 50px;">
+                                        {% else %}
+                                            <img src="{{ asset('assets/images/SOIGNEMOI-logo.png') }}" alt="Photo par défaut" class="rounded-circle" style="width: 50px; height: 50px;">
+                                        {% endif %}
+                                        <div class="ms-3">
+                                            <p class="card-text mb-0">Praticien : {{ medecin.prenom }} {{ medecin.nom }}</p>
+                                            <p class="card-text">Spécialité : {{ medecin.specialite }}</p>
+                                            <hr class="my-2">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body text-center text-white rounded-bottom-corners ybRDV-Cards">
+                                    <h5 class="card-title">
+                                        Place(s) restante(s) : 1
+                                    </h5>
+                                    <a href="{{ path('app_rendez-vous_ajouter', {'medecinId': medecin.id}) }}" class="btn btn-primary">Prendre rendez-vous</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
     </div>
-
-</div>
 {% endblock %}

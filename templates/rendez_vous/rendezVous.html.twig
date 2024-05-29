@@ -3,40 +3,67 @@
 {% block title %}SoigneMoi - Bienvenue sur la page de rendez-vous{% endblock %}
 
 {% block body %}
+
     <div class="container my-5">
         <div class="text-center">
             <h1 class="mb-4">Bienvenue sur votre <span class="text-primary">Interface</span></h1>
-            <a href="{{ path('app_compte') }}" class="btn btn-primary">Prendre rendez-vous avec un praticien</a>
+            <a href="{{ path('app_compte') }}" class="btn btn-primary ybRDV-bouton">Prendre rendez-vous avec un praticien</a>
         </div>
 
-        <div class="mt-5">
-            <h2 class="mb-4">Liste des rendez-vous</h2>
-
-            <h3>Rendez-vous à venir</h3>
+        <div class="container my-5">
             <div class="row">
-                {% for rdv in rdvs|filter(rdv => rdv.status == 'à venir') %}
-                    <div class="col-md-4 mb-4">
-                        {{ include('rendez_vous/_rendez-vous.html.twig', {'rdv': rdv, 'cardColor': 'bg-primary text-white'}) }}
-                    </div>
-                {% endfor %}
-            </div>
+                <div class="col-md-3">
+                    {% include 'rendez_vous/_menuRDV.html.twig' %}
+                </div>
+                <div class="col-md-9">
+                    <div class="mt-5">
+                        <h2 class="mb-4">Liste de mes rendez-vous</h2>
 
-            <h3 class="mt-5">Rendez-vous en cours</h3>
-            <div class="row">
-                {% for rdv in rdvs|filter(rdv => rdv.status == 'en cours') %}
-                    <div class="col-md-4 mb-4">
-                        {{ include('rendez_vous/_rendez-vous.html.twig', {'rdv': rdv, 'cardColor': 'bg-warning text-dark'}) }}
-                    </div>
-                {% endfor %}
-            </div>
+                        <h4>Rendez-vous à venir</h4>
+                        <div class="row">
+                            {% for rdv in rdvs|filter(rdv => rdv.status == 'à venir') %}
+                                <div class="col-md-4 mb-4">
+                                    {{ include('rendez_vous/_rendez-vous.html.twig', {'rdv': rdv, 'cardColor': 'bg-primary text-white'}) }}
+                                </div>
+                            {% endfor %}
+                        </div>
 
-            <h3 class="mt-5">Rendez-vous effectué</h3>
-            <div class="row">
-                {% for rdv in rdvs|filter(rdv => rdv.status == 'effectué') %}
-                    <div class="col-md-4 mb-4">
-                        {{ include('rendez_vous/_rendez-vous-effectue.html.twig', {'rdv': rdv, 'cardColor': 'bg-success text-white'}) }}
+                        <h3 class="mt-5">Rendez-vous en cours</h3>
+                        <div class="row">
+                            {# S'il y a des rendez vous les afficher sinon mettre un message "Aucun rendez-vous en cours" #}
+                               {% if rdvs|filter(rdv => rdv.status == 'en cours')|length > 0 %}
+                                    {% for rdv in rdvs|filter(rdv => rdv.status == 'en cours') %}
+                                        <div class="col-md-4 mb-4">
+                                            {{ include('rendez_vous/_rendez-vous.html.twig', {'rdv': rdv, 'cardColor': 'bg-warning text-dark'}) }}
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="col-md-12">
+                                        <div class="alert alert-info" role="alert">
+                                            Aucun rendez-vous en cours
+                                        </div>
+                                    </div>
+                                {% endif %}
+                        </div>
+
+                        <h3 class="mt-5">Rendez-vous effectué</h3>
+                        <div class="row">
+                            {% if rdvs|filter(rdv => rdv.status == 'effectué') |length > 0  %}
+                                {% for rdv in rdvs|filter(rdv => rdv.status == 'effectué') %}
+                                    <div class="col-md-4 mb-4">
+                                        {{ include('rendez_vous/_rendez-vous-effectue.html.twig', {'rdv': rdv, 'cardColor': 'bg-success text-white'}) }}
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="col-md-12">
+                                    <div class="alert alert-info" role="alert">
+                                        Aucun rendez-vous effectué
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
                     </div>
-                {% endfor %}
+                </div>
             </div>
         </div>
     </div>
