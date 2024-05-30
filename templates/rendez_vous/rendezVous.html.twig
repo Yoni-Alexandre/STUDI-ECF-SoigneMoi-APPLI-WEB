@@ -17,9 +17,7 @@
                 </div>
                 <div class="col-md-9">
                     <div class="mt-5">
-                        <h2 class="mb-4">Liste de mes rendez-vous</h2>
-
-                        <h4>Rendez-vous à venir</h4>
+                        <h2 class="mb-4">Rendez-vous à venir</h2>
                         <div class="row">
                             {% for rdv in rdvs|filter(rdv => rdv.status == 'à venir') %}
                                 <div class="col-md-4 mb-4">

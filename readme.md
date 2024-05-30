@@ -36,29 +36,29 @@ Ce site web a été développé en utilisant les technologies suivantes :
 ## Création du Projet SoigneMoi avec Symfony 7 (PHP 8.3)
 
 Création du Projet :
-```bash  
+```php  
   symfony new SoigneMoi --version="7.0.*" --webapp 
 ```  
 Installation des Dépendances avec **Composer** :
-```bash  
+```php  
   cd SoigneMoi 
 ```  
-```bash  
+```php  
   composer install 
 ```  
 ## Modification du ficher .env pour connecter la base de données
-```bash  
+```php  
 DATABASE_URL="mysql://root@127.0.0.1:3306/soignemoi?serverVersion=8.0.32&charset=utf8mb4"  
 ```  
 ## Création de la base de données
-```bash  
+```php  
 symfony console doctrine:database:create
 ```  
 ## Création des Entités
 
 #### Entité Utilisateur (sécurisé)
 
-```bash  
+```php  
 symfony console make:user  
 The name of the security user class (e.g. User) [User]:  > Utilisateur  
   
@@ -76,7 +76,7 @@ Does this app need to hash/check user passwords? (yes/no) [yes]:
 - adresse_postale : `adresse_postale`, type : `text`
 
 #### Commande de création des entités
-```bash 
+```php 
 symfony console make:entity
 ```
 
@@ -133,9 +133,9 @@ Champs de l'entité :
 ## Définition des Relations
 
 #### Création des relations entre les Entités
-```bash symfony console make:entity```
+```php symfony console make:entity```
 #### Exemple  pour Sejour et Utilisateur:
-```bash 
+```php 
 Class name of the entity to create or update (e.g. BraveKangaroo):  
  > Sejour  
  Your entity already exists! So let's add some new fields!  
@@ -198,15 +198,15 @@ What type of relationship is this?
         - Champs de l'entité : `medecin`, type : `relation (ManyToOne)`, classe cible : `Medecin`
 #  
 #### Création de la migration
-```bash  
+```php  
 symfony console make:migration
 ```  
 #### Exécution de la migration
-```bash  
+```php  
 symfony console doctrine:migrations:migrate
 ```  
 ## Création du contrôleur d'inscription des utilisateurs (patients)
-```bash  
+```php  
 symfony console make:controller  
 Choose a name for your controller class (e.g. OrangeChefController):  
  > InscriptionController  
@@ -215,7 +215,7 @@ Choose a name for your controller class (e.g. OrangeChefController):
 ```
 ## Création du formulaire des utilisateurs (patients)
 #### Formulaire de création de comptes pour les utilisateurs
-```bash  
+```php  
 symfony console make:form  
 The name of the form class (e.g. GentlePuppyType):  
  > InscriptionUtilisateurType  
@@ -225,7 +225,7 @@ The name of the form class (e.g. GentlePuppyType):
  created: src/Form/InscriptionUtilisateurType.php  Success! 
  ```  
 #### Lier le contrôleur `InscriptionController`au  formulaire `InscriptionUtilisateurType`
-```bash  
+```php  
 $utilisateur = new Utilisateur(); $form = $this->createForm(InscriptionUtilisateurType::class, $utilisateur);    
  return $this->render('inscription/index.html.twig', [    
     'titre_inscription' => 'Inscription',    
@@ -233,12 +233,12 @@ $utilisateur = new Utilisateur(); $form = $this->createForm(InscriptionUtilisate
 ```  
 Pour utiliser **Bootstrap** pour l'affichage graphique des formulaires, modifier le fichier ```config/packages/twig.yaml```  
 et ajouter :
-```bash  
+```php  
 twig:     
   form_themes: ['bootstrap_5_layout.html.twig']
 ```  
 #### Création du formulaire (Exemple du formulaire d'inscription)
-```bash  
+```php  
 public function buildForm(FormBuilderInterface $builder, array $options): void {    
     $builder    
   ->add('email', EmailType::class, [    
@@ -277,7 +277,7 @@ public function buildForm(FormBuilderInterface $builder, array $options): void {
 ; }  
 ```  
 Dans le fichier de la vue associée au formulaire
-```bash  
+```php  
 {{ form_start(formulaireUtilisateurs) }} {{ form_row(formulaireUtilisateurs.nom) }} {{ form_row(formulaireUtilisateurs.prenom) }} {{ form_row(formulaireUtilisateurs.adresse_postale) }} {{ form_row(formulaireUtilisateurs.email) }} {{ form_row(formulaireUtilisateurs.password) }} {{ form_row(formulaireUtilisateurs.submit) }} {{ form_end(formulaireUtilisateurs) }}  
 ```  
 ## Enregistrement du formulaire des utilisateurs (patients) en base de données
@@ -285,7 +285,7 @@ Depuis le contrôleur InscriptionController.php,  ne pas oublier les injections 
 `Request $request, EntityManagerInterface $entityManager`
 
 - Soumission, Enregistrement et Envoi des données du formulaire en base de données
-```bash  
+```php  
 if ($form->isSubmitted() && $form->isValid()){    
     // persister les données dans la table utilisateur    
   $entityManager->persist($utilisateur);    
@@ -293,7 +293,7 @@ if ($form->isSubmitted() && $form->isValid()){
 $entityManager->flush(); }  
 ```  
 Exemple complet:
-```bash  
+```php  
 public function index(Request $request, EntityManagerInterface $entityManager): Response {    
     // Création d'un nouvel utilisateur    
   $utilisateur = new Utilisateur();    
@@ -320,7 +320,7 @@ public function index(Request $request, EntityManagerInterface $entityManager): 
 ## Encodage des mots de passe du formulaire des utilisateurs (patients) en base de données
 #### RepeatedType *(https://symfony.com/doc/current/reference/forms/types/password.html#hash-property-path)* et hash du mot de passe
 Depuis le formulaire `InscriptionUtilisateurType.php` :
-```bash  
+```php  
 ->add('motDePasse', RepeatedType::class, [    
     'type' => PasswordType::class,    
     'first_options' => [    
@@ -341,7 +341,7 @@ Depuis le formulaire `InscriptionUtilisateurType.php` :
 Si les mots de passe ne correspondent pas,  on entrera pas dans la condition `$form->isValid()` du `InscriptionController.php`
 
 Modification de la langue du message d'erreur quand les mots de passe ne correspondent pas dans `config/packages/translation.yaml`
-```bash  
+```php  
 framework:    
     default_locale: fr translator:    
         default_path: '%kernel.project_dir%/translations' fallbacks:    
@@ -353,7 +353,7 @@ framework:
 Dans le formulaire `InscriptionUtilisateurType.php` ajout de contraintes `use Symfony\Component\Validator\Constraints\Length;`
 
 Pour le mot de passe :
-```bash 
+```php 
 ->add('motDePasse', RepeatedType::class, [  
     'type' => PasswordType::class,  
     'constraints' => [  
@@ -369,7 +369,7 @@ Pour le mot de passe :
    ...
 ```
 Pour le nom :
-```bash 
+```php 
 ->add('nom', TextType::class, [  
     'label' => 'Nom',  
     'constraints' => [  
@@ -382,7 +382,7 @@ Pour le nom :
     ...
 ```
 Pour le prénom :
-```bash 
+```php 
     ->add('prenom', TextType::class, [  
     'label' => 'Prénom',  
     'constraints' => [  
@@ -400,7 +400,7 @@ Pour le prénom :
 Pour vérifier que l'entrée d'une donnée dans le formulaire soit bien unique, il faut modifier le tableau d'options de la fonction `configureOptions()` du `InscriptionUtilisateurType.php`
 
 Ici j'utiliserais comme entrée unique en base de données, **l'Email**:
-```bash 
+```php 
 public function configureOptions(OptionsResolver $resolver): void  
 {  
     $resolver->setDefaults([  
@@ -419,7 +419,7 @@ public function configureOptions(OptionsResolver $resolver): void
 *https://symfony.com/doc/current/security.html#form-login*
 
 Création du contrôleur  **ConnexionController.php**
-```bash 
+```php 
 symfony console make:controller
 
 Choose a name for your controller class (e.g. GentlePizzaController):
@@ -432,7 +432,7 @@ Choose a name for your controller class (e.g. GentlePizzaController):
   Success!
 ```
 Activation du `FormLoginAuthenticator` en ajoutant la clé du tableau `form_login`  dans `config/packages/security.yaml`
-```bash
+```php
 firewalls:  
     dev:  
         pattern: ^/(_(profiler|wdt)|css|images|js)/  
@@ -446,7 +446,7 @@ firewalls:
 ```
 
 Je modifie ensuite le contrôleur de connexion `ConnexionController.php`
-```bash
+```php
 class ConnexionController extends AbstractController  
 {  
     #[Route('/connexion', name: 'app_connexion')]  
@@ -466,7 +466,7 @@ class ConnexionController extends AbstractController
 }
 ```
 Je modifie ensuite la vue associée au contrôleur pour utiliser les variables pour gérer l'erreur si l'utilisateur n'existe pas et connecter l'utilisateur (en mode développement le `Symfony Profiler` permet de voir si l'on est bien connecté):
-```bash
+```php
 {% extends 'base.html.twig' %}
 
 {% block title %}SoigneMoi - Bienvenue sur la page {{ titre_connexion }}{% endblock %}
@@ -499,7 +499,7 @@ Je modifie ensuite la vue associée au contrôleur pour utiliser les variables p
 {% endblock %}
 ```
 Création d'un contrôleur pour faire l'interface entre l'espace utilisateur privé et les vues à affichées en fonction de l'utilisateur
-```bash
+```php
 symfony console make:controller
 
  Choose a name for your controller class (e.g. GentlePizzaController):
@@ -511,7 +511,7 @@ symfony console make:controller
   Success! 
 ```
 Modification de la vue `compte\index.html.twig` en utilisant une condition si l'utilisateur est connecté ou non
-```bash
+```php
 {% extends 'base.html.twig' %}
 
 {% block title %}SoigneMoi - Bienvenue sur la page {{ titre_compte }}{% endblock %}
@@ -539,7 +539,7 @@ Modification de la vue `compte\index.html.twig` en utilisant une condition si l'
 {% endblock %}
 ```
 Modification de la vue de connexion`connexion\index.html.twig`pour la redirection vers `compte\index.html.twig` si le login est validé
-```bash
+```php
 {# Redirection de l'utilisateur vers sont espace membre #}  
 <input type="hidden" name="_target_path" value="{{ path('app_compte') }}">
 ```
@@ -547,7 +547,7 @@ Modification de la vue de connexion`connexion\index.html.twig`pour la redirectio
 
 *https://symfony.com/doc/current/security.html#logging-out*
 Modification du `config/packages/security.yaml` en y ajoutant la route pour la déconnexion
-```bash
+```php
         main:
             form_login:
                 # app_connexion est le nom de la route de mon contrôleur 'ConnexionController'.
@@ -559,7 +559,7 @@ Modification du `config/packages/security.yaml` en y ajoutant la route pour la d
                 path: app_deconnexion
 ```
 Création dans le contrôleur de connexion `ConnexionController.php`, une route pour la déconnexion
-```bash
+```php
 #[Route('/deconnexion', name: 'app_deconnexion', methods: ['GET'])]
     public function deconnexion() : never
     {
@@ -567,7 +567,7 @@ Création dans le contrôleur de connexion `ConnexionController.php`, une route 
     }
 ```
 Modification du `config/packages/security.yaml` pour empêcher l'accès à la route `/compte` si l'utilisateur n'est pas connecté (dans ce cas, il sera redirigé vers la page de connexion)
-```bash
+```php
     access_control:
         - { path: ^/compte, roles: ROLE_USER }
         # - { path: ^/admin, roles: ROLE_ADMIN }
@@ -575,7 +575,7 @@ Modification du `config/packages/security.yaml` pour empêcher l'accès à la ro
 ```
 
 Modification dans le `base.html.twig`avec condition si l'utilisateur est connecté ou non
-```bash
+```php
                                 <!-- VUE MOBILE DANS LE MENU BURGER -->
                                 <!-- BOUTONS DE INTERFACE QUAND L'UTILISATEUR EST CONNECTE-->
                                 {% if app.user %}
@@ -613,7 +613,7 @@ Modification dans le `base.html.twig`avec condition si l'utilisateur est connect
 
 Avec la commande `symfony console debug:router` cela me permet de savoir ou j'en suis des routes créées
 
-```bash
+```php
  -------------------------- -------- -------- ------ ----------------------------------- 
   Name                       Method   Scheme   Host   Path                               
  -------------------------- -------- -------- ------ ----------------------------------- 
@@ -643,7 +643,7 @@ Avec la commande `symfony console debug:router` cela me permet de savoir ou j'en
 Au lieu de créer un nouveau contrôleur pour gérer la modification du mot de passe, j'utiliserai le contrôleur déjà existant des comptes `CompteController.php` pour créer une nouvelle route `/compte/modifier-mot-de-passe` dans le contrôleur
 
 Modification du contrôleur `CompteController.php`
-```bash
+```php
     #[Route('/compte', name: 'app_compte')]
     public function index(): Response
     {
@@ -677,7 +677,7 @@ Modification du contrôleur `CompteController.php`
     }
 ```
 Création du formulaire `ModificationMotdePasseUtilisateurType` pour le changement de mot de passe
-```bash
+```php
 symfony console make:form
 
  The name of the form class (e.g. DeliciousGnomeType):
@@ -692,7 +692,7 @@ Utilisateur
   Success! 
 ```
 Ajout des options du formulaire `ModificationMotDePasseUtilisateurType.php` de changement de mot de passe
-```bash
+```php
 $builder
             ->add('ancien_mot_de_passe', PasswordType::class, [
                 'label' => 'Ancien mot de passe',
@@ -742,7 +742,7 @@ Injection de dépendances du `UserPasswordHasherInterface` puis transfère dans 
 *https://symfony.com/doc/current/forms.html#passing-options-to-forms*
 
 *Extrait `CompteController.php`*
-```bash
+```php
 #[Route('/compte/modification-mot-de-passe', name: 'app_compte_modif-mdp')]
     public function motDePasse(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
     {
@@ -767,7 +767,7 @@ Injection de dépendances du `UserPasswordHasherInterface` puis transfère dans 
     }
 ```
 *Extrait `ModificationMotDePasseUtilisateurType.php`*
-```bash
+```php
 ->add('submit', SubmitType::class, [
                 'label' => 'Modifier ...
 
@@ -807,7 +807,7 @@ Déclaration dans le formulaire `ModificationMotDePasseUtilisateurType.php` de l
 `password_hashers' => $passwordHasher` déclarée dans le contrôleur `CompteController.php`
 
 *Extrait `ModificationMotDePasseUtilisateurType.php`*
-```bash
+```php
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
@@ -818,7 +818,7 @@ Déclaration dans le formulaire `ModificationMotDePasseUtilisateurType.php` de l
     }
 ```
 Création de la vue `motDePasse.html.twig`
-```bash
+```php
 {% block body %}
     <div class="container my-5">
         <div class="row">
@@ -837,7 +837,7 @@ Création de la vue `motDePasse.html.twig`
 *https://symfony.com/doc/current/session.html#flash-messages*
 
 Dans la condition de la validation du formulaire du contrôleur, ajouter les `Flash Messages`
-```bash
+```php
    if ($form->isSubmitted() && $form->isValid()){
         # persister les données dans la table utilisateur
         $entityManager->flush();
@@ -848,7 +848,7 @@ Dans la condition de la validation du formulaire du contrôleur, ajouter les `Fl
     }
 ```
 Pour que le message s'affiche partout, modifier le `base.html.twig`
-```bash
+```php
 <!-- MESSAGE FLASH -->
         <div class="container">
             {% for label, messages in app.flashes %}
@@ -879,10 +879,10 @@ composer require --dev symfony/test-pack
 puis test de la bonne installation via la commande ``php bin/phpunit``
 
 #### Création d'un test unitaire pour tester la fonctionnalité `test-pack/phpunit`:
-```bash  
+```php  
 symfony console make:test
 ```
-```bash  
+```php  
 Which test type would you like?:
   [TestCase       ] basic PHPUnit tests
   [KernelTestCase ] basic tests that have access to Symfony services
@@ -905,7 +905,7 @@ Choose a class name for your test, like:
   Success! 
 ```
 Création du fichier d'exemple de de test dans `tests/TestDeFonctionnementTest.php`
-```bash
+```php
 <?php  
   
 namespace App\Tests;  
@@ -921,7 +921,7 @@ class TestDeFonctionnementTest extends TestCase
 }
 ```
 puis exécution de la commande `php bin/phpunit` le résultat sera `SUCCESS` car dans mon exemple la condition est à `true` dans la fonction `assertTrue()`
-```bash
+```php
 PHPUnit 9.6.18 by Sebastian Bergmann and contributors.
 
 Testing
@@ -933,11 +933,11 @@ OK (1 test, 1 assertion)
 ```
 #### Création d'un test fonctionnel pour le formulaire d'inscription:
 Exécution de la commande pour lancer l’assistant de création de test:
-```bash  
+```php  
 symfony console make:test
 ```
 Dans la liste je choisis ``WebTestCase`` qui correspond à un comportement qu'un navigateur web peut avoir (*sauf qu'il n’exécute pas je JavaScript*) puis via l'assistant je crée la classe `FormulaireInscriptionUtilisateurTest.php` dans `tests`:
-```bash  
+```php  
  Which test type would you like?:
   [TestCase       ] basic PHPUnit tests
   [KernelTestCase ] basic tests that have access to Symfony services
@@ -971,19 +971,19 @@ est bien présent.
 
 Création de la base de données fictives de test avec le flag `--env=test` ce qui donnéra `soignemoi_test`:
 
-```bash 
+```php 
 symfony console doctrine:database:create --env=test
 
 Created database `soignemoi_test` for connection named default
 ```
 
 Ajout des tables qui se trouvent dans la base de données de production avec les flags `-n` (non interactif) et `--env=test`:
-```bash
+```php
 symfony console doctrine:migrations:migrate -n --env=test
 ```
 
 Exemple de test unitaire pour le formulaire d'inscription `FormulaireInscriptionUtilisateurTest.php`:
-```bash
+```php
 class FormulaireInscriptionUtilisateurTest extends WebTestCase
 {
     public function testSomething(): void
@@ -1013,7 +1013,7 @@ class FormulaireInscriptionUtilisateurTest extends WebTestCase
 }
 ```
 Execution du test unitaire avec la commande `php bin/phpunit`:
-```bash
+```php
 php bin/phpunit
 PHPUnit 9.6.18 by Sebastian Bergmann and contributors.
 
@@ -1028,13 +1028,13 @@ OK (1 test, 3 assertions)
 *https://symfony.com/bundles/EasyAdminBundle/current/index.html*
 
 Installation du bundle `EasyAdmin` via composer:
-```bash
+```php
 composer require easycorp/easyadmin-bundle
 ```
 Création du premier tableau de bord avec la commande :
 `symfony console make:admin:dashboard`
 
-```bash
+```php
  Which class name do you prefer for your Dashboard controller? [DashboardController]:
  > DashboardController
 
@@ -1047,7 +1047,7 @@ Création du premier tableau de bord avec la commande :
 ```
 
 Modification du `config/packages/security.yaml` pour empêcher l'accès à la route `/admin` si l'utilisateur n'a pas le rôle `ROLE_ADMIN` (dans ce cas, il sera redirigé vers la page de connexion)
-```bash
+```php
     access_control:
         - { path: ^/compte, roles: ROLE_USER }
         - { path: ^/admin, roles: ROLE_ADMIN }
@@ -1058,7 +1058,7 @@ Lié l'entité `Utilisateur` à `EasyAdmin` en créant un `CRUD Controllers`:
 
 `symfony console make:admin:crud`
 
-```bash
+```php
  Which Doctrine entity are you going to manage with this CRUD controller?:
   [0] App\Entity\Medecin
   [1] App\Entity\Medicament
@@ -1079,7 +1079,7 @@ Lié l'entité `Utilisateur` à `EasyAdmin` en créant un `CRUD Controllers`:
  [OK] Your CRUD controller class has been successfully generated.
 ```
 Modification de la classe `DashboardController.php` pour créer un lien avec l'entité `Utilisateur` dans le tableau de bord `DashboardController.php`:
-```bash
+```php
 class DashboardController extends AbstractDashboardController
 {
     #[Route('/admin', name: 'admin')]
@@ -1106,7 +1106,7 @@ class DashboardController extends AbstractDashboardController
 
 Personnalisation de l'affichage via les options du CRUD Controller Configuration dans le tableau de bord `UtilisateurCrudController.php`:
 *https://symfony.com/bundles/EasyAdminBundle/current/crud.html#crud-controller-configuration*
-```bash
+```php
 class UtilisateurCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
@@ -1125,7 +1125,7 @@ class UtilisateurCrudController extends AbstractCrudController
     ...
 ```
 Configuration des champs à afficher dans le tableau de bord `UtilisateurCrudController.php`:
-```bash
+```php
     public function configureFields(string $pageName): iterable
     {
         return [
@@ -1136,7 +1136,7 @@ Configuration des champs à afficher dans le tableau de bord `UtilisateurCrudCon
         ];
     }
 ```
-```bash
+```php
 public function configureFields(string $pageName): iterable
     {
         return [
@@ -1151,7 +1151,7 @@ public function configureFields(string $pageName): iterable
 Ajout du CRUD Controller pour les Médecins
 `symfony console make:admin:crud`
 
-```bash
+```php
 Which Doctrine entity are you going to manage with this CRUD controller?:
   [0] App\Entity\Medecin
   [1] App\Entity\Medicament
@@ -1172,11 +1172,11 @@ Which Doctrine entity are you going to manage with this CRUD controller?:
  [OK] Your CRUD controller class has been successfully generated.   
 ```
 Modification de la classe `DashboardController.php` pour créer un lien avec l'entité `Medecin` dans le tableau de bord `DashboardController.php`:
-```bash
+```php
 yield MenuItem::linkToCrud('Médecins', 'fas fa-stethoscope', Medecin::class);
 ```
 Configuration du Crud Controller de l'entité `Medecin` dans le tableau de bord `MedecinCrudController.php`:
-```bash
+```php
 public function configureCrud(Crud $crud): Crud
     {
         return $crud
@@ -1198,7 +1198,7 @@ public function configureCrud(Crud $crud): Crud
     }
 ```
 Ajout de la méthode toString() dans l'entité `Medecin.php` pour afficher pouvoir afficher la spécialité du médecin dans le tableau de bord `MedecinCrudController.php`:
-```bash
+```php
 public function __toString(): string
     {
         return $this->specialite;
@@ -1208,7 +1208,7 @@ public function __toString(): string
 ## Gestion des rendez-vous
 
 Pour que l'utilisateur, depuis son espace personnel, puisse prendre un rendez-vous, j'ai crée un contrôleur `RendezVousController.php` avec les fonctionnalités de pouvoir ajouter et annuler un rendez-vous associé à l'utilisateur connecté et à l'id du médecin puis une redirection vers la liste des rendez-vous sera faite :
-```bash
+```php
 <?php
 
 namespace App\Controller;
@@ -1293,7 +1293,7 @@ class RendezVousController extends AbstractController
 }
 ```
 Sa vue associée pour remplir le formulaire :
-```bash
+```php
 {% extends 'base.html.twig' %}
 
 {% block title %}SoigneMoi - Bienvenue sur la page d'ajout de rendez-vous{% endblock %}
@@ -1321,7 +1321,7 @@ Sa vue associée pour remplir le formulaire :
 {% endblock %}
 ```
 et le formulaire pour remplir les champs des rendez-vous en base de données :
-```bash
+```php
 <?php
 
 namespace App\Form;
@@ -1396,19 +1396,19 @@ class RendezVousUtilisateurType extends AbstractType
 
 #### Status des rendez-vous
 J'ai tout d'abord ajouté un nouveau champ `status` à mon entité `RendezVousUtilisateur.php`
-```bash
+```php
 #[ORM\Column(length: 255, nullable: true)]
 private ?string $status = null;
 ```
 
 J'ai modifié le contrôleur pour définir l'état du rendez-vous :
 Mise à jour de la méthode ajouterRendezVous dans RendezVousController.php. Plus précisément, j'ai ajouté la ligne ``$rdv->setStatus('à venir');`` juste avant d'appeler ``$form->handleRequest($request);``. Cela garantit que chaque nouveau ``RendezVousUtilisateur`` est initialisé avec le statut 'à venir'.
-```bash
+```php
 $rdv->setStatus('à venir');
 ```
 
 Ensuite j'ai mis à jour la vue ``rendezVous.html.twig`` pour modifier le design en utilisant Bootstrap pour la mise en forme des informations de rendez-vous en cartes, et j'ai appliqué des couleurs différentes pour chaque statut de rendez-vous.
-```bash
+```php
         <h3>Rendez-vous à venir</h3>
            <div class="row">
                {% for rdv in rdvs|filter(rdv => rdv.status == 'à venir') %}
@@ -1431,7 +1431,7 @@ Ensuite j'ai mis à jour la vue ``rendezVous.html.twig`` pour modifier le design
         </div>
 ```
 la vue de l' `include`
-```bash
+```php
 <div class="col-md-4 mb-4">
     <div class="card {{ cardColor }}">
         <div class="card-body">
@@ -1447,7 +1447,7 @@ Ajout de la vérification du statut de chaque rendez-vous avant de les afficher 
 
 Mise à jour du statut de chaque rendez-vous selon que la date du rendez-vous est "effectué", "en cours", "à venir"
 
-```bash
+```php
         // Création d'un objet DateTime qui contient la date et l'heure actuelle
         $actuelle = new \DateTime();
 
@@ -1475,7 +1475,7 @@ Mise à jour du statut de chaque rendez-vous selon que la date du rendez-vous es
 ```
 #### Ajout de la correspondance entre les rendez-vous des utilisateurs et les plannings des médecins
 Ajout de la fonction `disponibiliteMedecin()` dans le repository `PlanningMedecinRepository` pour retourner les créneaux d'un medecin spécifique
-```bash
+```php
 public function disponibiliteMedecin(\DateTimeInterface $date, Medecin $medecin)
     {
         $query = $this->createQueryBuilder('p')
@@ -1495,7 +1495,7 @@ public function disponibiliteMedecin(\DateTimeInterface $date, Medecin $medecin)
 Modification du formulaire `RendezVousUtilisateurType.php` pour ajouter les créneaux disponibles en utilisant la fonction `disponibiliteMedecin()`
 
 Lorsqu'un utilisateur souhaitera prendre un rendez-vous, il ne verra que les créneaux disponibles pour le médecin sélectionné
-```bash
+```php
 $planningMedecinRepo = $options['planningMedecinRepository'];
         $placeDisponible = $planningMedecinRepo->disponibiliteMedecins($builder->getData()->getMedecin());
 
@@ -1526,7 +1526,7 @@ S'il est disponible, la fonction `ajouterRendezVous()` crée un formulaire pour 
 Si le formulaire est soumis et valide, elle vérifie si suffisamment de places sont disponibles pour le nombre de places demandées.
 Si oui, elle met à jour le nombre de places disponibles et enregistre les détails du rendez-vous dans la base de données.
 Pour finir, la fonction renvoie un message de validation ou non du rendez-vous et redirige l'utilisateur.
-```bash
+```php
 #[Route('rendez_vous/ajouter/{medecinId}', name: 'app_rendez-vous_ajouter')]
     public function ajouterRendezVous(Request $request, EntityManagerInterface $entityManager, Security $security, $medecinId, MedecinRepository $medecinRepository, PlanningMedecinRepository $planningMedecinRepository): Response
     {
@@ -1624,7 +1624,7 @@ Mes contrôleurs seront plus clairs et plus faciles à maintenir.
 - Modification de l'entité `Avis.php`, `Prescription.php` et `Medicaments.php` en ayant une relation `ManyToOne` pour les associer entre elles ainsi que les médecins et patients.
 
 ##### Avis.php
-```bash
+```php
 <?php
 
 namespace App\Entity;
@@ -1739,7 +1739,7 @@ class Avis
 }
 ```
 ##### Prescription.php
-```bash
+```php
 <?php
 
 namespace App\Entity;
@@ -1890,7 +1890,7 @@ class Prescription
 Modification des CRUDController associés
 
 ##### AvisCrudController.php
-```bash
+```php
 <?php
 
 namespace App\Controller\Admin;
@@ -1936,7 +1936,7 @@ class AvisCrudController extends AbstractCrudController
 }
 ````
 ##### PrescriptionCrudController.php
-```bash
+```php
 <?php
 
 namespace App\Controller\Admin;
@@ -1982,7 +1982,7 @@ class PrescriptionCrudController extends AbstractCrudController
 ````
 Organisation dans EasyAdmin des CrudControllers à l'aide de `yield MenuItem::section()` pour les regrouper par catégories
 
-```bash
+```php
 yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
         yield MenuItem::section('Utilisateurs');
         yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-user', Utilisateur::class);
@@ -2015,7 +2015,7 @@ Installation en mode développement de la librairie `fakerphp/faker` pour géné
 
 Configuration du fichier `AppFixtures.php` dans le répertoire `src/DataFixtures` pour générer des données aléatoires pour les entités `Utilisateur`, `Medecin`, `SpecialiteMedecin`, `PlanningMedecin`, `Prescription`, `Medicament`, `Avis`
 
-```bash
+```php
 <?php
 
 namespace App\DataFixtures;
@@ -2168,7 +2168,7 @@ Installation de API Platform avec la commande
 
 Après l'installation de API Platform, je modifie le prefix `/api` en `/apiMedecins` pour les routes de l'API dans le fichier `config/routes/api_platform.yaml`
 
-```bash 
+```php 
 api_platform:
     resource: .
     type: api_platform
@@ -2184,7 +2184,7 @@ Tous les sous objets de l'entité `Avis.php` doivent avoirs dans leur entête d'
 Une référence circulaire se produit lorsqu'un objet contient une référence à un autre objet (sous objet de l'objet initial) qui contient une référence à l'objet d'origine.
 
 Entité `Avis.php`
-```bash
+```php
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
@@ -2202,7 +2202,7 @@ class Avis
 et les objets (Sous objet de Avis) `Medecin.php`, `Utilisateur.php`, `Prescription.php`
 
 `Medecin.php`
-```bash
+```php
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
@@ -2220,7 +2220,7 @@ class Medecin
 ```
 
 `Utilisateur.php`
-```bash
+```php
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
@@ -2242,7 +2242,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 ```
 
 `Prescription.php`
-```bash
+```php
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
@@ -2280,7 +2280,7 @@ et j'importe la classe `ApiResource` dans `ApiPlatform\Metadata\ApiResource` de 
 
 J'utilise aussi l'attribut `uriTemplate` pour personnaliser la route de l'API, car par défaut API Platform utilise l'iri de l'entité pour les routes de l'API et ajoute un pluriel ce qui donnait pour "Avis" -> "Aviss" avec deux "s".
 J'ajoute aussi l'attribut `security` pour limiter l'accès à la route seulement pour les utilisateurs connectés.avec un message d'erreur personnalisé.
-```bash
+```php
 #[ApiResource(
     operations: [
         new Get(
@@ -2312,7 +2312,7 @@ Puis j'ajoute le groupe de sérialisation `avis:read` et désérialisation `avis
 J'en profite aussi pour personnaliser aussi les groupes de chaque entité
 
 Exemple sur la classe Medecin.php :
-```bash
+```php
 #[ApiResource(
     normalizationContext: ['groups' => ['medecin:read']],
     denormalizationContext: ['groups' => ['medecin:write']]
@@ -2355,7 +2355,7 @@ Je fais un test dans via Postman de l'API pour voir si les données sont bien ex
 
 `http://127.0.0.1:8000/apiMedecins/avis/3`
 
-```bash
+```php
 {
     "@context": "/apiMedecins/contexts/Avis",
     "@id": "/apiMedecins/avis/3",
@@ -2375,7 +2375,7 @@ Je fais un test dans via Postman de l'API pour voir si les données sont bien ex
 
 `http://127.0.0.1:8000/apiMedecins/avis/`
 
-```bash
+```php
 {
     "@context": "/apiMedecins/contexts/Avis",
     "@id": "/apiMedecins/avis",
@@ -2416,7 +2416,7 @@ Depuis Postman, je configure header pour que sa clé soit `Content-Type` et sa v
 
 Je soumets la requête ci-dessous dans le Body en utilisant les iri pour les entités Medecin; Utilisateur et Préscription :
 
-```bash
+```php
 {
   "libelle": "Test API",
   "date": "2024-05-15T14:28:46.849Z",
@@ -2471,7 +2471,7 @@ Les clés seront créées dans le répertoire `config/jwt`. (Exclure du dépot g
 
 Configuration du fichier `config/packages/security.yaml` pour l'authentification JWT en ajoutant dans `api` :
 
-```bash 
+```php 
         api:
             pattern: ^/apiMedecins
             stateless: true
@@ -2486,7 +2486,7 @@ Cela est utile pour les API et les services où chaque requête doit être indé
 
 Tous les firewalls dans un ordre précis, le firewall `main` a un motif `(pattern: ^/)` qui correspond à toutes les routes et est donc toujours utilisé, je mets `auth` au-dessus du firewall `main` pour qu'il soit pris en compte pour les routes commençant par /auth :
 
-```bash
+```php
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -2524,7 +2524,7 @@ Tous les firewalls dans un ordre précis, le firewall `main` a un motif `(patter
 
 Ajout de la route `/auth` dans le fichier `config/routes.yaml` pour l'authentification JWT
 
-```bash
+```php
 controllers:
     resource:
         path: ../src/Controller/
@@ -2537,7 +2537,7 @@ auth:
 
 Le fichier `config/packages/lexik_jwt_authentication.yaml` est configuré automatiquement lors de l'installation pour l'authentification JWT
 
-```bash 
+```php 
 lexik_jwt_authentication:
     secret_key: '%env(resolve:JWT_SECRET_KEY)%'
     public_key: '%env(resolve:JWT_PUBLIC_KEY)%'
@@ -2546,7 +2546,7 @@ lexik_jwt_authentication:
 
 Modification du fichier `/config/packages/api_platform.yaml` pour configurer l'authentification JWT pour l'API
 
-```bash 
+```php 
 api_platform:
     title: API SoigneMoi
     version: 1.0.0
@@ -2575,7 +2575,7 @@ api_platform:
 
 Ajout dans le fichier security.yaml du firewall dédié à l'authetification JWT `auth`
 
-```bash
+```php
         auth:
             pattern: ^/auth
             stateless: true
@@ -2592,7 +2592,7 @@ J'aurais pu gérer dans le même firewall que ^/apiMedecins mais pour plus de cl
 ```markdown
 ## ⚠️ Exemple de ce que pourrais donner les deux patterns dans le meme firewall
 ```
-```bash
+```php
         api:
             pattern: ^/(apiMedecins|auth)
             stateless: true
@@ -2608,7 +2608,7 @@ J'aurais pu gérer dans le même firewall que ^/apiMedecins mais pour plus de cl
 
 Le fichier security.yaml en entier
 
-```bash
+```php
 security:
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
@@ -2686,7 +2686,7 @@ Ce qui me permet de récupérer le token JWT pour l'authentification de l'API.
 
 Pour mes tests, je crée un firewall que je nomme api_public qui me permet d'y accéder sans être authentifié
 
-```bash
+```php
         # Temporaire pour les tests. Me permet de me connecter sans JWT à API Platform.
         api_public:
             pattern: ^/apiMedecins$
@@ -2700,7 +2700,7 @@ Pour mes tests, je crée un firewall que je nomme api_public qui me permet d'y a
 
 Maintenant je vais configurer les accès aux routes de l'API avec les rôles pour limiter l'accès à certaines routes.
 
-```bash
+```php
     access_control:
         - { path: ^/apiMedecins/, roles: ROLE_ADMIN }   # API avec accès administrateur (A changer - temporaire)
         - { path: ^/admin, roles: ROLE_ADMIN }          # Panneau d'aministration (admin et plus tard secretaires)
@@ -2726,7 +2726,7 @@ J'y ai intégré du HTML/CSS en utilisant Bootstrap et un fichier css personnel 
 J'utilise le CDN de Bootstrap pour les fichiers CSS et JS et celui de Font Awesome pour les icônes.
 Pour le fichier perso CSS je place dans `assets/css/soigneMoi.css`.
 
-```bash
+```php
         {% block stylesheets %}
             <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
             <link rel="stylesheet" href="{{ asset('assets/css/soigneMoi.css') }}">
@@ -2739,7 +2739,7 @@ Je conçois un menu burger pour les écrans mobiles en utilisant un exemple de n
 
 Dans cette Navbar j'utilise aussi des conditions TWIG pour rendre dynamique l'affichage en fonction que l'utilisateur soit connecté ou non.
 
-```bash
+```php
 {% block navbar %}
             <!-- DEBUT : NAVBAR -->
                 <nav class="navbar navbar-expand-lg">
@@ -2806,7 +2806,7 @@ Je crée un footer qui comporte trois colonnes principales dans la section supé
 
 Dans la section inférieure, il y a une autre ligne avec trois colonnes pour les mentions légales, les conditions générales d'utilisation et les données personnelles.
 
-```bash
+```php
         <!-- FOOTER -->
         {% block footer %}
             <footer class="ybFooter text-white text-center text-lg-start">
@@ -2868,7 +2868,7 @@ La section Hero aura une image de fond, un titre et un sous-titre.
 
 J'utilise des classes de Bootstrap pour le positionnement des éléments.
 
-```bash
+```php
 
 {% block body %}
     <div class="ybHeader">
@@ -2901,7 +2901,7 @@ J'utilise des classes de Bootstrap pour le positionnement des éléments.
 
 Et mon fichier perso CSS `soigneMoi.css` pour personnaliser les éléments de la section Hero.
 
-```bash
+```php
 /***** DEBUT:ACCUEIL:HERO *****/
 .ybHeader {
     position: relative;
@@ -3009,7 +3009,7 @@ Et mon fichier perso CSS `soigneMoi.css` pour personnaliser les éléments de la
 
 Dans mon fichier personnel CSS, je crée aussi des variables, ce qui me permet de changer les couleurs et les tailles de police plus facilement.
 
-```bash
+```php
 /***** DEBUT:VARIABLES ******/
 :root {
     --ybTitre-couleur: #003366;
@@ -3022,7 +3022,7 @@ Dans mon fichier personnel CSS, je crée aussi des variables, ce qui me permet d
 
 Ajout de la section presentation de l'accueil en utilisant les classes bootstrap pour créer les cards : 
 
-```bash
+```php
 {# DEBUT:ACCUEIL:PRESENTATION #}
     <div class="container my-5">
         <div class="row align-items-center">
@@ -3043,7 +3043,7 @@ Ajout de la section presentation de l'accueil en utilisant les classes bootstrap
 
 et le carousel:
 
-```bash
+```php
     {# DEBUT:ACCUEIL:CAROUSEL #}
     <div class="container my-5">
         <div class="row align-items-start">
@@ -3107,7 +3107,7 @@ et le carousel:
 
 J'ajoute ensuite les différentes sections que compose la page d'accueil en respectant le design de la maquette.
 
-```bash
+```php
 {# DEBUT:ACCUEIL:BANDEAU:PUB #}
     <div class="container my-5">
         <div class="row align-items-center">
@@ -3168,7 +3168,7 @@ Sur le même principe je modifie les pages de connexion et d'inscription en util
 
 Pour la page des rendez-vous, je crée, pour l'entité `Medecin`, un champ `photo` (avec ses setter et getter) pour associer une photo à chaque médecin.
 
-```bash
+```php
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $photo = null;
     
@@ -3187,7 +3187,7 @@ Pour la page des rendez-vous, je crée, pour l'entité `Medecin`, un champ `phot
 
 Ensuite, pour que les secrétaires puissent ajouter, lors de la création d'un médecin, une photo, je modifie mon CRUD Controller pour ajouter un `ImageField` dans le formulaire de création avec une création de noms aléatoire pour éviter de se retrouver avec plusieurs photos dont le nom serait le même.
 
-```bash
+```php
     public function configureFields(string $pageName): iterable
     {
         return [
@@ -3208,7 +3208,7 @@ Je modifie aussi mes fixtures en y ajoutant les photos `$medecin->setPhoto($fake
 
 J'ajoute aussi une fonctionnalité, qui me permet avant chaque création de photos par les fixtures, de supprimer les photos déjà existantes pour éviter de se retrouver avec des photos en double.
 
-```bash
+```php
     // Suppression des images existantes
         $uploadImages = glob('public/assets/photos/*');
         foreach ($uploadImages as $uploadImage) {
@@ -3220,7 +3220,7 @@ J'ajoute aussi une fonctionnalité, qui me permet avant chaque création de phot
 
 Pour finir, je modifie la vue pour ajouter la photo qui correspond au médecin (qui est défini dans la logique du contrôleur des rendez-vous) :
 
-```bash
+```php
 {% block stylesheets %}{% endblock %}
 {% block javascripts %}{% endblock %}
 
@@ -3243,6 +3243,96 @@ Pour finir, je modifie la vue pour ajouter la photo qui correspond au médecin (
 </div>
 ```
 
+Je crée une fiche de détails des rendez-vous lié à l'id du médecin en ajoutant un contrôleur `RendezVousFicheController.php` : 
+
+```php
+<?php
+
+namespace App\Controller\RendezVous;
+
+use App\Entity\RendezVousUtilisateur;
+use App\Repository\MedecinRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+
+class RendezVousFicheController extends AbstractController
+{
+    #[Route('/rendez_vous/fiche/{id}', name: 'app_rendez_vous_fiche')]
+    public function index($id, EntityManagerInterface $entityManager, MedecinRepository $medecinRepository, ): Response
+    {
+        // Je récupère le rendez-vous en utilisant son ID
+        $rdv = $entityManager->getRepository(RendezVousUtilisateur::class)->find($id);
+        // Si le rendez-vous n'existe pas, j'envoie un message flash puis redirection vers la liste des rendez-vous
+        if (!$rdv) {
+            $this->addFlash('danger', 'Rendez-vous non trouvé.');
+            return $this->redirectToRoute('app_rendez-vous');
+        }
+
+        return $this->render('rendez_vous/FicheRendezVous.html.twig', [
+            'rdv' => $rdv,
+        ]);
+    }
+}
+
+
+```
+et sa vue associée `FicheRendezVous.html.twig` :
+
+```php
+    <div class="container my-5 text-center">
+        <div class="row">
+            <div class="col-12 col-md-8 mx-auto">
+                <h1 class="mb-5">Détail de votre rendez-vous</h1>
+
+                <div class="card mb-3 text-left ybRDV-Cards mx-auto" style="max-width: 35rem;">
+                            <div class="card-header bg-white text-dark">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <img src="/assets/photos/{{ rdv.medecin.photo }}" alt="Photo du praticien" class="rounded-circle" style="width: 120px; height: 120px;">
+                                    <div>
+                                        <p class="card-text mb-0 mx-lg-3">Praticien : {{ rdv.medecin }}</p>
+                                        <p class="card-text mx-lg-3">Spécialité : {{ rdv.medecin.specialite }}</p>
+                                        <hr>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-body text-white rounded-bottom-corners ybRDV-Cards">
+                                <h5 class="card-title">
+                                    <i class="fas fa-calendar-alt"></i> {{ rdv.date|date('d/m/Y') }} <i class="fas fa-clock"></i> {{ rdv.date|date('H:i') }}
+                                </h5>
+                                <a href="{{ path('app_rendez-vous_supprimer', {'id': rdv.id}) }}" class="btn btn-danger">Annuler</a>
+                            </div>
+                        </div>
+                <div class="card mb-3 mx-auto" style="max-width: 35rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">Patient</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{ rdv.utilisateur.nom ~ ' ' ~ rdv.utilisateur.prenom }}</h6>
+                        </div>
+                    </div>
+                <div class="card mb-3 mx-auto" style="max-width: 35rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">Téléphone du lieu de consultation</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">01.02.03.04.05</h6>
+                        </div>
+                    </div>
+                <div class="card mx-auto" style="max-width: 35rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">Adresse du lieu de consultation</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">1, rue de la recherche</h6>
+                            <h6 class="card-subtitle mb-2 text-muted">78150 Versailles</h6>
+                        </div>
+                    </div>
+                    </div>
+
+
+                <div class="col-12 col-md-4 d-none d-md-block">
+                    <img src="{{ asset('assets/images/INSCRIPTION-image-01.png') }}" alt="Image droite du formulaire d'inscription" class="img-fluid mt-4" style="height: 770px;">
+                </div>
+            </div>
+        </div>
+```
 
 
 

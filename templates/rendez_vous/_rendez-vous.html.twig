@@ -2,7 +2,7 @@
 {% block javascripts %}{% endblock %}
 
 {% block body %}
-
+    <a href="{{ path('app_rendez_vous_fiche', {'id': rdv.medecin.id}) }}">Consulter le détail de votre rendez-vous</a>
     <div class="card mb-3 text-left ybRDV-Cards" style="max-width: 18rem;">
         <div class="card-header bg-white text-dark">
             <div class="d-flex align-items-center">

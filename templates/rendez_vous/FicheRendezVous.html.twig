@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Fiche de rendez-vous{% endblock %}
+
+{% block body %}
+    <div class="container my-5 text-center">
+        <div class="row">
+            <div class="col-12 col-md-8 mx-auto">
+                <h1 class="mb-5">Détail de votre rendez-vous</h1>
+
+                <div class="card mb-3 text-left ybRDV-Cards mx-auto" style="max-width: 35rem;">
+                            <div class="card-header bg-white text-dark">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <img src="/assets/photos/{{ rdv.medecin.photo }}" alt="Photo du praticien" class="rounded-circle" style="width: 120px; height: 120px;">
+                                    <div>
+                                        <p class="card-text mb-0 mx-lg-3">Praticien : {{ rdv.medecin }}</p>
+                                        <p class="card-text mx-lg-3">Spécialité : {{ rdv.medecin.specialite }}</p>
+                                        <hr>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-body text-white rounded-bottom-corners ybRDV-Cards">
+                                <h5 class="card-title">
+                                    <i class="fas fa-calendar-alt"></i> {{ rdv.date|date('d/m/Y') }} <i class="fas fa-clock"></i> {{ rdv.date|date('H:i') }}
+                                </h5>
+                                <a href="{{ path('app_rendez-vous_supprimer', {'id': rdv.id}) }}" class="btn btn-danger">Annuler</a>
+                            </div>
+                        </div>
+                <div class="card mb-3 mx-auto" style="max-width: 35rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">Patient</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{ rdv.utilisateur.nom ~ ' ' ~ rdv.utilisateur.prenom }}</h6>
+                        </div>
+                    </div>
+                <div class="card mb-3 mx-auto" style="max-width: 35rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">Téléphone du lieu de consultation</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">01.02.03.04.05</h6>
+                        </div>
+                    </div>
+                <div class="card mx-auto" style="max-width: 35rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">Adresse du lieu de consultation</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">1, rue de la recherche</h6>
+                            <h6 class="card-subtitle mb-2 text-muted">78150 Versailles</h6>
+                        </div>
+                    </div>
+                    </div>
+
+
+                <div class="col-12 col-md-4 d-none d-md-block">
+                    <img src="{{ asset('assets/images/INSCRIPTION-image-01.png') }}" alt="Image droite du formulaire d'inscription" class="img-fluid mt-4" style="height: 770px;">
+                </div>
+            </div>
+        </div>
+
+{% endblock %}

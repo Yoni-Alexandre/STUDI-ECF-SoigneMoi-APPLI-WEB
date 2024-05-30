@@ -11,9 +11,9 @@
             </div>
         {% endfor %}
 
-        <div class="row">
-            <div class="col-md-12">
-                <h1>Ajouter un rendez-vous</h1>
+        <div class="row d-flex">
+            <div class="col-md-8 align-self-stretch">
+                <h1>Séjour</h1>
 
                 {{ form_start(formulaireRdv) }}
                 {{ form_row(formulaireRdv.date) }}
@@ -21,8 +21,11 @@
                 {{ form_row(formulaireRdv.motifDeSejour) }}
                 {{ form_row(formulaireRdv.medecin) }}
                 {{ form_end(formulaireRdv) }}
-
+            </div>
+            <div class="col-md-4 d-none d-md-block align-self-stretch">
+                <img src="{{ asset('assets/images/SEJOUR-image-01.png') }}" style="width: 100%" alt="rendez-vous" class="img-fluid">
             </div>
         </div>
+
     </div>
 {% endblock %}

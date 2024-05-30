@@ -43,7 +43,6 @@ class RendezVousUtilisateurType extends AbstractType
             ->add('date', ChoiceType::class, [
                 'choices' => $choix,
                 'choice_label' => function($date){
-                    //return $date->format('d-m-Y H:i');
                     return $date->format('d-m-Y');
                 },
                 'label' => 'Choisissez une date de séjour',
