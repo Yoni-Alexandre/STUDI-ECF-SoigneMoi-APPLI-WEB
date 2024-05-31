@@ -17,12 +17,12 @@ class CompteController extends AbstractController
     public function index(MedecinRepository $medecinRepository): Response
     {
         $medecins = $medecinRepository->findAll();
-        $medecinsData = [];
+        $medecinsDonnees = [];
 
         foreach ($medecins as $medecin) {
             $plannings = $medecin->getPlanningMedecins();
             foreach ($plannings as $planning) {
-                $medecinsData[] = [
+                $medecinsDonnees[] = [
                     'medecin' => $medecin,
                     'planning' => $planning,
                     'places_restantes' => $planning->getNombrePlacesRestantes(),
@@ -32,7 +32,7 @@ class CompteController extends AbstractController
 
         return $this->render('compte/index.html.twig', [
             'titre_compte' => 'Mon compte',
-            'medecinsData' => $medecinsData
+            'medecinsDonnees' => $medecinsDonnees
         ]);
     }
 

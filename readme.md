@@ -1633,12 +1633,12 @@ J'ai passé ces informations à la vue sous forme d'un tableau contenant les mé
     public function index(MedecinRepository $medecinRepository): Response
     {
         $medecins = $medecinRepository->findAll();
-        $medecinsData = [];
+        $medecinsDonnees = [];
 
         foreach ($medecins as $medecin) {
             $plannings = $medecin->getPlanningMedecins();
             foreach ($plannings as $planning) {
-                $medecinsData[] = [
+                $medecinsDonnees[] = [
                     'medecin' => $medecin,
                     'planning' => $planning,
                     'places_restantes' => $planning->getNombrePlacesRestantes(),
@@ -1648,7 +1648,7 @@ J'ai passé ces informations à la vue sous forme d'un tableau contenant les mé
 
         return $this->render('compte/index.html.twig', [
             'titre_compte' => 'Mon compte',
-            'medecinsData' => $medecinsData
+            'medecinsDonnees' => $medecinsDonnees
         ]);
     }
 ```
@@ -1657,32 +1657,31 @@ Pour finir, j'ai mis à jour la vue `index.html.twig` pour afficher les places r
 J'ai utilisé une boucle pour parcourir les données des médecins et affiché le nombre de places restantes dans chaque carte de rendez-vous.
 
 ```twig
-                    {% for data in medecinsData %}
+                    {% for medecinDonnee in medecinsDonnees %}
                         <div class="col">
                             <div class="card mb-3 text-left ybRDV-Cards" style="max-width: 18rem;">
                                 <div class="card-header bg-white text-dark">
                                     <div class="d-flex align-items-center">
-                                        {% if data.medecin.photo %}
-                                            <img src="/assets/photos/{{ data.medecin.photo }}" alt="Photo du praticien" class="rounded-circle" style="width: 50px; height: 50px;">
+                                        {% if medecinDonnee.medecin.photo %}
+                                            <img src="/assets/photos/{{ medecinDonnee.medecin.photo }}" alt="Photo du praticien" class="rounded-circle" style="width: 50px; height: 50px;">
                                         {% else %}
                                             <img src="{{ asset('assets/images/SOIGNEMOI-logo.png') }}" alt="Photo par défaut" class="rounded-circle" style="width: 50px; height: 50px;">
                                         {% endif %}
                                         <div class="ms-3">
-                                            <p class="card-text mb-0">Praticien : {{ data.medecin.prenom }} {{ data.medecin.nom }}</p>
-                                            <p class="card-text">Spécialité : {{ data.medecin.specialite }}</p>
+                                            <p class="card-text mb-0">Praticien : {{ medecinDonnee.medecin.prenom }} {{ medecinDonnee.medecin.nom }}</p>
+                                            <p class="card-text">Spécialité : {{ medecinDonnee.medecin.specialite }}</p>
                                             <hr class="my-2">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="card-body text-center text-white rounded-bottom-corners ybRDV-Cards">
                                     <h5 class="card-title">
-                                        Place(s) restante(s) : {{ data.places_restantes }}
+                                        Place(s) restante(s) : {{ medecinDonnee.places_restantes }}
                                     </h5>
-                                    <a href="{{ path('app_rendez-vous_ajouter', {'medecinId': data.medecin.id}) }}" class="btn btn-primary">Prendre rendez-vous</a>
+                                    <a href="{{ path('app_rendez-vous_ajouter', {'medecinId': medecinDonnee.medecin.id}) }}" class="btn btn-primary">Prendre rendez-vous</a>
                                 </div>
                             </div>
                         </div>
-                    {% endfor %}
 ```
 
 ## Re-factorisation du code
