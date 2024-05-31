@@ -16,12 +16,23 @@ class CompteController extends AbstractController
     #[Route('/compte', name: 'app_compte')]
     public function index(MedecinRepository $medecinRepository): Response
     {
-
         $medecins = $medecinRepository->findAll();
+        $medecinsData = [];
 
-        return $this->render('compte/index.html.twig',[
+        foreach ($medecins as $medecin) {
+            $plannings = $medecin->getPlanningMedecins();
+            foreach ($plannings as $planning) {
+                $medecinsData[] = [
+                    'medecin' => $medecin,
+                    'planning' => $planning,
+                    'places_restantes' => $planning->getNombrePlacesRestantes(),
+                ];
+            }
+        }
+
+        return $this->render('compte/index.html.twig', [
             'titre_compte' => 'Mon compte',
-            'medecins' => $medecins
+            'medecinsData' => $medecinsData
         ]);
     }
 
@@ -51,5 +62,5 @@ public function motDePasse(Request $request, EntityManagerInterface $entityManag
     return $this->render('compte/motDePasse.html.twig',[
         'formulaireMotDePasse' => $form->createView()
     ]);
-}
+    }
 }

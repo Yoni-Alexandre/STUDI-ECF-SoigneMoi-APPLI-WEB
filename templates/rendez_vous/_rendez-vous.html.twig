@@ -2,24 +2,27 @@
 {% block javascripts %}{% endblock %}
 
 {% block body %}
-    <a href="{{ path('app_rendez_vous_fiche', {'id': rdv.medecin.id}) }}">Consulter le détail de votre rendez-vous</a>
     <div class="card mb-3 text-left ybRDV-Cards" style="max-width: 18rem;">
         <div class="card-header bg-white text-dark">
             <div class="d-flex align-items-center">
-                    <img src="/assets/photos/{{ rdv.medecin.photo }}" alt="Photo du praticien" class="rounded-circle" style="width: 50px; height: 50px;">
+                <img src="/assets/photos/{{ rdv.medecin.photo }}" alt="Photo du praticien" class="rounded-circle" style="width: 50px; height: 50px;">
                 <div>
                     <p class="card-text mb-0 mx-lg-3">Praticien : {{ rdv.medecin }}</p>
                     <p class="card-text mx-lg-3">Spécialité : {{ rdv.medecin.specialite }}</p>
-                    <hr>
                 </div>
             </div>
         </div>
 
-        <div class="card-body text-center  text-white rounded-bottom-corners ybRDV-Cards">
+        <div class="card-body text-center text-white rounded-bottom-corners ybRDV-Cards">
             <h5 class="card-title">
                 <i class="fas fa-calendar-alt"></i> {{ rdv.date|date('d/m/Y') }} <i class="fas fa-clock"></i> {{ rdv.date|date('H:i') }}
             </h5>
-            <a href="{{ path('app_rendez-vous_supprimer', {'id': rdv.id}) }}" class="btn btn-danger">Annuler</a>
+            <a href="{{ path('app_rendez_vous_fiche', {'id': rdv.medecin.id}) }}" class="btn btn-primary btn-block mb-2">
+                Consulter le détail de votre rendez-vous
+            </a>
+            <a href="{{ path('app_rendez-vous_supprimer', {'id': rdv.id}) }}" class="btn btn-danger btn-block">
+                Annuler
+            </a>
         </div>
     </div>
 {% endblock %}

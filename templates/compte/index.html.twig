@@ -5,10 +5,10 @@
 {% block body %}
     <div class="container my-5">
         <div class="text-center">
-            <h1>Bienvenue sur votre espace  <span class="text-primary">personnel</span></h1>
+            <h1>Bienvenue sur votre espace <span class="text-primary">personnel</span></h1>
 
             {% if app.user is not null %}
-                <p>Vous êtes connecté en tant que  <span class="text-primary">{{ app.user.prenom ~ ' ' ~ app.user.nom }}</span></p>
+                <p>Vous êtes connecté en tant que <span class="text-primary">{{ app.user.prenom ~ ' ' ~ app.user.nom }}</span></p>
                 <p><i>Ce n'est pas vous ? <a href="{{ path('app_deconnexion') }}">Cliquez ici</a></i></p>
             {% else %}
                 <p>Vous n'êtes pas connecté.</p>
@@ -22,28 +22,28 @@
                 <h2 class="mb-4">Liste de rendez-vous</h2>
                 <h5>Prendre un rendez-vous avec un praticien</h5>
                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                    {% for medecin in medecins %}
+                    {% for data in medecinsData %}
                         <div class="col">
                             <div class="card mb-3 text-left ybRDV-Cards" style="max-width: 18rem;">
                                 <div class="card-header bg-white text-dark">
                                     <div class="d-flex align-items-center">
-                                        {% if medecin.photo %}
-                                            <img src="/assets/photos/{{ medecin.photo }}" alt="Photo du praticien" class="rounded-circle" style="width: 50px; height: 50px;">
+                                        {% if data.medecin.photo %}
+                                            <img src="/assets/photos/{{ data.medecin.photo }}" alt="Photo du praticien" class="rounded-circle" style="width: 50px; height: 50px;">
                                         {% else %}
                                             <img src="{{ asset('assets/images/SOIGNEMOI-logo.png') }}" alt="Photo par défaut" class="rounded-circle" style="width: 50px; height: 50px;">
                                         {% endif %}
                                         <div class="ms-3">
-                                            <p class="card-text mb-0">Praticien : {{ medecin.prenom }} {{ medecin.nom }}</p>
-                                            <p class="card-text">Spécialité : {{ medecin.specialite }}</p>
+                                            <p class="card-text mb-0">Praticien : {{ data.medecin.prenom }} {{ data.medecin.nom }}</p>
+                                            <p class="card-text">Spécialité : {{ data.medecin.specialite }}</p>
                                             <hr class="my-2">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="card-body text-center text-white rounded-bottom-corners ybRDV-Cards">
                                     <h5 class="card-title">
-                                        Place(s) restante(s) : 1
+                                        Place(s) restante(s) : {{ data.places_restantes }}
                                     </h5>
-                                    <a href="{{ path('app_rendez-vous_ajouter', {'medecinId': medecin.id}) }}" class="btn btn-primary">Prendre rendez-vous</a>
+                                    <a href="{{ path('app_rendez-vous_ajouter', {'medecinId': data.medecin.id}) }}" class="btn btn-primary">Prendre rendez-vous</a>
                                 </div>
                             </div>
                         </div>

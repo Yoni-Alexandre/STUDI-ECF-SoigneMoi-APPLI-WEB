@@ -1609,6 +1609,82 @@ Pour finir, la fonction renvoie un message de validation ou non du rendez-vous e
         ]);
     }
 ```
+J'ai ajouté une méthode `getNombrePlacesRestantes()` dans l'entité `PlanningMedecin`. 
+Cette méthode parcourt tous les rendez-vous associés à un planning de médecin et calcule le nombre total de réservations. 
+Ensuite, elle soustrait ce total du nombre maximal de patients pour déterminer le nombre de places restantes.
+
+```php
+    public function getNombrePlacesRestantes(): int
+    {
+        $totalReservations = 0;
+        foreach ($this->getRendezVousUtilisateurs() as $rendezVous) {
+            $totalReservations += $rendezVous->getNombrePlacesReservees();
+        }
+        return $this->getNombrePatientsMax() - $totalReservations;
+    }
+```
+
+Ensuite, dans le contrôleur `CompteController`, j'ai récupéré tous les médecins et leurs plannings. 
+Pour chaque planning, j'ai calculé les places restantes en appelant la méthode précédemment ajoutée. 
+J'ai passé ces informations à la vue sous forme d'un tableau contenant les médecins, leurs plannings et le nombre de places restantes.
+
+```php
+    #[Route('/compte', name: 'app_compte')]
+    public function index(MedecinRepository $medecinRepository): Response
+    {
+        $medecins = $medecinRepository->findAll();
+        $medecinsData = [];
+
+        foreach ($medecins as $medecin) {
+            $plannings = $medecin->getPlanningMedecins();
+            foreach ($plannings as $planning) {
+                $medecinsData[] = [
+                    'medecin' => $medecin,
+                    'planning' => $planning,
+                    'places_restantes' => $planning->getNombrePlacesRestantes(),
+                ];
+            }
+        }
+
+        return $this->render('compte/index.html.twig', [
+            'titre_compte' => 'Mon compte',
+            'medecinsData' => $medecinsData
+        ]);
+    }
+```
+
+Pour finir, j'ai mis à jour la vue `index.html.twig` pour afficher les places restantes pour chaque rendez-vous. 
+J'ai utilisé une boucle pour parcourir les données des médecins et affiché le nombre de places restantes dans chaque carte de rendez-vous.
+
+```twig
+                    {% for data in medecinsData %}
+                        <div class="col">
+                            <div class="card mb-3 text-left ybRDV-Cards" style="max-width: 18rem;">
+                                <div class="card-header bg-white text-dark">
+                                    <div class="d-flex align-items-center">
+                                        {% if data.medecin.photo %}
+                                            <img src="/assets/photos/{{ data.medecin.photo }}" alt="Photo du praticien" class="rounded-circle" style="width: 50px; height: 50px;">
+                                        {% else %}
+                                            <img src="{{ asset('assets/images/SOIGNEMOI-logo.png') }}" alt="Photo par défaut" class="rounded-circle" style="width: 50px; height: 50px;">
+                                        {% endif %}
+                                        <div class="ms-3">
+                                            <p class="card-text mb-0">Praticien : {{ data.medecin.prenom }} {{ data.medecin.nom }}</p>
+                                            <p class="card-text">Spécialité : {{ data.medecin.specialite }}</p>
+                                            <hr class="my-2">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body text-center text-white rounded-bottom-corners ybRDV-Cards">
+                                    <h5 class="card-title">
+                                        Place(s) restante(s) : {{ data.places_restantes }}
+                                    </h5>
+                                    <a href="{{ path('app_rendez-vous_ajouter', {'medecinId': data.medecin.id}) }}" class="btn btn-primary">Prendre rendez-vous</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+```
+
 ## Re-factorisation du code
 Ayant des méthodes et des routes dans certains contrôleurs qui ne correspondent plus forcément au contrôleur initial (notamment pour les rendez-vous),
 j'ai re-factorisé le code en créant de nouveaux contrôleurs pour y injecter les méthodes et les routes qui ne correspondent plus aux anciens contrôleurs.
@@ -3204,7 +3280,7 @@ Ensuite, pour que les secrétaires puissent ajouter, lors de la création d'un m
     }
 ```
 
-Je modifie aussi mes fixtures en y ajoutant les photos `$medecin->setPhoto($faker->image('public/assets/photos', 320, 320, null, false));`
+Je modifie aussi mes "Fixture" en y ajoutant les photos `$medecin->setPhoto($faker->image('public/assets/photos', 320, 320, null, false));`
 
 J'ajoute aussi une fonctionnalité, qui me permet avant chaque création de photos par les fixtures, de supprimer les photos déjà existantes pour éviter de se retrouver avec des photos en double.
 

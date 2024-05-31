@@ -106,4 +106,13 @@ class PlanningMedecin
 
         return $this;
     }
+
+    public function getNombrePlacesRestantes(): int
+    {
+        $totalReservations = 0;
+        foreach ($this->getRendezVousUtilisateurs() as $rendezVous) {
+            $totalReservations += $rendezVous->getNombrePlacesReservees();
+        }
+        return $this->getNombrePatientsMax() - $totalReservations;
+    }
 }
