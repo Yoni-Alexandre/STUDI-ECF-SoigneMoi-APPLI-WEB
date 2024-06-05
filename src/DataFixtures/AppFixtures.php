@@ -83,7 +83,6 @@ class AppFixtures extends Fixture
             $medecin->setPrenom($faker->firstName);
             $medecin->setPhoto($faker->imageUrl(640, 480, 'people'));
             $medecin->setMatricule($faker->randomNumber(8));
-            $medecin->setPhoto($faker->image('public/assets/photos', 320, 320, null, false));
             $randomSpecialite = $specialites[array_rand($specialites)];
             $medecin->setSpecialite($randomSpecialite);
 
