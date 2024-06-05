@@ -39,7 +39,7 @@ class UtilisateurCrudController extends AbstractCrudController
             // pour éviter que l'administrateur modifie les Emails des utilisateurs
             EmailField::new('email')->setLabel('Email')->onlyOnIndex(),
             TextField::new('adresse_postale')->setLabel('Adresse postale'),
-            EmailField::new('email')->setLabel('Email'),
+            // EmailField::new('email')->setLabel('Email'),
             TextField::new('password')->setLabel('Mot de passe'),
             AssociationField::new('medecins')->setLabel('Médecins'),
         ];
