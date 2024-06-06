@@ -3409,6 +3409,152 @@ et sa vue associée `FicheRendezVous.html.twig` :
         </div>
 ```
 
+# Sécurisation et déploiement du serveur
+
+## Nom de domaine
+
+Achat du nom de domaine neoliaweb.fr chez **OVH**.
+
+Création d'un sous-domaine `soignemoi` du nom de domaine `neoliaweb` et du **TLD** (*Top Level Domain*) `.fr`. 
+
+Le **FQDN** (*Fully Qualified Domain Name*) sera `https://soignemoi.neoliaweb.fr` avec redirection **DNS** (*Domain Name Server*) en ajoutant en entrée le champs de pointage **A** du sous-domaine `soignemoi` vers l'**IP** du serveur **VPS**.
+
+Le **FQDN** du projet sera : https://soignemoi.neoliaweb.fr 
+
+## VPS
+
+Achat du **VPS** (Virtual Private Server) chez **OVH**.
+
+Installation de **Debian** en version 12.
+
+## SSH
+
+Génération d'une clé **SSH** pour le serveur VPS avec PuTTY Generator en utilisant l'algorithme de chiffrement asymétrique RSA (*Rivest-Shamir-Adleman*) et 4096 comme nombre de bits.
+
+Connexion au serveur avec les identifiants fourni par **OVH**. 
+
+## Sécurisation du serveur VPS
+
+Depuis l'interface d'administration OVH, je configure le certificat **SSL/TLS** (*https*) pour le domaine neoliaweb.fr. 
+
+Accès en **SSH** (Secure SHell) via **PuTTY** au **VPS** pour configurer les comptes et l'installation des composants nécessaires pour faire fonctionner le site web avec **Symfony**.
+
+en premier lieu je procède à : 
+- Modification du mot de passe d'origine avec la commande : 
+	- `passwd`
+- Mise à jour de la liste des dépôts avec la commande : 
+	- `sudo apt-get update`
+- Mise à jour des paquets avec la commande : 
+	- `sudo apt-get upgrade`
+- Ainsi que la mise à jour de la distribution Linux avec la commande : 
+	- `sudo apt-get dist-upgrade`
+- Modification du port d'écoute **SSH** par défaut (*port 22*) avec l’éditeur de texte **nano** : 
+	- `sudo nano /etc/ssh/sshd_config`
+
+Rechercher (*`CTRL + W` pour rechercher `#Port 22` - `#` annonce un commentaire*) et modifier le port.
+
+Je redémarre ensuite le deamon ssh : 
+- `sudo service ssh restart`
+
+Modification des droits de utilisateur par défaut (*désactivation du SSH pour cet utilisateur qui a des droits root par défaut*) (*l'utilisateur root est désactivé par défaut chez OVH*) et création d'un utilisateur qui pourra se connecter en **SSH** et utiliser `su` (*subtitute user*) pour avoir des droits `root`
+
+Je commence par créer un utilisateur avec la commande `sudo adduser nom_de_l_utilisateur` puis répondre aux questions qui suivent.
+
+Je teste la connexion **SSH** avec ce nouvel utilisateur.
+- `nom_de_l_utilisateur@ip/domaine_du_serveur_SSH -p le_port_SSH`
+
+Je me reconnecte une nouvelle fois avec l'utilisateur par défaut avec les droits root pour désactiver son accès **SSH** dans le fichier de configuration
+
+- `sudo nano /etc/ssh/sshd_config`
+
+Faire la recherche de la ligne `#PermitRootLogin prohibit-password`, la dé commenter et modifier en mettant `no` pour empêcher que l'utilisateur `root` puisse se connecter en **SSH**:
+
+- `PermitRootLogin no`
+
+Je redémarre ensuite le **deamon ssh** : 
+
+- `sudo service ssh restart`
+
+Désactivation de l'accès **SSH** de l'utilisateur par défaut crée par **OVH** 
+
+- `sudo nano /etc/ssh/sshd_config`
+
+Et placer `DenyUsers nom_de_l_utilisateur_a_desactiver`, par exemple au dessus de la ligne de configuration du port.
+
+Je sauvegarde et je redémarre le **deamon ssh**
+
+Je me déconnecte et me reconnecte avec le nouvel utilisateur.
+Je teste ensuite mon accès en **root** depuis mon utilisateur nouvellement crée :
+
+- `su utilsateur_avec_droit_root`
+
+Je vais Installer le paquet **Fail2ban**, pour éviter les `brut force` sur le *login/mot de passe* (*nombre de tentatives anormales d'échecs*) d'un utilisateur et bannira les adresses IP du/des attaquants.
+
+Installation du paquet :
+
+- `sudo apt-get install fail2ban`
+
+Modification du fichier `jail.conf` (p*ar défaut la configuration de base est très bien*) :
+
+- `nano /etc/fail2ban/jail.conf`
+
+Mettre le `bantime` à `1h`, `maxretry` à `5` et `findtime` à `5m`,  si une mauvaise tentative d'accès est faite 5 fois pendant les 5 prochaines minutes un bannissement d'une heure sera effectué pour l'adresse IP de l'attaquant.
+
+Les logs du serveur sont consultables `/var/logs`
+
+## Installation des dépendances
+
+- **Apache2** (*Serveur Web*)
+- **MySQL** (*Base de données*)
+- **PHP** (*Langage de programmation*)
+- **GIT** (*Gestion de versions décentralisé*)
+
+#### Installation Apache2
+
+- `sudo apt install apache2 libapache2-mod-php`
+
+Configuration au démarrage du serveur pour que Apache2 soit démarré :
+
+- `sudo systemctl enable apache2`
+
+Activation des modules avec `a2enmod` : 
+
+- `rewrite` *Faire des URLs propres, réécriture d'URLs*,  
+
+- `headers` *supporte les entête du site afin, par exemple fonctionnalités de cache, optimisation du chargement de page...*
+
+- `expires` qui permet d'indiquer un délai d'expiration des pages dans le navigateur des utilisateurs
+
+Activation : 
+- `sudo a2enmod rewrite`
+- `sudo a2enmod headers`
+- `sudo a2enmod expires`
+
+Puis redémarrer le service Apache :
+
+- `sudo systemctl restart apache2`
+
+#### Configuration Apache2
+
+Vérification de la création du fichier de configuration `000-default.conf` dans `/etc/apache2/sites-available` qui permet de créer des `virtual hosts` (*sites Internet virtuels différents*)
+
+Extrait du fichier `000-default.conf` qui écoute tout ce qui passe par le port 80 (*http*) (*pour l'écoute https ce sera le port 443*) et redirige vers le `DocumentRoot` le contenu de `/var/www/html`  ou se trouve `index.html` qui est la page créée par Apache lors de son installation pour vérifier le bon fonctionnement.
+```
+<VirtualHost *:80>
+        
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/html
+        
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+       
+</VirtualHost>
+```
+#### Installation de MySQL
+
+
+
+#### Configuration de MySQL
 
 
 
