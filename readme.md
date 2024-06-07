@@ -3530,7 +3530,7 @@ Activation :
 - `sudo a2enmod headers`
 - `sudo a2enmod expires`
 
-Puis redémarrer le service Apache :
+Puis je redémarre le service Apache :
 
 - `sudo systemctl restart apache2`
 
@@ -3700,6 +3700,81 @@ Uptime:                 12 min 8 sec
 Threads: 2  Questions: 18  Slow queries: 0  Opens: 151  Flush tables: 3  Open tables: 70  Queries per second avg: 0.024
 ```
 #### Installation de PHP
+
+Installation de **php** et la **ligne de commande pour php**
+
+Mise à jour des paquets
+
+- `sudo apt-get update`
+
+Installation des dépendances
+
+- `sudo apt install -y lsb-release apt-transport-https ca-certificates software-properties-common`
+
+Ajout du PPA (*Personal Package Archives)* de  SURY
+
+- `sudo sh -c 'echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list`
+- `sudo wget -qO - https://packages.sury.org/php/apt.gpg | sudo apt-key add -`
+
+Mise à jour des paquets de nouveau
+
+- `sudo apt-get update`
+
+Installation de php en version 8.2
+
+- `sudo apt install php8.2 php8.2-cli`
+
+Vérification de la version de php
+
+- `php -v`
+
+Si plusieurs versions de php sont installés, il faut configurer la version par défaut
+
+- `sudo update-alternatives --config php`
+
+> *Exemple :*
+
+```
+  Selection    Path             Priority   Status
+------------------------------------------------------------
+* 0            /usr/bin/php8.2   82        auto mode
+  1            /usr/bin/php8.2   82        manual mode
+
+Press <enter> to keep the current choice[*], or type selection number:
+```
+Puis je redémarre le service Apache :
+
+- `sudo systemctl restart apache2`
+
+Création d'une page web  pour vérifier la version et le bon fonctionnement de **php**
+
+- `cd /var/www/html`
+- `sudo nano test.php`
+
+> *Code source la page*
+ ```
+<?php 
+	echo phpinfo(); 
+?>
+```
+
+Depuis le navigateur, je tape l'adresse https://soignemoi.neoliaweb.fr/test.fr et le résultat de la fonction `phpinfo()` s'affiche.
+
+Le fichier de configuration de **php** se trouve `/etc/php/8.2/apache2/php.ini`
+
+Pour la chargement d'un fichier dans, par exemple un formulaire, je peux modifier la taille dans `/etc/php/8.2/apache2/php.ini` 
+
+> Extrait de mon fichier php.ini
+
+```
+; Maximum allowed size for uploaded files.
+; https://php.net/upload-max-filesize
+upload_max_filesize = 2M
+
+; Maximum number of files that can be uploaded via a single request
+max_file_uploads = 20
+```
+
 
 
 
