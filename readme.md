@@ -3409,7 +3409,7 @@ et sa vue associée `FicheRendezVous.html.twig` :
         </div>
 ```
 
-# Sécurisation et déploiement du serveur
+# Sécurisation, déploiement et installation du serveur
 
 ## Nom de domaine
 
@@ -3552,9 +3552,155 @@ Extrait du fichier `000-default.conf` qui écoute tout ce qui passe par le port 
 ```
 #### Installation de MySQL
 
+MySQL n'étant pas de base dans la bibliothèque de paquets de Debian, je dois déclarer la source de la dépendance à la main.
 
+Installation pour le chiffrage des données avec le paquet `gnupg` (*GNU Privacy Guard*)
 
+- `sudo apt install gnupg` 
+
+Installation de la dépendance **MySQL** 
+
+Tout d'abord je me rends https://dev.mysql.com/downloads/repo/apt/ pour récupérer l'adresse de téléchargement du paquet en cliquant  sur **Download** 
+
+puis en copiant l'adresse du lien (*Clic droit sur le lien / Copier le lien*) `No thanks, just start my download` -> https://dev.mysql.com/get/mysql-apt-config_0.8.30-1_all.deb que je pourrais ensuite coller dans **PuTTY** et télécharger le paquet pour le stocker dans un dossier temporaire `/tmp` avec `wget`
+
+- `cd /tmp`
+- `sudo wget https://dev.mysql.com/get/mysql-apt-config_0.8.30-1_all.deb` 
+
+"*Dépackager / décompresser*" le paquet avec l'option `-i` (*pour installation*)  en utilisant `dpkg` (Intégrera ensuite dans la liste des paquets Debian) 
+
+- `sudo dpkg -i mysql-apt-config_0.8.30-1_all.deb`
+
+Répondre aux questions en laissant par défaut.
+
+Mettre à jour la liste des paquets
+
+- `sudo apt-get update`
+
+Installation avec `apt` du serveur **MySQL**
+
+- `sudo apt install mysql-server`
+
+Répondre aux questions (*Mot de passe, Encryptage du mot de passe*)
+
+Vérification de la bonne installation de **MySQL**
+
+- `sudo systemctl status mysql`
+
+En vérifiant que le service soit actif 
+
+```
+● mysql.service - MySQL Community Server
+     Loaded: loaded (/lib/systemd/system/mysql.service; enabled; preset: enabled)
+     Active: active (running) since Fri 2024-06-07 07:40:06 UTC; 24s ago
+       Docs: man:mysqld(8)
+             http://dev.mysql.com/doc/refman/en/using-systemd.html
+   Main PID: 12361 (mysqld)
+     Status: "Server is operational"
+      Tasks: 36 (limit: 2295)
+     Memory: 435.5M
+        CPU: 1.316s
+     CGroup: /system.slice/mysql.service
+             └─12361 /usr/sbin/mysqld
+
+Jun 07 07:40:05 vps-118b4dcc systemd[1]: Starting mysql.service - MySQL Community Server...
+Jun 07 07:40:06 vps-118b4dcc systemd[1]: Started mysql.service - MySQL Community Server.
+```
 #### Configuration de MySQL
+
+Sécurisation de l'installation (*Entrer le mot de passe de la base de données inscrit plus haut*)
+
+- `mysql_secure_installation`
+
+Répondre aux questions 
+
+```
+Securing the MySQL server deployment.
+
+Enter password for user root:
+
+VALIDATE PASSWORD COMPONENT can be used to test passwords
+and improve security. It checks the strength of password
+and allows the users to set only those passwords which are
+secure enough. Would you like to setup VALIDATE PASSWORD component?
+
+Press y|Y for Yes, any other key for No: Y
+
+There are three levels of password validation policy:
+
+LOW    Length >= 8
+MEDIUM Length >= 8, numeric, mixed case, and special characters
+STRONG Length >= 8, numeric, mixed case, special characters and dictionary                  file
+
+Please enter 0 = LOW, 1 = MEDIUM and 2 = STRONG: 2
+Using existing password for root.
+
+Estimated strength of the password: 100
+Change the password for root ? ((Press y|Y for Yes, any other key for No) : N
+
+ ... skipping.
+By default, a MySQL installation has an anonymous user,
+allowing anyone to log into MySQL without having to have
+a user account created for them. This is intended only for
+testing, and to make the installation go a bit smoother.
+You should remove them before moving into a production
+environment.
+
+Remove anonymous users? (Press y|Y for Yes, any other key for No) : Y
+Success.
+
+Normally, root should only be allowed to connect from
+'localhost'. This ensures that someone cannot guess at
+the root password from the network.
+
+Disallow root login remotely? (Press y|Y for Yes, any other key for No) : Y
+Success.
+
+By default, MySQL comes with a database named 'test' that
+anyone can access. This is also intended only for testing,
+and should be removed before moving into a production
+environment.
+
+
+Remove test database and access to it? (Press y|Y for Yes, any other key for No) : Y
+ - Dropping test database...
+Success.
+
+ - Removing privileges on test database...
+Success.
+
+Reloading the privilege tables will ensure that all changes
+made so far will take effect immediately.
+
+Reload privilege tables now? (Press y|Y for Yes, any other key for No) : Y
+Success.
+
+All done!
+```
+Connexion à **MySQL** pour vérification
+
+```
+mysqladmin -u root -p version
+
+Enter password:
+
+mysqladmin  Ver 8.4.0 for Linux on x86_64 (MySQL Community Server - GPL)
+Copyright (c) 2000, 2024, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Server version          8.4.0
+Protocol version        10
+Connection              Localhost via UNIX socket
+UNIX socket             /var/run/mysqld/mysqld.sock
+Uptime:                 12 min 8 sec
+
+Threads: 2  Questions: 18  Slow queries: 0  Opens: 151  Flush tables: 3  Open tables: 70  Queries per second avg: 0.024
+```
+#### Installation de PHP
+
 
 
 
