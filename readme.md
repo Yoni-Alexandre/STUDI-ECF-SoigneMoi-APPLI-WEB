@@ -58,7 +58,7 @@ symfony console doctrine:database:create
 
 #### Entité Utilisateur (sécurisé)
 
-```php  
+```php
 symfony console make:user  
 The name of the security user class (e.g. User) [User]:  > Utilisateur  
   
