@@ -3509,7 +3509,7 @@ Les logs du serveur sont consultables `/var/logs`
 - **PHP** (*Langage de programmation*)
 - **GIT** (*Gestion de versions décentralisé*)
 
-#### Installation Apache2
+### Installation Apache2
 
 - `sudo apt install apache2 libapache2-mod-php`
 
@@ -3550,7 +3550,7 @@ Extrait du fichier `000-default.conf` qui écoute tout ce qui passe par le port 
        
 </VirtualHost>
 ```
-#### Installation de MySQL
+### Installation de MySQL
 
 MySQL n'étant pas de base dans la bibliothèque de paquets de Debian, je dois déclarer la source de la dépendance à la main.
 
@@ -3699,7 +3699,7 @@ Uptime:                 12 min 8 sec
 
 Threads: 2  Questions: 18  Slow queries: 0  Opens: 151  Flush tables: 3  Open tables: 70  Queries per second avg: 0.024
 ```
-#### Installation de PHP
+### Installation de PHP
 
 Installation de **php** et la **ligne de commande pour php**
 
@@ -3774,6 +3774,216 @@ upload_max_filesize = 2M
 ; Maximum number of files that can be uploaded via a single request
 max_file_uploads = 20
 ```
+### Installation GIT
+
+Installation de **GIT**
+- `sudo apt-get install git`
+
+ Vérification de la version et donc de la bonne installation de git
+-	`git --version`
+
+#### Paramétrage de GIT pour cloner le dépôt sur le serveur web
+
+Vérification des droits du dossier `www` avec la commande `ls -l`
+```
+ls -l
+drwxr-xr-x  3 root root  4096 Jun  6 13:22 www
+```
+Changer les droits (changer de propriétaire) du dossier`www` qui appartiennent à l’utilisateur `root`avec la commande `chmod` (Change the Owner) avec l'option `-R` (Recursive) 
+
+- `sudo chown -R debian /var/www`
+
+Aller dans le dossier `www` et tester les droits (création / suppression d'un dossier ou d'un fichier)
+
+```
+mkdir test
+rm -rf test
+touch test.txt
+rm text.txt
+```
+##### Création  d'une clé **SSH** pour créer un lien sécurisé entre **Gitlab** et le serveur web
+
+https://docs.gitlab.com/ee/user/ssh.html#generate-an-ssh-key-pair
+
+- `ssh-keygen -t rsa -b 2048 -C "contact@soignemoi.neoliaweb.fr"`
+
+La clé sera créée dans le `/home/utilisateur/.ssh/`
+
+Suppression de toutes les clés dans le cache
+
+- `ssh-add -D`
+
+S'il n'y a pas de clé en cache, la réponse du serveur`Could not open a connection to your authentication agent.` 
+
+Mise en place de l'agent **SSH** pour gérer les clés (ne pas oublier de mettre les **guillemets inversés**  `` entre `eval` et `ssh-agent -s`
+
+```
+debian@serveur:~/.ssh$ eval `ssh-agent -s`
+Agent pid 23853
+```
+Ajout de la clé à l'agent
+
+- `ssh-add /home/debian/.ssh/id_rsa`
+
+et la réponse
+
+- `Identity added: /home/debian/.ssh/id_rsa (contact@soignemoi.neoliaweb.fr)`
+
+Je vérifie la liste des clés pour voir si tout est bien ajoutées):
+
+- `ssh-add -l`
+
+##### Clonage du dépôt Git
+
+Depuis le serveur web, copier la clé SSH
+
+ - `cat ~/.ssh/id_rsa.pub`
+ 
+Puis copier la clé qui apparait.
+
+Coller la clé dans **Gitlab** `Gitlab / Profil / Clés SSH / Ajouter une nouvelle clé`
+
+A présent, depuis Gitlab, Dans le projet, je vais chercher l'adresse **Cloner avec SSH**, copier le lien et me rendre depuis le serveur Web dans le dossier `www`
+
+- `git clone https://adresseDuDepotGit`
+
+### Installation des dépendances pour Symfony du projet SoigneMoi
+https://www.digitalocean.com/community/tutorials/how-to-install-and-use-composer-on-debian-11
+
+#### Configuration et téléchargement
+
+Installation (s'il n'est pas déjà installé) de `curl` pour transférer les données vers ou depuis un serveur
+
+- `sudo apt install curl`
+
+Je me rends tout d'abord dans mon dossier personnel
+
+- `cd ~`
+
+et je télécharge **composer** en mode silencieux en le nommant `composer-setup.php` 
+
+- `sudo curl -sS https://getcomposer.org/installer -o composer-setup.php`
+ 
+
+>  Si besoin, Je peux contrôler le **HASH** de composer pour vérifier que ce que
+> j'ai téléchargé et le logiciel du serveur ont le même **hash**.   
+> Ce qui garantie que j'ai télécharger le bon **composer**.  
+>
+> Détail ici :
+> https://www.digitalocean.com/community/tutorials/how-to-install-and-use-composer-on-debian-11
+
+#### Installation de composer
+
+```
+sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+
+All settings correct for using Composer
+Downloading...
+
+Composer (version 2.7.6) successfully installed to: /usr/local/bin/composer
+Use it: php /usr/local/bin/composer
+
+```
+Je vérifie ensuite la version
+
+```
+composer -V
+
+Composer version 2.7.6 2024-05-04 23:03:15
+PHP version 8.2.18 (/usr/bin/php8.2)
+Run the "diagnose" command to get more detailed diagnostics output.
+
+```
+#### Installation des dépendances du projet Symfony SoigneMoi avec composer
+
+Se rendre dans mon dossier de projet SoigneMoi
+
+- `cd /var/www/studi-ecf-soignemoi-appli-web-devops`
+
+Installation des dépendances
+
+- `composer install`
+
+A cette étapes, j'ai eu une erreur  car il me manquait des dépendances
+
+- `sudo apt-get install php-xml`
+- `sudo apt-get install php-dom`
+
+Après cette correction, j'ai pu installer les dépendances via composer `composer install`
+
+```
+Generating autoload files
+120 packages you are using are looking for funding.
+Use the `composer fund` command to find out more!
+
+Run composer recipes at any time to see the status of your Symfony recipes.
+
+Executing script cache:clear [OK]
+Executing script assets:install public [OK]
+Executing script importmap:install [OK]
+```
+Comme j'ai ajouté dans le gitignore mon fichier .env pour des raisons sécurité
+
+Je crée avec `nano` le fichier et j'y colle la structure de mon fichier d'origine en enlevant les parties confidentielles.
+
+```
+# In all environments, the following files are loaded if they exist,
+# the latter taking precedence over the former:
+#
+#  * .env                contains default values for the environment variables needed by the app
+#  * .env.local          uncommitted file with local overrides
+#  * .env.$APP_ENV       committed environment-specific defaults
+#  * .env.$APP_ENV.local uncommitted environment-specific overrides
+#
+# Real environment variables win over .env files.
+#
+# DO NOT DEFINE PRODUCTION SECRETS IN THIS FILE NOR IN ANY OTHER COMMITTED FILES.
+# https://symfony.com/doc/current/configuration/secrets.html
+#
+# Run "composer dump-env prod" to compile .env files for production use (requires symfony/flex >=1.2).
+# https://symfony.com/doc/current/best_practices.html#use-environment-variables-for-infrastructure-configuration
+
+###> symfony/framework-bundle ###
+APP_ENV=dev
+APP_SECRET=c0d3ebd415dfa8ffa06683099d6259d4
+###< symfony/framework-bundle ###
+
+###> doctrine/doctrine-bundle ###
+# Format described at https://www.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/configuration.html#connecting-using-a-url
+# IMPORTANT: You MUST configure your server version, either here or in config/packages/doctrine.yaml
+#
+# DATABASE_URL="sqlite:///%kernel.project_dir%/var/data.db"
+# DATABASE_URL="mysql://root@127.0.0.1:3306/soignemoi?serverVersion=8.0.32&charset=utf8mb4"
+# DATABASE_URL="mysql://app:!ChangeMe!@127.0.0.1:3306/app?serverVersion=10.11.2-MariaDB&charset=utf8mb4"
+# DATABASE_URL="postgresql://app:!ChangeMe!@127.0.0.1:5432/app?serverVersion=16&charset=utf8"
+###< doctrine/doctrine-bundle ###
+
+###> symfony/messenger ###
+# Choose one of the transports below
+# MESSENGER_TRANSPORT_DSN=amqp://guest:guest@localhost:5672/%2f/messages
+# MESSENGER_TRANSPORT_DSN=redis://localhost:6379/messages
+MESSENGER_TRANSPORT_DSN=doctrine://default?auto_setup=0
+###< symfony/messenger ###
+
+###> symfony/mailer ###
+# MAILER_DSN=null://null
+###< symfony/mailer ###
+
+###> nelmio/cors-bundle ###
+CORS_ALLOW_ORIGIN='^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$'
+###< nelmio/cors-bundle ###
+
+###> lexik/jwt-authentication-bundle ###
+JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem
+JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem
+JWT_PASSPHRASE=7387a7a945b75d47588518dab5764aa2680b6092c8e8144743d25f1720205c46
+###< lexik/jwt-authentication-bundle ###
+
+```
+
+### Afficher le site SoigneMoi en ligne pour la production
+
+
 
 
 
