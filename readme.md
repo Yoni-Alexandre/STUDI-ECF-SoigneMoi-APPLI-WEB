@@ -3981,11 +3981,315 @@ JWT_PASSPHRASE=7387a7a945b75d47588518dab5764aa2680b6092c8e8144743d25f1720205c46
 
 ```
 
-### Afficher le site SoigneMoi en ligne pour la production
+### Configuration pour afficher le site SoigneMoi en ligne pour la production
 
+https://symfony.com/doc/current/setup/web_server_configuration.html
 
+Configuration du **virtual host** dans `/etc/apache2/sites-available` pour faire pointer le nom de domaine vers le dossier du site du serveur web.
 
+Création du virtual host
 
+- `nano soignemoi.conf`
 
+```
+<VirtualHost *:80>
 
+    ServerName neoliaweb.fr
+    ServerAlias *.neoliaweb.fr
 
+    ServerAdmin contact@neoliaweb.fr
+    DocumentRoot /var/www/studi-ecf-soignemoi-appli-web-devops/public
+
+    <Directory /var/www/studi-ecf-soignemoi-appli-web-devops>
+        AllowOverride all
+        Allow from all
+        Require all granted
+    </Directory>
+
+    ErrorLog /var/log/apache2/soignemoi_error.log
+    CustomLog /var/log/apache2/soignemoi_access.log combined
+
+    RewriteEngine on
+
+</VirtualHost>
+
+```
+Activation du **virtual host** et du site **Apache**
+
+- `sudo a2ensite soignemoi.conf`
+
+> Pour la désactivation
+> 
+> - `sudo a2dissite soignemoi.conf`
+> 
+> Puis rechargement de Apache avec  `sudo systemctl reload apache2`
+
+Rechargement de **Apache** pour l'activation dans `sites-enabled`
+
+- `sudo systemctl reload apache2`
+
+#### Installation de Let's Encrypt pour générer un certificat SSL (3 mois de validité)
+ 
+ Le certificat aura une validité de 3 mois, je vais créer plus tart une tache planifiées (CRON) pour renouveler la validité du certificat.
+
+Installation du package snapd, qui est nécessaire pour gérer les paquets Snap
+
+- `sudo apt install snapd` 
+
+Installation du paquet Snap "core", qui est une dépendance fondamentale pour faire fonctionner les autres paquets Snap
+
+- `sudo snap install core`
+
+Mise à jour du paquet "core" à la dernière version disponible
+
+- `sudo snap refresh core`
+
+Installation du paquet Snap "certbot" en mode classique, ce qui permet à l'application d'accéder aux chemins système classiques (nécessaire pour certaines applications comme Certbot)
+
+- `sudo snap install --classic certbot`
+
+Création d'un lien symbolique vers l'exécutable "certbot" dans /usr/bin, permettant de lancer Certbot en tapant simplement "certbot" dans le terminal
+
+- `sudo ln -s /snap/bin/certbot /usr/bin/certbot`
+
+Génération du certificat SSL/TLS pour le domaine neoliaweb.fr et ses sous-domaine `www` et `soignemoi` avec l'option `-d` pour domaine
+
+- `sudo certbot --apache -d neoliaweb.fr -d www.neoliaweb.fr -d soignemoi.neoliaweb.fr`
+
+Résultat de la bonne création et mise en place des certificats SSL/TLS
+
+```
+sudo certbot --apache -d neoliaweb.fr -d www.neoliaweb.fr -d soignemoi.neoliaweb.fr
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+Requesting a certificate for neoliaweb.fr and 2 more domains
+
+Successfully received certificate.
+Certificate is saved at: /etc/letsencrypt/live/neoliaweb.fr/fullchain.pem
+Key is saved at:         /etc/letsencrypt/live/neoliaweb.fr/privkey.pem
+This certificate expires on 2024-09-09.
+These files will be updated when the certificate renews.
+Certbot has set up a scheduled task to automatically renew this certificate in the background.
+
+Deploying certificate
+Successfully deployed certificate for neoliaweb.fr to /etc/apache2/sites-available/soignemoi-le-ssl.conf
+Successfully deployed certificate for www.neoliaweb.fr to /etc/apache2/sites-available/soignemoi-le-ssl.conf
+Successfully deployed certificate for soignemoi.neoliaweb.fr to /etc/apache2/sites-available/soignemoi-le-ssl.conf
+Congratulations! You have successfully enabled HTTPS on https://neoliaweb.fr, https://www.neoliaweb.fr, and https://soignemoi.neoliaweb.fr
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+If you like Certbot, please consider supporting our work by:
+ * Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+ * Donating to EFF:                    https://eff.org/donate-le
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+```
+
+#### Permissions requises pour Symfony 7
+
+https://symfony.com/doc/current/setup/file_permissions.html
+https://help.ubuntu.com/community/FilePermissionsACLs
+
+L'utilisation des permissions ACL (Acces Control Lists sous Linux) est la méthode plus sécurisée et recommandée pour permettre l'écriture dans les répertoires voulus
+
+Installation de paquet `acl`
+
+- `sudo apt-get install acl`
+
+Cette ligne de commande cherche le nom de l'utilisateur sous lequel le serveur web (Apache, Nginx, etc.) fonctionne
+
+- `HTTPDUSER=$(ps axo user,comm | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx' | grep -v root | head -1 | cut -d\  -f1)`
+
+Définit les permissions par défaut pour tous les nouveaux fichiers/répertoires dans var afin qu'ils soient accessibles en lecture, écriture et exécution par l'utilisateur du serveur web et l'utilisateur actuel
+
+- `sudo setfacl -dR -m u:"$HTTPDUSER":rwX -m u:$(whoami):rwX var`
+
+Applique ces mêmes permissions à tous les fichiers et répertoires existants dans var
+
+- `sudo setfacl -R -m u:"$HTTPDUSER":rwX -m u:$(whoami):rwX var`
+
+#### Configuration du fichier .env pour la base de données
+
+Pour des raisons de sécurité je ne montrerais pas le contenu de mon fichier .env mais globalement la configuration est la même quand local
+
+Création de la base de données
+
+- `php bin/console doctrine:database:create`
+
+J'ai eu 2 types d'erreurs : 
+> **1 ère erreur :**  
+> `An exception occurred in the driver:
+> could not find driver`
+> 
+>  Pour corriger cela, j'ai installé le paquet : 
+>  - `sudo apt install php-mysql` 
+>  
+>  Puis j'ai redémarré le serveur Apache : 
+>  
+>  - `sudo systemctl restart apache2`
+> 
+> **2ème erreur** : 
+> ` An exception occurred in the
+> driver: SQLSTATE[HY000] [1045] Access denied for user
+> 'root'@'localhost' (using password: YES)`
+> 
+> Le problème était très probablement dû à la présence de caractères
+> spéciaux dans le mot de passe initial (@ et $), qui n'étaient pas
+> correctement échappés dans le fichier .env. 
+> 
+> Ces caractères ont pu être mal interprétés par Symfony, MySQL ou le
+> Shell de linux.
+> 
+> Pour remédier à ce problème, j'ai changé le mot de passe de
+> l'utilisateur root comme ceci: 
+> Je me connecte à ma BDD, puis : 
+>
+> - `ALTER USER 'root'@'localhost' IDENTIFIED BY 'MotDePasseSecurisé';` 
+
+> et ensuite je flush : 
+>
+> - `FLUSH PRIVILEGES;`
+
+Je vérifie ensuite que ma base de données soit bien créée en me connectant à MySQL
+
+- `mysql -u root -p`
+
+Une fois dans la base de données:
+
+- `SHOW DATABASES;`
+
+Je vide le cache de Symfony pour éviter d'éventuelles erreurs résiduelles causées par le cache
+
+- `php bin/console cache:clear`
+
+Je crée la migration (je nettoie tout d'abord les migrations qu'il peut y avoir dans le dossier migrations)
+
+- `php bin/console make:migration`
+
+J'envoie la migration à la base de données
+
+- `php bin/console doctrine:migrations:migrate`
+
+J’exécute mes **fixtures**
+
+- `php bin/console doctrine:fixtures:load`
+
+Je crée les clés pour le JWT
+
+- `php bin/console lexik:jwt:generate-keypair` 
+
+#### Création du fichier .htaccess
+
+Le fichier .htaccess est utilisé pour configurer des directives du serveur web Apache, permettant de rediriger et de gérer les requêtes HTTP afin de délivrer les bonnes pages dans l'application Symfony
+
+ Je me rend dans le dossier `public` de mon projet Symfony et je crée le fichier .htaccess
+
+- `sudo nano .htaccess`
+
+et j'y inscris cette configuration
+
+```
+# Use the front controller as index file. It serves as a fallback solution when
+# every other rewrite/redirect fails (e.g. in an aliased environment without
+# mod_rewrite). Additionally, this reduces the matching process for the
+# start page (path "/") because otherwise Apache will apply the rewriting rules
+# to each configured DirectoryIndex file (e.g. index.php, index.html, index.pl).
+DirectoryIndex index.php
+
+# By default, Apache does not evaluate symbolic links if you did not enable this
+# feature in your server configuration. Uncomment the following line if you
+# install assets as symlinks or if you experience problems related to symlinks
+# when compiling LESS/Sass/CoffeScript assets.
+# Options FollowSymlinks
+
+# Disabling MultiViews prevents unwanted negotiation, e.g. "/index" should not resolve
+# to the front controller "/index.php" but be rewritten to "/index.php/index".
+<IfModule mod_headers.c>
+Header always set X-FRAME-OPTIONS "DENY"
+Header always set X-Content-Type-Options "nosniff"
+</IfModule>
+
+<IfModule mod_negotiation.c>
+    Options -MultiViews
+</IfModule>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+    RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
+    # Determine the RewriteBase automatically and set it as environment variable.
+    # If you are using Apache aliases to do mass virtual hosting or installed the
+    # project in a subdirectory, the base path will be prepended to allow proper
+    # resolution of the index.php file and to redirect to the correct URI. It will
+    # work in environments without path prefix as well, providing a safe, one-size
+    # fits all solution. But as you do not need it in this case, you can comment
+    # the following 2 lines to eliminate the overhead.
+    RewriteCond %{REQUEST_URI}::$1 ^(/.+)/(.*)::\2$
+    RewriteRule ^(.*) - [E=BASE:%1]
+
+    # Sets the HTTP_AUTHORIZATION header removed by Apache
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule ^ - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Redirect to URI without front controller to prevent duplicate content
+    # (with and without `/index.php`). Only do this redirect on the initial
+    # rewrite by Apache and not on subsequent cycles. Otherwise we would get an
+    # endless redirect loop (request -> rewrite to front controller ->
+    # redirect -> request -> ...).
+    # So in case you get a "too many redirects" error or you always get redirected
+    # to the start page because your Apache does not expose the REDIRECT_STATUS
+    # environment variable, you have 2 choices:
+    # - disable this feature by commenting the following 2 lines or
+    # - use Apache >= 2.3.9 and replace all L flags by END flags and remove the
+    #   following RewriteCond (best solution)
+    RewriteCond %{ENV:REDIRECT_STATUS} ^$
+    RewriteRule ^index\.php(?:/(.*)|$) %{ENV:BASE}/$1 [R=301,L]
+
+    # If the requested filename exists, simply serve it.
+    # We only want to let Apache serve files and not directories.
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule ^ - [L]    
+    
+    # resolution of the index.php file and to redirect to the correct URI. It will
+    # work in environments without path prefix as well, providing a safe, one-size
+    # fits all solution. But as you do not need it in this case, you can comment
+    # the following 2 lines to eliminate the overhead.
+    RewriteCond %{REQUEST_URI}::$1 ^(/.+)/(.*)::\2$
+    RewriteRule ^(.*) - [E=BASE:%1]
+
+    # Sets the HTTP_AUTHORIZATION header removed by Apache
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule ^ - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Redirect to URI without front controller to prevent duplicate content
+    # (with and without `/index.php`). Only do this redirect on the initial
+    # rewrite by Apache and not on subsequent cycles. Otherwise we would get an
+    # endless redirect loop (request -> rewrite to front controller ->
+    # redirect -> request -> ...).
+    # So in case you get a "too many redirects" error or you always get redirected
+    # to the start page because your Apache does not expose the REDIRECT_STATUS
+    # environment variable, you have 2 choices:
+    # - disable this feature by commenting the following 2 lines or
+    # - use Apache >= 2.3.9 and replace all L flags by END flags and remove the
+    #   following RewriteCond (best solution)
+    RewriteCond %{ENV:REDIRECT_STATUS} ^$
+    RewriteRule ^index\.php(?:/(.*)|$) %{ENV:BASE}/$1 [R=301,L]
+
+    # If the requested filename exists, simply serve it.
+    # We only want to let Apache serve files and not directories.
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule ^ - [L]
+
+    # Rewrite all other queries to the front controller.
+    RewriteRule ^ %{ENV:BASE}/index.php [L]
+</IfModule>
+
+<IfModule !mod_rewrite.c>
+    <IfModule mod_alias.c>
+        # When mod_rewrite is not available, we instruct a temporary redirect of
+        # the start page to the front controller explicitly so that the website
+        # and the generated links can still be used.
+        RedirectMatch 307 ^/$ /index.php/
+        # RedirectTemp cannot be used instead
+    </IfModule>
+</IfModule>
+``` 
