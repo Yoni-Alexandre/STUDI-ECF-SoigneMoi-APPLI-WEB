@@ -4293,3 +4293,115 @@ Header always set X-Content-Type-Options "nosniff"
     </IfModule>
 </IfModule>
 ``` 
+
+### Sauvegardes et Backups
+
+Pour des questions de couts pour ce projet, je n'ai pas pris d'options de **snapshot** (plus stockage pour les snapshots) et que tous les fichiers du site Web sont stockés et versionnés sur **GitHub**, si pour X raisons le serveur tombe un re-clonage git sera simple et rapide.
+ 
+Pour la base de données, comme elle n'est pas sauvegardée, je vais créer un script qui fera un **DUMP** (*Extraction dans un fichier de la base de données*) de la **BDD** avec une tache planifiée (*CRON*) et l'enverra sur un stockage (*NAS, SAN ou autre*) via **SFTP** (*Secure Transfert Protocol*) .
+
+#### Création du script pour le DUMP de la BDD
+
+Installation du client FTP
+
+-	`sudo apt-get install lftp`
+
+Création du fichier pour stocker les identifiants
+
+- `sudo nano /etc/mysql/backup_id_connexion.cnf`
+```
+[client]
+user = root
+password = MotDePasseDeLaBDD
+```
+
+Création du dossier pour stocker le script et les exports
+
+- `cd /usr/share`
+- `sudo mkdir backup`
+- `cd backup`
+
+Création du script 
+ - `sudo nano backupBDDSoigneMoi.sh`
+
+qui comprendra : 
+ - L'extraction de la base de données et l'archivage de celle-ci
+ - Les identifiants de la connexion SFTP
+ - Le transfert de la sauvegarde vers le serveur
+
+> ***
+> Suite à des erreurs avec `lftp` avec la connexion **SFTP** (pourtant bien activé sur le serveur et en mode manuel fonctionne très bien avec un client FTP comme  WinSFP), j'ai utilisé une connexion **FTP**
+> ***
+
+```
+#!/bin/bash
+
+# Stockage des identifiants de connexion à la BDD et extraction de toutes les données en les compressant dans un fichier gzip
+echo "Demarrage du backup de la BDD..."
+mysqldump --defaults-extra-file=/etc/mysql/backup_id_connexion.cnf --all-databases | sudo gzip -c > /usr/share/backup/databases.sql.gz
+echo "La base de donnees est sauvegardee et compresse."
+
+# Stockage dans des constantes des identifiants SFTP
+HOST="ftp.monserveur.fr"
+LOGIN="monLogin"
+PASSWORD="monMDP"
+PORT=21
+
+echo "Demarrage du transfer vers le serveur FTP..."
+
+# Transfert de la sauvegarde vers le serveur FTP en mode Verbose
+lftp -d -e "
+open -u $LOGIN,$PASSWORD ftp://$HOST:$PORT
+set ftp:ssl-allow no
+lcd /usr/share/backup
+cd /backup
+put databases.sql.gz
+bye
+# Retour si transfert OK ou NON
+" && echo "Fichier transfere" || echo "Erreur de transfert"
+```
+Exécution du script de sauvegarde
+
+- `sudo sh backupBDDSoigneMoi.sh`
+
+Configuration de la tache planifiée **CRON**
+
+Installation de CRON
+
+- `sudo apt-get install cron`
+
+Vérification que **CRON** est en cours d’exécution et qu'il fonctionne
+
+```
+sudo systemctl enable cron
+sudo systemctl start cron
+sudo systemctl status cron
+```
+Vérification s'il existe une liste de taches planifiées
+
+-	`sudo crontab -l`
+
+Éditer les taches planifiées avec un éditeur de texte (j'utilise nano)
+
+- `sudo crontab -e`
+```
+no crontab for root - using an empty one
+
+Select an editor.  To change later, run 'select-editor'.
+  1. /bin/nano        <---- easiest
+  2. /usr/bin/vim.basic
+  3. /usr/bin/vim.tiny
+```
+Création d'un fichier de log pour les taches planifiées
+
+`sudo touch /var/log/cron.log`
+
+Écriture de la tache planifiée pour tous les jours / mois / semaines à 23h59
+
+```
+# Minutes Heures Jour Mois Semaines en utilisant la commande pour les scripts 
+# "sh" le script qui se trouve /usr/share/backup/backupBDDSoigneMoi.sh avec log de notifications
+
+59 53 * * * /bin/sh /usr/share/backup/backupBDDSoigneMoi.sh > /var/log/cron.log
+```
+
