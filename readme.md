@@ -65,6 +65,8 @@ Pour la version Mobile de l’application SoigneMoi, utiliser les identifiants c
 - Email : ***********@neoliaweb.fr
 - Mot de passe : ********
 
+l'application mobile, est directement connectée à l'application WEB 
+
 Prérequis :
 - Windows PowerShell (Pour Windows)
 - Git
