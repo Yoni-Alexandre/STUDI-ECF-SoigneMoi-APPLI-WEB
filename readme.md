@@ -1,5 +1,21 @@
 # Procédure de Connexion WEB et MOBILE
 
+# Table des matières
+
+1. [Application WEB](#application-web)
+   - [Web](#web)
+   - [Local](#local)
+   - [Fixtures](#fixtures)
+   - [Test unitaire](#test-unitaire)
+2. [Application Mobile](#application-mobile)
+3. [Postman pour l’API](#postman-pour-lapi)
+   - [Documentation de l’API](#documentation-de-lapi)
+   - [Authentification (POST)](#authentification-post)
+   - [Avis (GET)](#avis-get)
+   - [Collection Avis (GET)](#collection-avis-get)
+   - [Ecrire (POST)](#ecrire-post)
+
+
 ## Application WEB
 
 ### Web
@@ -52,7 +68,11 @@ php bin/console lexik:jwt:generate-keypair
 ```bash
 symfony serve -d
 ```
-
+### Fixtures
+Pour exécuter la Fixture :
+```bash
+php bin/console doctrine:fixtures:load
+```
 ### Test unitaire
 Pour créer un utilisateur pour le test unitaire, modifier le fichier `FormulaireInscriptionUtilisateurTest.php`.
 Execution du test unitaire avec la commande :
@@ -86,6 +106,9 @@ flutter run
 ```
 
 ## Postman pour l’API
+
+### Documentation de l’API
+La doumentation se trouve dans le fichier BRAULT_Yoni-Alexandre_Procédure_de_connexion.pdf
 
 ### Authentification (POST)
 Pour l’authentification en POST :
