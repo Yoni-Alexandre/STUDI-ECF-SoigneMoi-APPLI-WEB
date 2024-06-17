@@ -18,16 +18,38 @@ Pour installer en local l’application Web, il faut tout d’abord avoir instal
 Ensuite, aller sur un terminal et exécuter les commandes ci-dessous :
 ```bash
 git clone https://github.com/Yoni-Alexandre/STUDI-ECF-SoigneMoi-APPLI-WEB.git
+```
+```bash
 cd STUDI-ECF-SoigneMoi-APPLI-WEB
+```
+```bash
 composer install
+```
+```bash
 symfony console doctrine:database:create
+```
+```bash
 cd migrations
+```
+```bash
 rm *.php
+```
+```bash
 cd ..
+```
+```bash
 symfony console make:migration
+```
+```bash
 symfony.exe console doctrine:migrations:migrate
+```
+```bash
 php bin/console doctrine:fixtures:load
+```
+```bash
 php bin/console lexik:jwt:generate-keypair
+```
+```bash
 symfony serve -d
 ```
 
@@ -53,7 +75,11 @@ Prérequis :
 Ensuite, démarrer Android Studio puis l’émulateur de téléphone et aller sur un terminal pour exécuter les commandes ci-dessous :
 ```bash
 git clone https://github.com/Yoni-Alexandre/studi_ecf_soignemoi_appli_mobile.git
+```
+```bash
 cd studi_ecf_soignemoi_appli_mobile
+```
+```bash
 flutter run
 ```
 
